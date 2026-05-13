@@ -1,10 +1,11 @@
 #include "character.h"
-#include <M5StickCPlus.h>
+#include "ble_bridge.h"
+#include <M5Unified.h>
 #include <LittleFS.h>
 #include <AnimatedGIF.h>
 #include <ArduinoJson.h>
 
-extern TFT_eSprite spr;
+extern M5Canvas spr;
 
 static const char* STATE_NAMES[] = {
   "sleep", "idle", "busy", "attention", "celebrate", "dizzy", "heart"
@@ -42,23 +43,30 @@ static int         gifX = 0, gifY = 0, gifW = 0, gifH = 0;
 // in the upper 140px. No padding assumed in the source art.
 static const int   PEEK_TOP = 70;
 static bool        peekMode = false;
+static int         peekClipH = PEEK_TOP;
+static int         peekTopY = 0;
+static bool        peekBottomAlign = false;
 // Draw target — defaults to the sprite; characterRenderTo() retargets to
-// M5.Lcd for the landscape clock (both inherit TFT_eSPI).
-static TFT_eSPI*   _tgt = &spr;
+// M5.Lcd for the landscape clock (both inherit lgfx::v1::LGFXBase).
+static lgfx::LGFXBase*   _tgt = &spr;
 // Peek mode renders at half scale (2:1 nearest-neighbor in gifDrawCb) so
 // the whole pet fits the 70px window instead of cropping the top.
 static void gifPlace() {
   int outW = peekMode ? gifW / 2 : gifW;
   int outH = peekMode ? gifH / 2 : gifH;
   gifX = (spr.width() - outW) / 2;
-  gifY = peekMode ? (PEEK_TOP - outH) / 2 : (140 - outH) / 2;
+  gifY = peekMode
+    ? peekTopY + (peekBottomAlign ? peekClipH - outH : (peekClipH - outH) / 2)
+    : (PEEK_TOP * 2 - outH) / 2;
 }
 static uint32_t    nextFrameAt = 0;
 static uint32_t    animPauseUntil = 0;
 static uint32_t    variantStartedMs = 0;
 static const uint32_t VARIANT_DWELL_MS = 5000;
-static const uint32_t ANIM_PAUSE_MS    = 800;
+static const uint32_t ANIM_PAUSE_DISCONNECTED_MS = 5000;
+static const uint32_t ANIM_PAUSE_CONNECTED_MS    = 3000;
 static bool        gifOpen = false;
+static bool        keepFrameOnNextOpen = false;
 
 static uint16_t parseHexColor(const char* s, uint16_t fallback) {
   if (!s) return fallback;
@@ -117,7 +125,7 @@ static void gifDrawCb(GIFDRAW* d) {
   if (peekMode) {
     if (srcY & 1) return;
     int y = gifY + (srcY >> 1);
-    if (y < 0 || y >= PEEK_TOP) return;
+    if (y < peekTopY || y >= peekTopY + peekClipH) return;
     int x0 = gifX + (d->iX >> 1);
     int w  = d->iWidth >> 1;
     for (int i = 0; i < w; i++) put(x0 + i, y, src[i << 1]);
@@ -141,8 +149,11 @@ bool characterInit(const char* name) {
   if (!LittleFS.begin(false)) {
     // begin() fails if already mounted — that's fine on reload
     if (!LittleFS.open("/")) {
-      Serial.println("[char] LittleFS mount failed");
-      return false;
+      // Can't open root → not mounted → try formatting. If that fails, give up
+      if (!LittleFS.begin(true)) {
+        Serial.println("[char] LittleFS format/mount failed");
+        return false;
+      }
     }
   }
 
@@ -250,24 +261,59 @@ const Palette& characterPalette() { return pal; }
 // One-shot half-scale render to an arbitrary surface (M5.Lcd for the
 // landscape clock). Caller owns clearing. Advances frame timing so
 // animation runs even when characterTick() is bypassed.
-void characterRenderTo(TFT_eSPI* tgt, int cx, int cy) {
-  if (!gifOpen) return;   // caller opens via characterSetState(activeState)
-  TFT_eSPI* prevT = _tgt; bool prevP = peekMode; int px = gifX, py = gifY;
+void characterRenderTo(lgfx::v1::LGFXBase* tgt, int cx, int cy) {
+  uint32_t now = millis();
+  if (!gifOpen) {
+    if (animPauseUntil && now >= animPauseUntil && curState < N_STATES) {
+      animPauseUntil = 0;
+      keepFrameOnNextOpen = true;
+      uint8_t s = curState; curState = 0xFF;
+      characterSetState(s);
+    }
+    if (!gifOpen) return;
+  }
+
+  lgfx::v1::LGFXBase* prevT = _tgt; bool prevP = peekMode; int px = gifX, py = gifY, pc = peekClipH, pt = peekTopY;
   _tgt = tgt; peekMode = true;
+  peekTopY = 0;
+  peekClipH = tgt->height();
   gifX = cx - gifW / 4;
   gifY = cy - gifH / 4;
-  uint32_t now = millis();
   if (now >= nextFrameAt) {
     int delayMs = 0;
-    if (!gif.playFrame(false, &delayMs)) { gif.reset(); gif.playFrame(false, &delayMs); }
+    if (!gif.playFrame(false, &delayMs)) {
+      // BLE-safe renderTo loop: stop decoding after one pass, then let the
+      // landscape clock reopen after the same non-blocking pause as home.
+      gif.close();
+      gifOpen = false;
+      animPauseUntil = now + (bleConnected() ? ANIM_PAUSE_CONNECTED_MS : ANIM_PAUSE_DISCONNECTED_MS);
+      _tgt = prevT; peekMode = prevP; peekClipH = pc; peekTopY = pt; gifX = px; gifY = py;
+      return;
+    }
+    delay(1);  // yield to BLE / FreeRTOS tasks after a GIF decode burst
     nextFrameAt = now + (delayMs > 0 ? delayMs : 100);
   }
-  _tgt = prevT; peekMode = prevP; gifX = px; gifY = py;
+  _tgt = prevT; peekMode = prevP; peekClipH = pc; peekTopY = pt; gifX = px; gifY = py;
 }
 
 void characterSetPeek(bool peek) {
   if (peekMode == peek) return;
   peekMode = peek;
+  characterInvalidate();
+}
+
+void characterSetPeekWindow(int topY, int height) {
+  if (topY < 0) topY = 0;
+  if (height < PEEK_TOP) height = PEEK_TOP;
+  if (peekTopY == topY && peekClipH == height) return;
+  peekTopY = topY;
+  peekClipH = height;
+  characterInvalidate();
+}
+
+void characterSetPeekBottomAlign(bool bottomAlign) {
+  if (peekBottomAlign == bottomAlign) return;
+  peekBottomAlign = bottomAlign;
   characterInvalidate();
 }
 
@@ -308,6 +354,7 @@ void characterSetState(uint8_t s) {
   curState = s;
 
   if (stateCount[s] == 0) {
+    keepFrameOnNextOpen = false;
     Serial.printf("[char] no gif for state %d\n", s);
     return;
   }
@@ -320,12 +367,16 @@ void characterSetState(uint8_t s) {
     gifW = gif.getCanvasWidth();
     gifH = gif.getCanvasHeight();
     gifPlace();
-    spr.fillSprite(pal.bg);   // bias upward, leave room for HUD
+    if (!keepFrameOnNextOpen) {
+      spr.fillSprite(pal.bg);   // bias upward, leave room for HUD
+    }
+    keepFrameOnNextOpen = false;
     nextFrameAt = 0;
     variantStartedMs = millis();
     Serial.printf("[char] %s: %dx%d @ (%d,%d) heap=%u\n",
       gifPaths[idx], gifW, gifH, gifX, gifY, ESP.getFreeHeap());
   } else {
+    keepFrameOnNextOpen = false;
     Serial.printf("[char] open failed: %s (err %d)\n", full, gif.getLastError());
   }
 }
@@ -360,10 +411,11 @@ void characterTick() {
   uint32_t now = millis();
 
   if (!gifOpen) {
-    // Between animations in a rotation: hold the last frame, then open
-    // the next gif when the pause elapses.
+    // BLE-friendly loop: hold the last frame after one full GIF pass, then
+    // reopen after the pause without blocking the main loop.
     if (animPauseUntil && now >= animPauseUntil) {
       animPauseUntil = 0;
+      keepFrameOnNextOpen = true;
       uint8_t s = curState; curState = 0xFF;
       characterSetState(s);
     }
@@ -373,29 +425,15 @@ void characterTick() {
 
   int delayMs = 0;
   if (!gif.playFrame(false, &delayMs)) {
-    // End of animation. Single-gif states freeze on the last frame instead
-    // of reopening — the LittleFS open + GIF header decode is a multi-ms
-    // blocking burst, and during sleep state it was looping every ~4s,
-    // possibly starving the BT controller. The sprite already holds the
-    // last frame; just stop ticking. Multi-gif states (idle rotation)
-    // still advance after a brief pause.
-    if (stateCount[curState] == 1) {
-      gif.close();
-      gifOpen = false;
-      return;
-    }
-    // Multi-variant: loop the same GIF until the dwell window elapses, then
-    // rotate. Short bufo idles (~0.5s/loop) get ~10 plays instead of one
-    // flash + 3s freeze.
-    if (now - variantStartedMs < VARIANT_DWELL_MS) {
-      gif.reset();
-      nextFrameAt = now;
-      return;
-    }
-    gif.close(); gifOpen = false;
-    stateRot[curState] = (stateRot[curState] + 1) % stateCount[curState];
-    animPauseUntil = now + ANIM_PAUSE_MS;
+    // BLE-safe mode:
+    // Play every GIF only once, then keep the last frame on screen for a
+    // non-blocking pause so BLE advertising/connection handling gets a clean
+    // window between GIF decode bursts.
+    gif.close();
+    gifOpen = false;
+    animPauseUntil = now + (bleConnected() ? ANIM_PAUSE_CONNECTED_MS : ANIM_PAUSE_DISCONNECTED_MS);
     return;
   }
+  delay(1);  // yield to BLE / FreeRTOS tasks after a GIF decode burst
   nextFrameAt = now + (delayMs > 0 ? delayMs : 100);
 }
