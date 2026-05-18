@@ -46,6 +46,7 @@ Connect the StickS3 by USB-C, then run:
 
 ```bash
 pio run -e m5stack-sticks3 -t upload
+pio run -e m5stack-sticks3 -t uploadfs
 ```
 
 If the device had unrelated firmware before, erase first:
@@ -70,16 +71,17 @@ The firmware reads GIF assets from LittleFS:
 /characters/<name>/*.gif
 ```
 
-PlatformIO creates LittleFS from the local `data/` folder. This project ignores
-`data/` in git, so you create it locally before `uploadfs`.
+PlatformIO creates LittleFS from the local `data/` folder. This repo includes
+the default Mao pet at `data/characters/Mao/`, so `uploadfs` installs Mao out
+of the box.
 
 Use your own character folder:
 
 ```bash
 cd codex-desktop-buddy
-rm -rf ./data/characters
-mkdir -p ./data/characters/MyPet
-cp -R /Users/you/Downloads/MyPet/* ./data/characters/MyPet/
+mkdir -p ./data/characters
+rm -rf ./data/characters/MyPet
+cp -R /Users/you/Downloads/MyPet ./data/characters/MyPet
 pio run -e m5stack-sticks3 -t uploadfs
 ```
 

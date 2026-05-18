@@ -6,17 +6,8 @@ static void appRtcSynced(time_t localEpoch);
 #include "data.h"
 #include "buddy.h"
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-TFT_eSprite spr = TFT_eSprite(&M5.Lcd);
-=======
 M5Canvas spr(&M5.Lcd);
 M5Canvas usagePetSpr(&M5.Lcd);
->>>>>>> Stashed changes
-=======
-M5Canvas spr(&M5.Lcd);
-M5Canvas usagePetSpr(&M5.Lcd);
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 
 // Advertise as "Codex-XXXX" (last two BT MAC bytes) so multiple sticks
 // in one room are distinguishable in the desktop bridge. Name persists in
@@ -34,21 +25,12 @@ static void startBt() {
 const int W = 135, H = 240;
 const int CX = W / 2;
 const int CY_BASE = 120;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 const int USAGE_PET_TOP = 26;
 const int USAGE_PET_H = 100;
 const int USAGE_PET_BOTTOM = USAGE_PET_TOP + USAGE_PET_H;
 #if defined(CONFIG_IDF_TARGET_ESP32S3)
 const int LED_PIN = -1;          // no user LED on StickS3
 #else
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 const int LED_PIN = 10;          // red LED, active-low
 #endif
 
@@ -155,19 +137,10 @@ const uint8_t INFO_PG_CREDITS = 5;
 
 void applyDisplayMode() {
   bool peek = displayMode != DISP_NORMAL;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
   usageFullPushNeeded = true;
   usageLiveKnown = false;
   characterSetPeekWindow(0, 70);
   characterSetPeekBottomAlign(false);
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
   characterSetPeek(peek);
   buddySetPeek(peek);
   // Clear the whole sprite on mode switch. drawInfo/drawPet clear their
@@ -567,12 +540,6 @@ static const char* const MON[] = {
 };
 static const char* const DOW[] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-static uint8_t clockDow() { return _clkDt.WeekDay % 7; }
-=======
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 static uint8_t clockDow() { return _clkDt.weekDay % 7; }
 static void tokenText(uint32_t v, char* out, size_t len) {
   if (v >= 1000000)   snprintf(out, len, "%lu.%luM token", v / 1000000, (v / 100000) % 10);
@@ -584,10 +551,6 @@ static void clockTokenText(char* out, size_t len) {
   tokenText(tama.tokensToday, out, len);
 }
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 static void drawClock() {
   const Palette& p = characterPalette();
   if (!rtcLooksValid()) return;
@@ -885,18 +848,8 @@ void drawInfo() {
     spr.setTextColor(p.textDim, p.bg);
     ln("hardware");
     y += 4;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    ln("M5StickC Plus");
-    ln("ESP32 + AXP192");
-=======
     ln("M5Stack StickS3");
     ln("ESP32-S3 + M5Unified");
->>>>>>> Stashed changes
-=======
-    ln("M5Stack StickS3");
-    ln("ESP32-S3 + M5Unified");
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
   }
 }
 
@@ -1439,17 +1392,8 @@ void loop() {
   // shake → dizzy + force scenario advance
   if (now - lastShakeCheck > 50) {
     lastShakeCheck = now;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    if (!menuOpen && !screenOff && checkShake() && (int32_t)(now - oneShotUntil) >= 0) {
-=======
     if (!menuOpen && !settingsOpen && !resetOpen && !screenOff
         && checkShake() && (int32_t)(now - oneShotUntil) >= 0) {
->>>>>>> Stashed changes
-=======
-    if (!menuOpen && !settingsOpen && !resetOpen && !screenOff
-        && checkShake() && (int32_t)(now - oneShotUntil) >= 0) {
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
       wake();
       triggerOneShot(P_DIZZY, 2000);
       Serial.println("shake: dizzy");
@@ -1578,31 +1522,6 @@ void loop() {
 
   // blink bookkeeping
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  // Charging clock: takes over the home screen when on USB power, no
-  // overlays, no prompt, no live Claude data, and the RTC has been set
-  // by the bridge. Pet sleeps underneath. Exit restores Y via
-  // applyDisplayMode() so the next mode-switch isn't visually offset.
-  clockRefreshRtc();   // 1Hz internal throttle; also caches _onUsb
-  // Show the clock when nothing is happening — bridge heartbeat alone
-  // doesn't count as activity (it's the only way to get the RTC synced).
-  bool clocking = displayMode == DISP_NORMAL
-               && !menuOpen && !settingsOpen && !resetOpen && !inPrompt
-               && tama.sessionsRunning == 0 && tama.sessionsWaiting == 0
-               && dataRtcValid() && _onUsb;
-  if (clocking) clockUpdateOrient();
-  else { clockOrient = 0; orientFrames = 0; paintedOrient = 0; }
-  bool landscapeClock = clocking && clockOrient != 0;
-
-  static bool wasClocking = false;
-  static bool wasLandscape = false;
-  if (clocking != wasClocking || landscapeClock != wasLandscape) {
-    if (clocking && !landscapeClock) characterSetPeek(true);
-    else applyDisplayMode();
-=======
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
   static uint32_t lastPasskey = 0;
   uint32_t pk = blePasskey();
   if (pk && !lastPasskey) { wake(); beep(1800, 60); }
@@ -1638,30 +1557,18 @@ void loop() {
     } else {
       applyDisplayMode();
     }
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
     characterInvalidate();
     if (buddyMode) buddyInvalidate();
     wasClocking = clocking;
     wasLandscape = landscapeClock;
     wasLandscapeUsage = landscapeUsage;
   }
-<<<<<<< HEAD
-  if (clocking) {
-=======
   if (clocking || landscapeClock) {
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
     uint8_t dow = clockDow();
     bool weekend = (dow == 0 || dow == 6);
     bool friday  = (dow == 5);
 
-<<<<<<< HEAD
-    uint8_t h = _clkTm.Hours;
-=======
     uint8_t h = _clkTm.hours;
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
     if (h >= 1 && h < 7)             activeState = P_SLEEP;
     else if (weekend)                activeState = (now/8000 % 6 == 0) ? P_HEART : P_SLEEP;
     else if (h < 9)                  activeState = (now/6000 % 4 == 0) ? P_IDLE  : P_SLEEP;

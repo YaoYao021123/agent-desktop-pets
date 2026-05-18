@@ -52,12 +52,13 @@ git clone https://github.com/openelab-commits/codex-desktop-buddy.git
 cd codex-desktop-buddy
 pio run -e m5stack-sticks3
 pio run -e m5stack-sticks3 -t upload
+pio run -e m5stack-sticks3 -t uploadfs
 ```
 
 ### 2. Upload A GIF Character Pack
 
-PlatformIO uploads LittleFS data from `data/`. This folder is ignored by git so
-you can freely swap local pets.
+PlatformIO uploads LittleFS data from `data/`. This repo includes the default
+Mao pet at `data/characters/Mao/`, so `uploadfs` installs Mao out of the box.
 
 To upload your own pet folder, place the folder here:
 
@@ -66,7 +67,8 @@ codex-desktop-buddy/data/characters/MyPet/
 ```
 
 You can create `data/characters/` in Finder and drag the whole `MyPet` folder
-into it.
+into it. Keep only one character folder there when testing; otherwise the
+firmware loads the first character directory it finds.
 
 If you prefer Terminal:
 
@@ -77,9 +79,6 @@ rm -rf ./data/characters/MyPet
 cp -R /path/to/MyPet ./data/characters/MyPet
 pio run -e m5stack-sticks3 -t uploadfs
 ```
-
-Keep only one character folder under `data/characters/` when testing. The
-firmware loads the first character directory it finds.
 
 ### 3. Install The Codex Plugin
 

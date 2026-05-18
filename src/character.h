@@ -24,13 +24,6 @@ void characterClose();   // close GIF + clear loaded flag; FS stays mounted   //
 // header strip; off renders full-size centered in the upper home area.
 // Adaptive to actual canvas height — no padding required in source art.
 void characterSetPeek(bool peek);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-class TFT_eSPI;
-void characterRenderTo(TFT_eSPI* tgt, int cx, int cy);
-=======
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 void characterSetPeekWindow(int topY, int height);
 void characterSetPeekBottomAlign(bool bottomAlign);
 namespace lgfx { inline namespace v1 { class LGFXBase; } }
@@ -39,9 +32,5 @@ namespace lgfx { inline namespace v1 { class LGFXBase; } }
 bool characterRenderTo(lgfx::v1::LGFXBase* tgt, int cx, int cy);
 bool characterRenderTo(lgfx::v1::LGFXBase* tgt, int cx, int cy, uint8_t scalePct,
                        int minX, int minY, int maxX, int maxY);
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> dea2aa848667d0c4260df44081c89926be4a3074
 
 const Palette& characterPalette();
