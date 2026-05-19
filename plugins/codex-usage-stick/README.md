@@ -18,17 +18,19 @@ The plugin registers:
 ```text
 SessionStart
 UserPromptSubmit
+PermissionRequest
 ```
 
-Both hooks run:
+The hooks run:
 
 ```sh
 python3 "$PLUGIN_ROOT/scripts/hook_entry.py"
 ```
 
-The hook is synchronous because async plugin hooks are not supported yet. It
-returns quickly: `hook_entry.py` writes a log line and asks `start_bridge.py` to
-start or reuse the background bridge.
+The startup hooks return quickly: `hook_entry.py` writes a log line and asks
+`start_bridge.py` to start or reuse the background bridge. The
+`PermissionRequest` hook is synchronous and waits briefly for A/B on the
+StickS3 before falling back to Codex's normal approval UI.
 
 ## Install From Codex UI
 
@@ -112,6 +114,9 @@ Default `config.json`:
 ```
 
 Use `address` if macOS BLE name caching makes name scanning unreliable.
+`no_approval_proxy` only disables the older app-server proxy experiment.
+StickS3 approve/deny uses the `PermissionRequest` hook plus the local
+`approval.sock` bridge and works with this value set to `true`.
 
 ## Commands
 
@@ -184,7 +189,10 @@ Expected:
 sent {"state":"busy","tokens":...,"primary":...,"secondary":...}
 ```
 
-## Limitation
+## Approve / Deny
 
-Hardware approve/deny for Codex permission prompts is not enabled in this
-version. The usage display bridge is the supported path.
+When Codex asks for a permission approval, the bridge forwards the prompt to
+the StickS3 through a local `PermissionRequest` hook. Press A to allow or B to
+deny. If the StickS3 is not connected or no button is pressed before timeout,
+the hook returns no decision and Codex falls back to its normal local approval
+flow.

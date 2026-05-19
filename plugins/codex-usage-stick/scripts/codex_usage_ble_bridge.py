@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import contextlib
 import json
 import shutil
 import sqlite3
@@ -34,6 +35,8 @@ NUS_RX_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
 NUS_TX_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 DEFAULT_CODEX_HOME = Path.home() / ".codex"
 DEFAULT_CODEX_APP_CLI = Path("/Applications/Codex.app/Contents/Resources/codex")
+STATE_DIR = Path.home() / ".codex" / "codex-usage-bridge"
+DEFAULT_HOOK_APPROVAL_SOCK = STATE_DIR / "approval.sock"
 
 INTERESTING_LINE_MARKERS = (
     "token_count",
@@ -377,6 +380,7 @@ class BleSession:
         self.incoming: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         self._notify_buffer = ""
         self._loop = asyncio.get_running_loop()
+        self._write_lock = asyncio.Lock()
 
     async def start_notify(self) -> None:
         try:
@@ -401,10 +405,11 @@ class BleSession:
 
     async def write_json(self, packet: dict[str, Any]) -> str:
         payload = (json.dumps(packet, separators=(",", ":")) + "\n").encode("utf-8")
-        for i in range(0, len(payload), self.args.chunk_size):
-            chunk = payload[i:i + self.args.chunk_size]
-            await self.client.write_gatt_char(NUS_RX_UUID, chunk, response=not self.args.no_response)
-            await asyncio.sleep(self.args.chunk_delay)
+        async with self._write_lock:
+            for i in range(0, len(payload), self.args.chunk_size):
+                chunk = payload[i:i + self.args.chunk_size]
+                await self.client.write_gatt_char(NUS_RX_UUID, chunk, response=not self.args.no_response)
+                await asyncio.sleep(self.args.chunk_delay)
         return payload.decode("utf-8").strip()
 
 
@@ -427,9 +432,68 @@ class CodexApprovalProxy:
         self.active_prompt_id: str | None = None
         self.next_prompt_num = 1
         self.enabled = False
+        self.ipc_server: asyncio.AbstractServer | None = None
 
     def has_pending(self) -> bool:
         return bool(self.pending)
+
+    async def start_ipc_server(self) -> None:
+        sock = self.args.hook_approval_sock
+        if not sock:
+            return
+        sock.parent.mkdir(parents=True, exist_ok=True)
+        with contextlib.suppress(FileNotFoundError):
+            sock.unlink()
+        try:
+            self.ipc_server = await asyncio.start_unix_server(
+                self._handle_ipc_client,
+                path=str(sock),
+            )
+            with contextlib.suppress(OSError):
+                sock.chmod(0o600)
+            if self.args.verbose:
+                print(f"[approval] hook IPC listening at {sock}", file=sys.stderr)
+        except Exception as exc:
+            print(f"[approval] hook IPC unavailable: {exc}", file=sys.stderr)
+
+    async def close_ipc_server(self) -> None:
+        if self.ipc_server:
+            self.ipc_server.close()
+            await self.ipc_server.wait_closed()
+            self.ipc_server = None
+        sock = self.args.hook_approval_sock
+        if sock:
+            with contextlib.suppress(FileNotFoundError):
+                sock.unlink()
+
+    async def _handle_ipc_client(
+        self,
+        reader: asyncio.StreamReader,
+        writer: asyncio.StreamWriter,
+    ) -> None:
+        response: dict[str, Any]
+        try:
+            raw = await asyncio.wait_for(reader.readline(), timeout=2.0)
+            request = json.loads(raw.decode("utf-8", errors="replace"))
+            if request.get("type") != "permission_request":
+                response = {"ok": False, "reason": "unsupported request"}
+            else:
+                timeout = float(request.get("timeout") or self.args.hook_approval_timeout)
+                hook_payload = request.get("hook") or {}
+                decision = await self.request_hook_permission(hook_payload, timeout)
+                if decision:
+                    response = {"ok": True, "decision": decision}
+                else:
+                    response = {"ok": False, "reason": "timeout"}
+        except Exception as exc:
+            response = {"ok": False, "reason": repr(exc)}
+
+        writer.write((json.dumps(response, separators=(",", ":")) + "\n").encode("utf-8"))
+        with contextlib.suppress(Exception):
+            await writer.drain()
+        writer.close()
+        with contextlib.suppress(Exception):
+            await writer.wait_closed()
 
     async def inject_test_request(self) -> None:
         prompt_id = f"test{self.next_prompt_num}"
@@ -444,6 +508,40 @@ class CodexApprovalProxy:
             print(f"[approval] injected test request {prompt_id}", file=sys.stderr)
         if not self.active_prompt_id:
             await self._show_next_prompt()
+
+    async def request_hook_permission(self, hook_payload: dict[str, Any], timeout: float) -> str | None:
+        prompt_id = f"h{self.next_prompt_num}"
+        self.next_prompt_num += 1
+        future: asyncio.Future[str] = asyncio.get_running_loop().create_future()
+        self.pending[prompt_id] = {
+            "method": "hookPermissionRequest",
+            "rpc_id": None,
+            "params": hook_payload,
+            "future": future,
+        }
+        self.pending_order.append(prompt_id)
+        if self.args.verbose:
+            tool = hook_payload.get("tool_name") if isinstance(hook_payload, dict) else None
+            print(f"[approval] hook request {prompt_id}: {tool or 'permission'}", file=sys.stderr)
+        if not self.active_prompt_id:
+            await self._show_next_prompt()
+
+        try:
+            raw_decision = await asyncio.wait_for(future, timeout=timeout)
+        except asyncio.TimeoutError:
+            self._remove_pending(prompt_id)
+            if self.active_prompt_id == prompt_id:
+                self.active_prompt_id = None
+                await self._show_next_prompt()
+            if self.args.verbose:
+                print(f"[approval] hook request {prompt_id} timed out", file=sys.stderr)
+            return None
+
+        if raw_decision == "accept":
+            return "allow"
+        if raw_decision == "cancel":
+            return "deny"
+        return None
 
     async def start(self) -> None:
         if self.args.no_approval_proxy:
@@ -563,6 +661,28 @@ class CodexApprovalProxy:
         method = req["method"]
         params = req["params"]
 
+        if method == "hookPermissionRequest":
+            if not isinstance(params, dict):
+                return "PERMISSION", "Codex permission request"
+            tool = short_text(params.get("tool_name"), "PERMISSION", 19).upper()
+            tool_input = params.get("tool_input")
+            if isinstance(tool_input, dict):
+                hint = (
+                    tool_input.get("command")
+                    or tool_input.get("cmd")
+                    or tool_input.get("path")
+                    or tool_input.get("file")
+                    or tool_input.get("justification")
+                    or tool_input.get("reason")
+                )
+                if isinstance(hint, list):
+                    hint = " ".join(str(x) for x in hint)
+            else:
+                hint = tool_input
+            if not hint:
+                hint = params.get("cwd") or "Codex permission request"
+            return tool, short_text(hint, "Codex permission request", 43)
+
         if method in {"item/commandExecution/requestApproval", "execCommandApproval"}:
             command = params.get("command") or ""
             if isinstance(command, list):
@@ -618,9 +738,7 @@ class CodexApprovalProxy:
             print(f"[approval] unknown decision from StickS3: {raw_decision}", file=sys.stderr)
             return
 
-        req = self.pending.pop(prompt_id, None)
-        if prompt_id in self.pending_order:
-            self.pending_order.remove(prompt_id)
+        req = self._remove_pending(prompt_id)
         if self.active_prompt_id == prompt_id:
             self.active_prompt_id = None
 
@@ -634,12 +752,27 @@ class CodexApprovalProxy:
             await self._show_next_prompt()
             return
 
+        if req["method"] == "hookPermissionRequest":
+            future = req.get("future")
+            if future and not future.done():
+                future.set_result(decision)
+            if self.args.verbose:
+                print(f"[approval] hook decision {decision} for {prompt_id}", file=sys.stderr)
+            await self._show_next_prompt()
+            return
+
         response = self._response_for(req, decision)
         ok = await self._send_rpc(response)
         if self.args.verbose:
             status = "sent" if ok else "failed"
             print(f"[approval] {status} {decision} for {prompt_id}", file=sys.stderr)
         await self._show_next_prompt()
+
+    def _remove_pending(self, prompt_id: str) -> dict[str, Any] | None:
+        req = self.pending.pop(prompt_id, None)
+        if prompt_id in self.pending_order:
+            self.pending_order.remove(prompt_id)
+        return req
 
     def _response_for(self, req: dict[str, Any], decision: str) -> dict[str, Any]:
         method = req["method"]
@@ -786,6 +919,7 @@ async def bridge_loop(args: argparse.Namespace) -> None:
         ble = BleSession(args, client)
         await ble.start_notify()
         approvals = CodexApprovalProxy(args, ble)
+        await approvals.start_ipc_server()
         await approvals.start()
         if args.test_approval:
             await approvals.inject_test_request()
@@ -802,11 +936,13 @@ async def bridge_loop(args: argparse.Namespace) -> None:
                 msg = await ble.incoming.get()
                 await approvals.handle_device_message(msg)
 
-        if args.once:
-            await usage_runner()
-            return
-
-        await asyncio.gather(usage_runner(), device_runner())
+        try:
+            if args.once:
+                await usage_runner()
+                return
+            await asyncio.gather(usage_runner(), device_runner())
+        finally:
+            await approvals.close_ipc_server()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -849,6 +985,18 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Send a fake approval prompt to the StickS3 and print the A/B decision",
     )
+    p.add_argument(
+        "--hook-approval-sock",
+        type=Path,
+        default=DEFAULT_HOOK_APPROVAL_SOCK,
+        help="Unix socket used by PermissionRequest hooks to ask the StickS3",
+    )
+    p.add_argument(
+        "--hook-approval-timeout",
+        type=float,
+        default=45.0,
+        help="Seconds to wait for A/B on hardware approval requests",
+    )
 
     p.add_argument("--interval", type=float, default=5.0)
     p.add_argument("--once", action="store_true")
@@ -874,6 +1022,8 @@ def main() -> int:
         args.rollout = args.rollout.expanduser()
     if args.approval_sock:
         args.approval_sock = args.approval_sock.expanduser()
+    if args.hook_approval_sock:
+        args.hook_approval_sock = args.hook_approval_sock.expanduser()
     if args.codex_cli:
         args.codex_cli = args.codex_cli.expanduser()
 

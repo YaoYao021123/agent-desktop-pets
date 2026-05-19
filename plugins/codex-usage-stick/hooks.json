@@ -25,6 +25,19 @@
           }
         ]
       }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": null,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$PLUGIN_ROOT/scripts/hook_entry.py\" --event PermissionRequest",
+            "timeout": 60,
+            "statusMessage": "Waiting for StickS3 approval"
+          }
+        ]
+      }
     ]
   }
 }

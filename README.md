@@ -159,8 +159,9 @@ add this at the end:
 enabled = true
 ```
 
-Restart Codex. When Codex asks whether to trust the hook, approve it. The hook
-starts a local BLE bridge; it does not send data to an external server.
+Restart Codex. When Codex asks whether to trust the hooks, approve them. The
+hooks start a local BLE bridge and forward permission prompts to the StickS3;
+they do not send data to an external server.
 
 CLI fallback:
 
@@ -193,6 +194,10 @@ tail -n 20 ~/.codex/codex-usage-bridge/hook.log
 ```
 
 You should see `UserPromptSubmit`.
+
+When Codex asks for a permission approval, the StickS3 should show an approval
+panel. Press A to allow or B to deny. If the StickS3 is offline, Codex falls
+back to the normal local approval prompt.
 
 Check BLE packets:
 
@@ -245,12 +250,12 @@ Tested:
 - Landscape GIF rendering through a small canvas to avoid slow direct LCD
   pixel drawing.
 - Local Codex plugin startup on `SessionStart` and `UserPromptSubmit`.
+- Local Codex `PermissionRequest` hook forwarding to StickS3.
+- StickS3 approve/cancel handling for Codex permission prompts.
 - Hook diagnostics and bridge diagnostics.
 
 Testing:
 
-- Real Codex approval/deny handling from the StickS3 buttons. The display
-  bridge is the supported path in this version.
 - A polished public pet-generation pipeline. GIF pet creation is still a work
   in progress.
 

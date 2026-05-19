@@ -14,7 +14,7 @@ Use this skill when the user asks about the Codex Usage Stick bridge, BLE usage 
 - Uses `~/.codex/codex-usage-bridge/config.json` for BLE name/address and timing.
 - Writes bridge output to `~/.codex/codex-usage-bridge/bridge.log`.
 - Writes hook diagnostics to `~/.codex/codex-usage-bridge/hook.log`.
-- Approval/deny proxy is intentionally disabled for now.
+- Forwards Codex PermissionRequest prompts to the StickS3 through the local `approval.sock` IPC bridge.
 
 ## Commands
 
