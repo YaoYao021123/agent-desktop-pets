@@ -104,6 +104,16 @@ Git ref:
 main
 ```
 
+<p align="center">
+  <img src="docs/codex-plugin-add-marketplace.jpeg" width="640" alt="Add the Codex Usage Stick plugin marketplace">
+</p>
+
+Choose `Codex Usage Stick Local` and add it.
+
+<p align="center">
+  <img src="docs/codex-plugin-choose-local.jpeg" width="640" alt="Choose Codex Usage Stick Local in Codex plugins">
+</p>
+
 If you publish this under your own fork, use your own GitHub `owner/repo` in
 the `Source` field.
 
@@ -272,6 +282,15 @@ tail -n 40 ~/.codex/codex-usage-bridge/bridge.log
 
 If Codex shows a hook warning about async hooks, update to this version. The
 plugin hooks in this repo are synchronous and quickly start a background bridge.
+
+If first-time Bluetooth pairing fails, or the bridge log shows
+`Peer removed pairing information`, reset the macOS BLE pairing record:
+
+1. Open macOS `System Settings -> Bluetooth`.
+2. Find the `Codex-XXXX` device and choose `Forget This Device`.
+3. Turn Mac Bluetooth off and on again.
+4. Restart the StickS3.
+5. Submit a prompt in Codex to let the plugin reconnect.
 
 ## Credits
 

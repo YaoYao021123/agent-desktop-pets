@@ -297,6 +297,22 @@ Update to this version. The plugin hooks in this repo do not use `async`.
 4. If the device is not found, increase `scan_timeout` or set `address` in
    `~/.codex/codex-usage-bridge/config.json`.
 
+### Bluetooth pairing fails on macOS
+
+If the first connection does not pair correctly, or the bridge log shows:
+
+```text
+Peer removed pairing information
+```
+
+reset the macOS BLE pairing record:
+
+1. Open macOS `System Settings -> Bluetooth`.
+2. Find the `Codex-XXXX` device and choose `Forget This Device`.
+3. Turn Mac Bluetooth off and on again.
+4. Restart the StickS3.
+5. Submit a prompt in Codex to let the plugin reconnect.
+
 ### GIF assets do not appear
 
 Confirm the local upload folder looks like:
