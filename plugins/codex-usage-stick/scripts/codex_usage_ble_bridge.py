@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -37,6 +37,7 @@ DEFAULT_CODEX_HOME = Path.home() / ".codex"
 DEFAULT_CODEX_APP_CLI = Path("/Applications/Codex.app/Contents/Resources/codex")
 STATE_DIR = Path.home() / ".codex" / "codex-usage-bridge"
 DEFAULT_HOOK_APPROVAL_SOCK = STATE_DIR / "approval.sock"
+SNAPSHOT_CACHE_PATH = STATE_DIR / "last_usage_snapshot.json"
 PRIMARY_RESET_WINDOW_SEC = 5 * 60 * 60
 SECONDARY_RESET_WINDOW_SEC = 7 * 24 * 60 * 60
 
@@ -167,6 +168,99 @@ def roll_reset_at(reset_at: int, window_sec: int, now: int) -> int:
     return reset_at + windows_elapsed * window_sec
 
 
+def limit_matches(limit_id: str | None, preferred_limit_id: str) -> bool:
+    value = str(limit_id or "")
+    preferred = str(preferred_limit_id or "")
+    if not value:
+        return False
+    if value == preferred:
+        return True
+    return bool(preferred) and value.startswith(f"{preferred}_")
+
+
+def snapshot_has_rate_limit(snapshot: UsageSnapshot, preferred_limit_id: str) -> bool:
+    return (
+        limit_matches(snapshot.limit_id, preferred_limit_id)
+        and snapshot.primary_resets_at > 0
+        and snapshot.secondary_resets_at > 0
+    )
+
+
+def snapshot_event_key(snapshot: UsageSnapshot) -> float:
+    return snapshot.event_ts or 0.0
+
+
+def attach_activity(snapshot: UsageSnapshot, activity: UsageSnapshot) -> UsageSnapshot:
+    return replace(
+        snapshot,
+        task_started_at=activity.task_started_at,
+        task_complete_at=activity.task_complete_at,
+        attention_at=activity.attention_at,
+        dizzy_at=activity.dizzy_at,
+        last_activity_at=activity.last_activity_at,
+    )
+
+
+def merge_latest_tokens(snapshot: UsageSnapshot, latest: UsageSnapshot | None) -> UsageSnapshot:
+    if not latest or snapshot_event_key(latest) <= snapshot_event_key(snapshot):
+        return snapshot
+    return replace(
+        snapshot,
+        tokens=latest.tokens,
+        source=latest.source,
+        event_ts=latest.event_ts,
+        task_started_at=latest.task_started_at,
+        task_complete_at=latest.task_complete_at,
+        attention_at=latest.attention_at,
+        dizzy_at=latest.dizzy_at,
+        last_activity_at=latest.last_activity_at,
+    )
+
+
+def snapshot_to_cache(snapshot: UsageSnapshot) -> dict[str, Any]:
+    return {
+        "tokens": snapshot.tokens,
+        "primary": snapshot.primary,
+        "secondary": snapshot.secondary,
+        "primary_resets_at": snapshot.primary_resets_at,
+        "secondary_resets_at": snapshot.secondary_resets_at,
+        "source": str(snapshot.source),
+        "event_ts": snapshot.event_ts,
+        "limit_id": snapshot.limit_id,
+        "limit_name": snapshot.limit_name,
+        "saved_at": time.time(),
+    }
+
+
+def snapshot_from_cache(path: Path) -> UsageSnapshot | None:
+    try:
+        data = json.loads(path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return None
+    try:
+        return UsageSnapshot(
+            tokens=int(data.get("tokens") or 0),
+            primary=clamp_percent(data.get("primary")),
+            secondary=clamp_percent(data.get("secondary")),
+            primary_resets_at=int(data.get("primary_resets_at") or 0),
+            secondary_resets_at=int(data.get("secondary_resets_at") or 0),
+            source=Path(data.get("source") or path),
+            event_ts=float(data["event_ts"]) if data.get("event_ts") is not None else None,
+            limit_id=data.get("limit_id"),
+            limit_name=data.get("limit_name"),
+        )
+    except (TypeError, ValueError):
+        return None
+
+
+def save_snapshot_cache(snapshot: UsageSnapshot) -> None:
+    try:
+        STATE_DIR.mkdir(parents=True, exist_ok=True)
+        SNAPSHOT_CACHE_PATH.write_text(json.dumps(snapshot_to_cache(snapshot), separators=(",", ":")))
+    except OSError:
+        pass
+
+
 def clamp_percent(value: Any) -> int:
     try:
         n = round(float(value))
@@ -265,9 +359,8 @@ def payload_looks_dizzy(payload: dict[str, Any]) -> bool:
     )
 
 
-def extract_token_count(path: Path, max_bytes: int, preferred_limit_id: str) -> UsageSnapshot | None:
-    last_any: UsageSnapshot | None = None
-    last_preferred: UsageSnapshot | None = None
+def extract_token_counts(path: Path, max_bytes: int) -> list[UsageSnapshot]:
+    snapshots: list[UsageSnapshot] = []
     task_started_at: float | None = None
     task_complete_at: float | None = None
     attention_at: float | None = None
@@ -321,18 +414,30 @@ def extract_token_count(path: Path, max_bytes: int, preferred_limit_id: str) -> 
             limit_id=rate_limits.get("limit_id"),
             limit_name=rate_limits.get("limit_name"),
         )
-        last_any = snapshot
-        if snapshot.limit_id == preferred_limit_id:
-            last_preferred = snapshot
+        snapshots.append(snapshot)
 
-    snapshot = last_preferred or last_any
-    if snapshot:
+    for snapshot in snapshots:
         snapshot.task_started_at = task_started_at
         snapshot.task_complete_at = task_complete_at
         snapshot.attention_at = attention_at
         snapshot.dizzy_at = dizzy_at
         snapshot.last_activity_at = last_activity_at
-    return snapshot
+    return snapshots
+
+
+def choose_best_rate_limit_snapshot(
+    snapshots: list[UsageSnapshot],
+    preferred_limit_id: str,
+    preferred_fresh_window: float = 180.0,
+) -> UsageSnapshot | None:
+    valid = [s for s in snapshots if snapshot_has_rate_limit(s, preferred_limit_id)]
+    if not valid:
+        return None
+
+    latest_ts = max(snapshot_event_key(s) for s in valid)
+    fresh = [s for s in valid if latest_ts - snapshot_event_key(s) <= preferred_fresh_window]
+    exact = [s for s in fresh if s.limit_id == preferred_limit_id]
+    return max(exact or fresh, key=snapshot_event_key)
 
 
 def read_usage(args: argparse.Namespace) -> UsageSnapshot:
@@ -340,15 +445,40 @@ def read_usage(args: argparse.Namespace) -> UsageSnapshot:
     if args.rollout:
         paths.insert(0, args.rollout)
 
+    snapshots: list[UsageSnapshot] = []
     seen: set[Path] = set()
     for path in paths:
         path = path.expanduser().resolve()
         if path in seen or not path.exists():
             continue
         seen.add(path)
-        snapshot = extract_token_count(path, args.tail_bytes, args.limit_id)
-        if snapshot:
-            return snapshot
+        snapshots.extend(extract_token_counts(path, args.tail_bytes))
+
+    latest_any = max(snapshots, key=snapshot_event_key) if snapshots else None
+    best = choose_best_rate_limit_snapshot(snapshots, args.limit_id)
+    cached = getattr(read_usage, "_last_valid_snapshot", None)
+    if cached is None:
+        cached = snapshot_from_cache(SNAPSHOT_CACHE_PATH)
+    if cached and not snapshot_has_rate_limit(cached, args.limit_id):
+        cached = None
+
+    if best and (not cached or snapshot_event_key(best) >= snapshot_event_key(cached)):
+        if latest_any:
+            best = attach_activity(best, latest_any)
+        setattr(read_usage, "_last_valid_snapshot", best)
+        save_snapshot_cache(best)
+        return best
+
+    if cached:
+        return merge_latest_tokens(cached, latest_any)
+
+    if best:
+        setattr(read_usage, "_last_valid_snapshot", best)
+        save_snapshot_cache(best)
+        return best
+
+    if latest_any:
+        return latest_any
 
     raise RuntimeError("No Codex token_count event found in recent rollout files")
 
