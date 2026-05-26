@@ -55,32 +55,7 @@ pio run -e m5stack-sticks3 -t upload
 pio run -e m5stack-sticks3 -t uploadfs
 ```
 
-### 2. Upload A GIF Character Pack
-
-PlatformIO uploads LittleFS data from `data/`. This repo includes the default
-Mao pet at `data/characters/Mao/`, so `uploadfs` installs Mao out of the box.
-
-To upload your own pet folder, place the folder here:
-
-```text
-codex-desktop-buddy/data/characters/MyPet/
-```
-
-You can create `data/characters/` in Finder and drag the whole `MyPet` folder
-into it. Keep only one character folder there when testing; otherwise the
-firmware loads the first character directory it finds.
-
-If you prefer Terminal:
-
-```bash
-cd codex-desktop-buddy
-mkdir -p ./data/characters
-rm -rf ./data/characters/MyPet
-cp -R /path/to/MyPet ./data/characters/MyPet
-pio run -e m5stack-sticks3 -t uploadfs
-```
-
-### 3. Install The Codex Plugin
+### 2. Install The Codex Plugin
 
 Install Python BLE support:
 
@@ -169,7 +144,7 @@ CLI fallback:
 /Applications/Codex.app/Contents/Resources/codex plugin marketplace add openelab-commits/codex-desktop-buddy --ref main
 ```
 
-### 4. Trigger The Bridge
+### 3. Trigger The Bridge
 
 After Codex restarts, make sure Bluetooth is enabled on the computer.
 
@@ -211,7 +186,7 @@ A healthy log contains lines like:
 sent {"state":"busy","tokens":...,"primary":...,"secondary":...}
 ```
 
-### 5. Move The Stick To Another Computer
+### 4. Move The Stick To Another Computer
 
 The StickS3 connects over BLE, not Wi-Fi. To move the same StickS3 to another
 computer, first stop the bridge on the old computer or quit Codex:
@@ -289,6 +264,19 @@ The bridge sends compact JSON over BLE:
 
 A character pack is a folder containing `manifest.json` and GIF files.
 
+Pet state meanings:
+
+| State | Meaning |
+| --- | --- |
+| `sleep` | Codex has not been used for a long time |
+| `idle` | Normal state |
+| `busy` | Codex is running |
+| `attention` | Codex sent a permission request |
+| `completed` | Task completed |
+| `celebrate` | Reserved for pet upgrades; currently not called |
+| `dizzy` | Triggered by shaking the device |
+| `heart` | Triggered by pressing B on the normal screen |
+
 Example:
 
 ```json
@@ -306,6 +294,23 @@ Example:
   }
 }
 ```
+
+Place character folders under `data/characters/`, for example:
+
+```text
+codex-desktop-buddy/data/characters/Mao/
+```
+
+To update the pet assets, open Terminal in the `codex-desktop-buddy` directory
+and run:
+
+```bash
+pio run -e m5stack-sticks3 -t uploadfs
+```
+
+When flashing firmware or uploading filesystem data, hold the lower-left side
+button to enter flashing mode. Short-press twice to power off, and short-press
+once to power on.
 
 Recommended source animation target:
 
