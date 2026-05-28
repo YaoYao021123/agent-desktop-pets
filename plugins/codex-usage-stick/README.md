@@ -44,24 +44,24 @@ Fill the dialog like this:
 
 ```text
 Source:
-openelab-commits/codex-desktop-buddy
+YaoYao021123/agent-desktop-pets
 
 Git ref:
 main
 ```
 
-If this lives in your own fork, use your fork's `owner/repo`.
+If this lives in your own fork, use that fork's `owner/repo`.
 
 ## CLI Fallback
 
 ```bash
-/Applications/Codex.app/Contents/Resources/codex plugin marketplace add openelab-commits/codex-desktop-buddy --ref main
+/Applications/Codex.app/Contents/Resources/codex plugin marketplace add YaoYao021123/agent-desktop-pets --ref main
 ```
 
 For local development:
 
 ```bash
-/Applications/Codex.app/Contents/Resources/codex plugin marketplace add /path/to/codex-desktop-buddy
+/Applications/Codex.app/Contents/Resources/codex plugin marketplace add /path/to/agent-desktop-pets
 ```
 
 ## Enable Hooks

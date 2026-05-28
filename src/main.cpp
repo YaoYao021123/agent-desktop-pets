@@ -850,8 +850,10 @@ void drawInfo() {
     ln("source");
     y += 4;
     spr.setTextColor(p.text, p.bg);
-    ln("github.com/openelab");
-    ln("/codex-desktop-buddy");
+    ln("github.com/");
+    ln("YaoYao021123/");
+    ln("agent-desktop");
+    ln("-pets");
     y += 12;
     spr.setTextColor(p.textDim, p.bg);
     ln("hardware");

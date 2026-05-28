@@ -21,8 +21,8 @@ python3 -m pip install bleak
 ## 1. Clone The Project
 
 ```bash
-git clone https://github.com/openelab-commits/codex-desktop-buddy.git
-cd codex-desktop-buddy
+git clone https://github.com/YaoYao021123/agent-desktop-pets.git
+cd agent-desktop-pets
 ```
 
 If you downloaded a ZIP instead, open a terminal in the extracted project
@@ -78,7 +78,7 @@ of the box.
 Use your own character folder:
 
 ```bash
-cd codex-desktop-buddy
+cd agent-desktop-pets
 mkdir -p ./data/characters
 rm -rf ./data/characters/MyPet
 cp -R /Users/you/Downloads/MyPet ./data/characters/MyPet
@@ -130,13 +130,13 @@ Fill the dialog like this:
 
 ```text
 Source:
-openelab-commits/codex-desktop-buddy
+YaoYao021123/agent-desktop-pets
 
 Git ref:
 main
 ```
 
-If you are using a fork, replace the source with your own GitHub `owner/repo`.
+If you are using your own fork, replace the source with that GitHub `owner/repo`.
 
 The repo root contains `.agents/plugins/marketplace.json`, so Codex can load the
 plugin marketplace directly from the repository root.
@@ -146,13 +146,13 @@ plugin marketplace directly from the repository root.
 If the UI flow is unavailable, use:
 
 ```bash
-/Applications/Codex.app/Contents/Resources/codex plugin marketplace add openelab-commits/codex-desktop-buddy --ref main
+/Applications/Codex.app/Contents/Resources/codex plugin marketplace add YaoYao021123/agent-desktop-pets --ref main
 ```
 
 For local development from a cloned repo, use the local folder path:
 
 ```bash
-/Applications/Codex.app/Contents/Resources/codex plugin marketplace add /Users/you/codex-desktop-buddy
+/Applications/Codex.app/Contents/Resources/codex plugin marketplace add /Users/you/agent-desktop-pets
 ```
 
 ### Enable Plugin Hooks

@@ -159,7 +159,7 @@ hooks start a local BLE bridge and forward permission prompts to the StickS3;
 they do not send data to an external server.
 
 ```bash
-/Applications/Codex.app/Contents/Resources/codex plugin marketplace add openelab-commits/codex-desktop-buddy --ref main
+/Applications/Codex.app/Contents/Resources/codex plugin marketplace add YaoYao021123/agent-desktop-pets --ref main
 ```
 
 ### 3. Trigger The Bridge
@@ -214,7 +214,7 @@ The StickS3 connects over BLE, not Wi-Fi. To move the same StickS3 to another
 computer, first stop the bridge on the old computer or quit Codex:
 
 ```bash
-cd codex-desktop-buddy
+cd agent-desktop-pets
 python3 plugins/codex-usage-stick/scripts/start_bridge.py --stop
 ```
 
@@ -320,10 +320,10 @@ Example:
 Place character folders under `data/characters/`, for example:
 
 ```text
-codex-desktop-buddy/data/characters/Mao/
+agent-desktop-pets/data/characters/Mao/
 ```
 
-To update the pet assets, open Terminal in the `codex-desktop-buddy` directory
+To update the pet assets, open Terminal in the `agent-desktop-pets` directory
 and run:
 
 ```bash
