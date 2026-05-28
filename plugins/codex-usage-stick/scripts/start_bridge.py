@@ -15,7 +15,10 @@ from typing import Any
 
 
 PLUGIN_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = PLUGIN_ROOT.parents[1]
 BRIDGE_SCRIPT = PLUGIN_ROOT / "scripts" / "codex_usage_ble_bridge.py"
+MACOS_APP = REPO_ROOT / ".macos" / "CodexUsageBridgePython.app"
+MACOS_APP_RUNNER = PLUGIN_ROOT / "scripts" / "macos_bridge_app_runner.py"
 STATE_DIR = Path.home() / ".codex" / "codex-usage-bridge"
 CONFIG_PATH = STATE_DIR / "config.json"
 PID_PATH = STATE_DIR / "bridge.pid"
@@ -27,8 +30,10 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "address": None,
     "interval": 5.0,
     "scan_timeout": 8.0,
+    "connect_timeout": 20.0,
     "restart_delay": 5.0,
     "verbose": True,
+    "debug_scan": False,
     "no_approval_proxy": True,
 }
 
@@ -82,21 +87,46 @@ def running_pid() -> int | None:
 
 def bridge_command(cfg: dict[str, Any]) -> list[str]:
     cmd = [sys.executable, str(BRIDGE_SCRIPT)]
+    cmd.extend(bridge_args(cfg))
+    return cmd
+
+
+def bridge_args(cfg: dict[str, Any]) -> list[str]:
+    args: list[str] = []
     name = cfg.get("name")
     if name:
-        cmd.extend(["--name", str(name)])
+        args.extend(["--name", str(name)])
     address = cfg.get("address")
     if address:
-        cmd.extend(["--address", str(address)])
+        args.extend(["--address", str(address)])
     if cfg.get("interval") is not None:
-        cmd.extend(["--interval", str(cfg["interval"])])
+        args.extend(["--interval", str(cfg["interval"])])
     if cfg.get("scan_timeout") is not None:
-        cmd.extend(["--scan-timeout", str(cfg["scan_timeout"])])
+        args.extend(["--scan-timeout", str(cfg["scan_timeout"])])
+    if cfg.get("connect_timeout") is not None:
+        args.extend(["--connect-timeout", str(cfg["connect_timeout"])])
+    if cfg.get("debug_scan", False):
+        args.append("--debug-scan")
     if cfg.get("verbose", True):
-        cmd.append("--verbose")
+        args.append("--verbose")
     if cfg.get("no_approval_proxy", True):
-        cmd.append("--no-approval-proxy")
-    return cmd
+        args.append("--no-approval-proxy")
+    return args
+
+
+def macos_app_available() -> bool:
+    return sys.platform == "darwin" and MACOS_APP.exists() and MACOS_APP_RUNNER.exists()
+
+
+def macos_app_command(cfg: dict[str, Any]) -> list[str]:
+    return [
+        "open",
+        "-n",
+        str(MACOS_APP),
+        "--args",
+        str(MACOS_APP_RUNNER),
+        *bridge_args(cfg),
+    ]
 
 
 def supervisor_command() -> list[str]:
@@ -143,6 +173,24 @@ def start_bridge(foreground: bool = False) -> int:
         return 0
 
     ensure_state_dir()
+
+    if macos_app_available():
+        proc = subprocess.run(
+            macos_app_command(cfg),
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=6,
+            check=False,
+        )
+        deadline = time.monotonic() + 6
+        while time.monotonic() < deadline:
+            if running_pid() is not None:
+                return 0
+            time.sleep(0.2)
+        sys.stderr.write((proc.stderr or proc.stdout or "macOS app bridge did not start")[-2000:])
+        return proc.returncode or 1
+
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
     with LOG_PATH.open("ab") as log:

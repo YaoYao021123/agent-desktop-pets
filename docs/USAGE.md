@@ -91,6 +91,33 @@ loads the first character directory it finds.
 If `uploadfs` says it cannot read the source directory, the `data/` folder is
 missing or empty.
 
+### Convert A Codex App Pet
+
+Codex app pets in `~/.codex/pets/<name>/` use a single 8x9
+`spritesheet.webp` atlas. The StickS3 firmware uses `manifest.json` plus one
+GIF per hardware state. Convert an existing Codex pet into a StickS3 character
+pack with:
+
+```bash
+python3 tools/convert_codex_pet.py kuma --force
+```
+
+This writes `characters/kuma/`. To include it in the next filesystem upload,
+copy it under `data/characters/`, then upload LittleFS:
+
+```bash
+mkdir -p data/characters/kuma
+cp -R characters/kuma/. data/characters/kuma/
+pio run -e m5stack-sticks3 -t uploadfs
+```
+
+While testing, keep only one character directory under `data/characters/` so
+the firmware's first-directory scan picks the character you expect.
+
+The converter maps the 9 Codex app rows onto the 7 StickS3 states:
+`idle -> idle`, `running -> busy`, `waving -> attention/heart`,
+`jumping -> completed/celebrate`, `failed -> dizzy`, and `waiting -> sleep`.
+
 ## 5. Install The Codex Plugin
 
 In Codex, open:

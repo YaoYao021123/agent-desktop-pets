@@ -49,6 +49,7 @@ class RxCallbacks : public BLECharacteristicCallbacks {
 class ServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* s) override {
     connected = true;
+    secure = false;
     Serial.println("[ble] connected");
   }
   void onDisconnect(BLEServer* s) override {
@@ -66,10 +67,9 @@ class ServerCallbacks : public BLEServerCallbacks {
   }
 };
 
-// LE Secure Connections, passkey-entry: we are DisplayOnly, the central
-// is KeyboardOnly. The stack picks a random 6-digit passkey, calls
-// onPassKeyNotify here, and the user types it on the desktop. main.cpp
-// polls blePasskey() to render it.
+// Optional LE Secure Connections callbacks. They are kept for future approval
+// flows, but the default local usage bridge runs without pairing because macOS
+// CoreBluetooth can hang on repeated passkey pairing from Python.
 class SecCallbacks : public BLESecurityCallbacks {
   uint32_t onPassKeyRequest() override { return 0; }
   bool onConfirmPIN(uint32_t) override { return false; }
@@ -91,9 +91,6 @@ void bleInit(const char* deviceName) {
   // Request the biggest MTU we can get. macOS negotiates to 185 typically.
   BLEDevice::setMTU(517);
 
-  BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT_MITM);
-  BLEDevice::setSecurityCallbacks(new SecCallbacks());
-
   server = BLEDevice::createServer();
   server->setCallbacks(new ServerCallbacks());
 
@@ -103,26 +100,19 @@ void bleInit(const char* deviceName) {
     NUS_TX_UUID,
     BLECharacteristic::PROPERTY_NOTIFY
   );
-  txChar->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED);
+  txChar->setAccessPermissions(ESP_GATT_PERM_READ);
   BLE2902* cccd = new BLE2902();
-  cccd->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
+  cccd->setAccessPermissions(ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE);
   txChar->addDescriptor(cccd);
 
   rxChar = svc->createCharacteristic(
     NUS_RX_UUID,
     BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR
   );
-  rxChar->setAccessPermissions(ESP_GATT_PERM_WRITE_ENCRYPTED);
+  rxChar->setAccessPermissions(ESP_GATT_PERM_WRITE);
   rxChar->setCallbacks(new RxCallbacks());
 
   svc->start();
-
-  BLESecurity* sec = new BLESecurity();
-  sec->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_MITM_BOND);
-  sec->setCapability(ESP_IO_CAP_OUT);
-  sec->setKeySize(16);
-  sec->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
-  sec->setRespEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
 
   BLEAdvertising* adv = BLEDevice::getAdvertising();
   adv->addServiceUUID(NUS_SERVICE_UUID);

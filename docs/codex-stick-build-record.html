@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Desktop Pets Build Record</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --muted: #5f6368;
+      --line: #e8eaed;
+      --soft: #f6f7f8;
+      --ink: #050505;
+      --good: #15803d;
+      --warn: #b45309;
+      --blue: #155eef;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(1120px, calc(100vw - 36px));
+      margin: 0 auto;
+      padding: 42px 0 64px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 28px;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0;
+      margin-bottom: 18px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--good);
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      margin: 0 0 18px;
+      max-width: 850px;
+    }
+
+    .lede {
+      color: #2a2d31;
+      max-width: 760px;
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .metric, .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .metric {
+      padding: 14px;
+      min-height: 90px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .metric .value {
+      font-size: 24px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .metric .hint {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    section {
+      margin: 34px 0;
+    }
+
+    h2 {
+      font-size: 26px;
+      line-height: 1.15;
+      margin: 0 0 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 0 0 8px;
+    }
+
+    p { margin: 0 0 12px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .timeline {
+      border-left: 2px solid var(--ink);
+      padding-left: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .step {
+      position: relative;
+      padding: 0 0 2px;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      left: -25px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 2px solid #fff;
+    }
+
+    .step .title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .step .body {
+      color: var(--muted);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 16px;
+    }
+
+    .flow .node {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 112px;
+      background: var(--soft);
+    }
+
+    .node strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    code, pre {
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    code {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1px 5px;
+    }
+
+    pre {
+      margin: 12px 0 0;
+      padding: 14px;
+      overflow-x: auto;
+      background: #0c0c0c;
+      color: #f7f7f7;
+      border-radius: 8px;
+      border: 1px solid #0c0c0c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      display: table;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+      font-size: 13px;
+      color: #292c30;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .tag {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      margin: 0 6px 6px 0;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--good);
+      background: #f0fdf4;
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: #12351f;
+    }
+
+    .warning {
+      border-left-color: var(--warn);
+      background: #fff7ed;
+      color: #3f2608;
+    }
+
+    footer {
+      margin-top: 42px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .meta, .grid, .flow, .status {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow"><span class="dot"></span> Build verified on 2026-05-29</div>
+      <h1>Agent Desktop Pets Build Record</h1>
+      <p class="lede">
+        一台 M5Stack StickS3 被改造成 AI agent 桌面 pet 和额度监控器。USB-C 用于供电与刷机，运行时通过 BLE 接收本机 Codex 使用状态。
+      </p>
+      <div class="meta">
+        <div class="metric">
+          <div class="label">Device</div>
+          <div class="value">StickS3</div>
+          <div class="hint">ESP32-S3</div>
+        </div>
+        <div class="metric">
+          <div class="label">Active Pet</div>
+          <div class="value">david</div>
+          <div class="hint">hatch-pet atlas</div>
+        </div>
+        <div class="metric">
+          <div class="label">Bridge</div>
+          <div class="value">running</div>
+          <div class="hint">Codex-XXXX</div>
+        </div>
+        <div class="metric">
+          <div class="label">BLE</div>
+          <div class="value">verified</div>
+          <div class="hint">sent packets</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="status">
+      <div class="panel">
+        <h2>成果概览</h2>
+        <p>固件、LittleFS 资源、Mac 侧 BLE bridge 均已跑通。StickS3 已写入 Codex 使用监控固件，David pet 资源已安装，后台 bridge 每 5 秒发送一次本机 Codex 状态。</p>
+        <pre>sent {"state":"busy","tokens":...,"primary":...,"secondary":...}</pre>
+      </div>
+      <div class="panel">
+        <h2>当前关键路径</h2>
+        <p><code>agent-desktop-pets</code></p>
+        <p><code>~/.codex/codex-usage-bridge/bridge.log</code></p>
+        <p><code>/dev/cu.usbmodem1101</code></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>系统流程</h2>
+      <div class="flow">
+        <div class="node"><strong>Codex local data</strong><span>读取本机 Codex quota 与 activity，不发到外部服务。</span></div>
+        <div class="node"><strong>Python bridge</strong><span>生成小 JSON 包，包含 state、tokens、primary、secondary。</span></div>
+        <div class="node"><strong>macOS app host</strong><span>通过本地 .app wrapper 获取蓝牙权限并自动重试。</span></div>
+        <div class="node"><strong>BLE NUS</strong><span>向 StickS3 的 Nordic UART Service 写入状态包。</span></div>
+        <div class="node"><strong>StickS3 UI</strong><span>显示 David pet、5h/7d 额度条、重置倒计时和状态。</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>过程记录</h2>
+      <div class="timeline">
+        <div class="step">
+          <div class="title">1. 确认硬件连接</div>
+          <div class="body">设备通过 USB-C 被 macOS 识别为 <code>/dev/cu.usbmodem*</code> 串口，同时通过 <code>Codex-XXXX</code> BLE 名称广播。</div>
+        </div>
+        <div class="step">
+          <div class="title">2. 下载与本地化依赖</div>
+          <div class="body">PlatformIO 下载过慢，因此将 ESP32 Arduino framework、工具链、文件系统工具和 Arduino libraries 本地安装或 vendored 到项目内。</div>
+        </div>
+        <div class="step">
+          <div class="title">3. 转换 Codex pets</div>
+          <div class="body">新增 <code>tools/convert_codex_pet.py</code>，把 <code>~/.codex/pets</code> 的 atlas 转为 StickS3 需要的 GIF + manifest 结构。</div>
+        </div>
+        <div class="step">
+          <div class="title">4. 选择 David 作为默认 pet</div>
+          <div class="body">将 <code>characters/david</code> 打包进 LittleFS，并在 build flags 中设置 <code>DEFAULT_CHARACTER="david"</code>。</div>
+        </div>
+        <div class="step">
+          <div class="title">5. 编译与刷机</div>
+          <div class="body">固件编译成功，直接使用 <code>esptool.py --before no_reset</code> 写入 firmware 和 LittleFS，两个写入都完成 hash 校验。</div>
+        </div>
+        <div class="step">
+          <div class="title">6. 修复 macOS BLE</div>
+          <div class="body">新增本地 <code>CodexUsageBridgePython.app</code> 和 runner，解决 Python 直接访问 CoreBluetooth 被 macOS TCC 终止的问题。</div>
+        </div>
+        <div class="step">
+          <div class="title">7. 稳定 BLE 连接</div>
+          <div class="body">由于 passkey pairing 在 Python CoreBluetooth 下会卡住，当前固件改为开放 NUS 写入，只发送本地使用状态，硬件审批暂不启用。</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>产物清单</h2>
+      <table>
+        <thead>
+          <tr><th>产物</th><th>路径</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Firmware</td><td><code>.pio/build/m5stack-sticks3/firmware.bin</code></td><td>约 1.2M，已刷入设备。</td></tr>
+          <tr><td>LittleFS</td><td><code>.pio/build/m5stack-sticks3/littlefs.bin</code></td><td>约 1.9M，包含设备 GIF 资源。</td></tr>
+          <tr><td>Active pet</td><td><code>characters/david</code></td><td>当前默认角色资源。</td></tr>
+          <tr><td>Converter</td><td><code>tools/convert_codex_pet.py</code></td><td>将 Codex app pet atlas 转为 StickS3 GIF pack。</td></tr>
+          <tr><td>macOS runner</td><td><code>plugins/codex-usage-stick/scripts/macos_bridge_app_runner.py</code></td><td>通过 .app host 启动 BLE bridge，并自动重试。</td></tr>
+          <tr><td>Bluetooth app host</td><td><code>.macos/CodexUsageBridgePython.app</code></td><td>包含蓝牙权限说明的本地 Python.app wrapper。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h3>Build</h3>
+        <p><span class="tag">PlatformIO</span><span class="tag">ESP32-S3</span><span class="tag">LittleFS</span></p>
+        <pre>m5stack-sticks3  SUCCESS
+RAM:   24.8%
+Flash: 62.0%</pre>
+      </div>
+      <div class="panel">
+        <h3>Flash</h3>
+        <p>可靠路径为直接调用项目内 <code>esptool.py</code>，并使用手动下载模式。</p>
+        <pre>Hash of data verified.</pre>
+      </div>
+      <div class="panel">
+        <h3>Bridge</h3>
+        <p>后台 bridge 通过 BLE 名称前缀或本机缓存地址连接目标设备。</p>
+        <pre>--name Codex-
+--interval 5.0</pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>关键命令</h2>
+      <div class="panel">
+        <h3>查看 bridge 状态</h3>
+        <pre>.venv/bin/python plugins/codex-usage-stick/scripts/start_bridge.py --status
+tail -n 40 ~/.codex/codex-usage-bridge/bridge.log</pre>
+        <h3>启动 / 停止 bridge</h3>
+        <pre>.venv/bin/python plugins/codex-usage-stick/scripts/start_bridge.py
+.venv/bin/python plugins/codex-usage-stick/scripts/start_bridge.py --stop</pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>技术取舍</h2>
+      <div class="callout warning">
+        当前工作版本为了稳定显示额度，关闭了 BLE passkey pairing 和硬件审批代理。传输内容限于本机 Codex 使用百分比、token 数和状态字符串；不连接外部服务器。后续如果要做 A/B 硬件审批，可以在单独分支恢复加密配对或改走 USB serial。
+      </div>
+    </section>
+
+    <section>
+      <h2>当前结论</h2>
+      <div class="callout">
+        StickS3 已经成为可用的 Agent desktop pet。它能显示 David pet、Codex activity，以及 5h/7d quota 状态。Mac 侧 bridge 已经验证连续发送成功。
+      </div>
+    </section>
+
+    <footer>
+      Generated inside the shared workspace. Markdown companion: <code>docs/codex-stick-build-record.md</code>.
+    </footer>
+  </main>
+</body>
+</html>

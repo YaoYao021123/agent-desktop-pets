@@ -1400,7 +1400,11 @@ void setup() {
 
   // BLE stays always-on; s.bt is stored as a preference only.
   spr.createSprite(W, H);
+#if defined(DEFAULT_CHARACTER)
+  if (!characterInit(DEFAULT_CHARACTER)) characterInit(nullptr);
+#else
   characterInit(nullptr);  // scan /characters/ for whatever is installed
+#endif
   gifAvailable = characterLoaded();
   // species NVS: 0..N-1 = ASCII species, 0xFF = use GIF (also the default,
   // so a fresh install lands on the GIF). With no GIF installed, 0xFF falls

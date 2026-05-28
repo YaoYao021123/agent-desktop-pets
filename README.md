@@ -1,17 +1,18 @@
-# Codexmeter
+# Agent Desktop Pets
 
-Codexmeter is a prototype firmware and local Codex plugin for turning an
-M5Stack StickS3 into a small desktop usage monitor.
+Agent Desktop Pets is a firmware and local agent bridge for turning an
+M5Stack StickS3 into a tiny desktop companion for AI coding agents.
 
-The StickS3 shows Codex usage over BLE: a GIF pet, a 5-hour usage bar, a 7-day
-usage bar, reset countdowns, and live state changes such as `busy`, `idle`,
-`completed`, `attention`, `dizzy`, `heart`, and `sleep`.
+The StickS3 shows live agent state over BLE: a GIF pet, a 5-hour usage bar, a
+7-day usage bar, reset countdowns, and state-driven animations such as `busy`,
+`idle`, `completed`, `attention`, `dizzy`, `heart`, and `sleep`.
 
-This project is a personal fork of Anthropic's
+This project is a fork of Anthropic's
 [`claude-desktop-buddy`](https://github.com/anthropics/claude-desktop-buddy)
 reference firmware. The BLE display idea comes from that reference project,
 but this fork is focused on Codex, M5Stack StickS3, GIF pets, and a local Codex
-usage bridge.
+usage bridge. It also adds a converter for Codex app pets so `hatch-pet` style
+atlases can run on the hardware display.
 
 <p align="center">
   <img src="docs/codex-usage-stick-landscape.jpeg" height="500" alt="Codex Usage Stick landscape dashboard">
@@ -52,8 +53,8 @@ Remember to install PlatformIO before building or flashing the firmware.
 ### 1. Build And Flash Firmware
 
 ```bash
-git clone https://github.com/openelab-commits/codex-desktop-buddy.git
-cd codex-desktop-buddy
+git clone https://github.com/YaoYao021123/agent-desktop-pets.git
+cd agent-desktop-pets
 pio run -e m5stack-sticks3
 pio run -e m5stack-sticks3 -t upload
 pio run -e m5stack-sticks3 -t uploadfs
@@ -81,7 +82,7 @@ Fill the dialog like this:
 
 ```text
 Source:
-openelab-commits/codex-desktop-buddy
+YaoYao021123/agent-desktop-pets
 
 Git ref:
 main

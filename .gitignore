@@ -1,6 +1,13 @@
 .pio/
+.platformio/
+.venv/
 .vscode/
 .DS_Store
+downloads/
+lib/
+.macos/
+__pycache__/
+*.pyc
 data/*
 !data/characters/
 data/characters/*
