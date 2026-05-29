@@ -1,11 +1,13 @@
 .pio/
 .platformio/
+.venv
 .venv/
 .vscode/
 .DS_Store
 downloads/
 lib/
 .macos/
+local_macos/
 __pycache__/
 *.pyc
 data/*

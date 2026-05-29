@@ -17,7 +17,10 @@ from typing import Any
 PLUGIN_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = PLUGIN_ROOT.parents[1]
 BRIDGE_SCRIPT = PLUGIN_ROOT / "scripts" / "codex_usage_ble_bridge.py"
-MACOS_APP = REPO_ROOT / ".macos" / "CodexUsageBridgePython.app"
+MACOS_APP_CANDIDATES = [
+    REPO_ROOT / "local_macos" / "CodexUsageBridgePython.app",
+    REPO_ROOT / ".macos" / "CodexUsageBridgePython.app",
+]
 MACOS_APP_RUNNER = PLUGIN_ROOT / "scripts" / "macos_bridge_app_runner.py"
 STATE_DIR = Path.home() / ".codex" / "codex-usage-bridge"
 CONFIG_PATH = STATE_DIR / "config.json"
@@ -114,15 +117,27 @@ def bridge_args(cfg: dict[str, Any]) -> list[str]:
     return args
 
 
+def macos_app_path() -> Path | None:
+    if sys.platform != "darwin" or not MACOS_APP_RUNNER.exists():
+        return None
+    for candidate in MACOS_APP_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def macos_app_available() -> bool:
-    return sys.platform == "darwin" and MACOS_APP.exists() and MACOS_APP_RUNNER.exists()
+    return macos_app_path() is not None
 
 
 def macos_app_command(cfg: dict[str, Any]) -> list[str]:
+    app = macos_app_path()
+    if app is None:
+        raise RuntimeError("macOS app bridge is not available")
     return [
         "open",
         "-n",
-        str(MACOS_APP),
+        str(app),
         "--args",
         str(MACOS_APP_RUNNER),
         *bridge_args(cfg),
@@ -232,6 +247,7 @@ def status() -> int:
         "config": str(CONFIG_PATH),
         "log": str(LOG_PATH),
         "hook_log": str(HOOK_LOG_PATH),
+        "macos_app": str(macos_app_path()) if macos_app_path() else None,
         "command": supervisor_command(),
         "bridge_command": bridge_command(cfg),
     }, indent=2))
