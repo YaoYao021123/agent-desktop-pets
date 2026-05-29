@@ -5,8 +5,8 @@
   "author": {
     "name": "Hugo Makerhund"
   },
-  "homepage": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
-  "repository": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+  "homepage": "https://github.com/YaoYao021123/agent-desktop-pets",
+  "repository": "https://github.com/YaoYao021123/agent-desktop-pets",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -27,9 +27,9 @@
       "Interactive",
       "Read"
     ],
-    "websiteURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
-    "privacyPolicyURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
-    "termsOfServiceURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+    "websiteURL": "https://github.com/YaoYao021123/agent-desktop-pets",
+    "privacyPolicyURL": "https://github.com/YaoYao021123/agent-desktop-pets",
+    "termsOfServiceURL": "https://github.com/YaoYao021123/agent-desktop-pets",
     "defaultPrompt": [
       "Check my Codex Usage Stick bridge status"
     ],

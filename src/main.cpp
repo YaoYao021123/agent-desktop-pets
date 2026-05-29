@@ -838,7 +838,7 @@ void drawInfo() {
     ln("made by");
     y += 4;
     spr.setTextColor(p.text, p.bg);
-    ln("OpenELAB Cris");
+    ln("YaoYao + Codex");
     y += 8;
     spr.setTextColor(p.textDim, p.bg);
     ln("fork from");

@@ -370,7 +370,7 @@ If first-time Bluetooth pairing fails, or the bridge log shows
 
 ## Credits
 
-Made by OpenELAB Cris.
+Maintained as Agent Desktop Pets by YaoYao + Codex.
 
 Forked from the Claude Desktop Buddy reference firmware by Felix Rieseberg and
 Anthropic.
