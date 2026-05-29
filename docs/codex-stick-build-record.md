@@ -16,6 +16,11 @@ Turn the M5Stack StickS3 into a small Codex desktop pet and usage monitor:
 
 The final working setup uses a fork of `anthropics/claude-desktop-buddy`, a converted `david` pet, and a local BLE bridge that reads local Codex usage data and sends compact JSON status packets to the device.
 
+The public presentation now uses an original Kuma interface concept generated
+for `agent-desktop-pets`:
+
+![Kuma StickS3 interface concept](agent-desktop-pets-kuma-interface.png)
+
 ## Final Result
 
 The firmware and assets were flashed successfully.
@@ -31,6 +36,7 @@ The firmware and assets were flashed successfully.
 | Bridge status | running |
 | Bridge interval | `5s` |
 | Verified BLE send | yes |
+| Visual concept | `kuma` at `docs/agent-desktop-pets-kuma-interface.png` |
 
 Verified bridge log:
 
@@ -94,6 +100,9 @@ The active resource pack is:
 ```text
 characters/david
 ```
+
+The first custom presentation image uses Kuma as the visual direction while the
+firmware resource pack can still be switched independently.
 
 Firmware default character was pinned to `david`:
 
@@ -283,6 +292,7 @@ Important files:
 - `plugins/codex-usage-stick/scripts/start_bridge.py` - macOS `.app` runner support.
 - `plugins/codex-usage-stick/scripts/macos_bridge_app_runner.py` - Bluetooth-safe macOS runner.
 - `characters/david` - active StickS3 pet assets generated from the Codex pet atlas.
+- `docs/agent-desktop-pets-kuma-interface.png` - original Kuma interface concept generated with `$imagegen`.
 
 ## Operating Commands
 

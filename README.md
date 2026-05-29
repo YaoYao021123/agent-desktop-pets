@@ -15,9 +15,11 @@ usage bridge. It also adds a converter for Codex app pets so `hatch-pet` style
 atlases can run on the hardware display.
 
 <p align="center">
-  <img src="docs/codex-usage-stick-landscape.jpeg" height="500" alt="Codex Usage Stick landscape dashboard">
-  <img src="docs/codex-usage-stick-portrait.gif" height="500" alt="Codex Usage Stick portrait dashboard animation">
+  <img src="docs/agent-desktop-pets-kuma-interface.png" width="820" alt="Agent Desktop Pets Kuma StickS3 interface mockup">
 </p>
+
+The image above is an original Kuma interface concept generated for this fork,
+not an inherited screenshot from the upstream desktop buddy repository.
 
 ## What It Displays
 

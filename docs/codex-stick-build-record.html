@@ -266,6 +266,29 @@
       gap: 14px;
     }
 
+    .hero-visual {
+      margin: 28px 0 32px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 22px 60px rgba(0,0,0,.08);
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .caption {
+      padding: 12px 16px 14px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      background: #fafafa;
+    }
+
     .callout {
       border-left: 4px solid var(--good);
       background: #f0fdf4;
@@ -314,9 +337,9 @@
           <div class="hint">ESP32-S3</div>
         </div>
         <div class="metric">
-          <div class="label">Active Pet</div>
-          <div class="value">david</div>
-          <div class="hint">hatch-pet atlas</div>
+          <div class="label">Visual Pet</div>
+          <div class="value">kuma</div>
+          <div class="hint">imagegen concept</div>
         </div>
         <div class="metric">
           <div class="label">Bridge</div>
@@ -331,10 +354,15 @@
       </div>
     </header>
 
+    <figure class="hero-visual">
+      <img src="agent-desktop-pets-kuma-interface.png" alt="Kuma StickS3 interface concept for Agent Desktop Pets">
+      <figcaption class="caption">Kuma 界面首图：为 <code>agent-desktop-pets</code> 重新绘制的 StickS3 quota + pet 展示，不再使用旧仓库截图。</figcaption>
+    </figure>
+
     <section class="status">
       <div class="panel">
         <h2>成果概览</h2>
-        <p>固件、LittleFS 资源、Mac 侧 BLE bridge 均已跑通。StickS3 已写入 Codex 使用监控固件，David pet 资源已安装，后台 bridge 每 5 秒发送一次本机 Codex 状态。</p>
+        <p>固件、LittleFS 资源、Mac 侧 BLE bridge 均已跑通。当前记录页已切换为 Kuma 视觉方向，展示我们自己的 Codex quota + desktop pet 界面；后台 bridge 每 5 秒发送一次本机 Codex 状态。</p>
         <pre>sent {"state":"busy","tokens":...,"primary":...,"secondary":...}</pre>
       </div>
       <div class="panel">
@@ -352,7 +380,7 @@
         <div class="node"><strong>Python bridge</strong><span>生成小 JSON 包，包含 state、tokens、primary、secondary。</span></div>
         <div class="node"><strong>macOS app host</strong><span>通过本地 .app wrapper 获取蓝牙权限并自动重试。</span></div>
         <div class="node"><strong>BLE NUS</strong><span>向 StickS3 的 Nordic UART Service 写入状态包。</span></div>
-        <div class="node"><strong>StickS3 UI</strong><span>显示 David pet、5h/7d 额度条、重置倒计时和状态。</span></div>
+        <div class="node"><strong>StickS3 UI</strong><span>显示 Kuma pet、5h/7d 额度条、重置倒计时和状态。</span></div>
       </div>
     </section>
 
@@ -372,8 +400,8 @@
           <div class="body">新增 <code>tools/convert_codex_pet.py</code>，把 <code>~/.codex/pets</code> 的 atlas 转为 StickS3 需要的 GIF + manifest 结构。</div>
         </div>
         <div class="step">
-          <div class="title">4. 选择 David 作为默认 pet</div>
-          <div class="body">将 <code>characters/david</code> 打包进 LittleFS，并在 build flags 中设置 <code>DEFAULT_CHARACTER="david"</code>。</div>
+          <div class="title">4. 绘制 Kuma 界面方向</div>
+          <div class="body">使用 <code>$imagegen</code> 生成新的 <code>agent-desktop-pets</code> 首图，屏幕展示 Kuma、5h/7d quota 和 Codex activity。</div>
         </div>
         <div class="step">
           <div class="title">5. 编译与刷机</div>
@@ -400,6 +428,7 @@
           <tr><td>Firmware</td><td><code>.pio/build/m5stack-sticks3/firmware.bin</code></td><td>约 1.2M，已刷入设备。</td></tr>
           <tr><td>LittleFS</td><td><code>.pio/build/m5stack-sticks3/littlefs.bin</code></td><td>约 1.9M，包含设备 GIF 资源。</td></tr>
           <tr><td>Active pet</td><td><code>characters/david</code></td><td>当前默认角色资源。</td></tr>
+          <tr><td>Kuma interface art</td><td><code>docs/agent-desktop-pets-kuma-interface.png</code></td><td>本 fork 的原创展示图，用于替换旧仓库截图。</td></tr>
           <tr><td>Converter</td><td><code>tools/convert_codex_pet.py</code></td><td>将 Codex app pet atlas 转为 StickS3 GIF pack。</td></tr>
           <tr><td>macOS runner</td><td><code>plugins/codex-usage-stick/scripts/macos_bridge_app_runner.py</code></td><td>通过 .app host 启动 BLE bridge，并自动重试。</td></tr>
           <tr><td>Bluetooth app host</td><td><code>.macos/CodexUsageBridgePython.app</code></td><td>包含蓝牙权限说明的本地 Python.app wrapper。</td></tr>
@@ -450,7 +479,7 @@ tail -n 40 ~/.codex/codex-usage-bridge/bridge.log</pre>
     <section>
       <h2>当前结论</h2>
       <div class="callout">
-        StickS3 已经成为可用的 Agent desktop pet。它能显示 David pet、Codex activity，以及 5h/7d quota 状态。Mac 侧 bridge 已经验证连续发送成功。
+        StickS3 已经成为可用的 Agent desktop pet。当前记录页新增 Kuma 界面首图，用自己的视觉语言展示 Codex activity 和 5h/7d quota 状态。Mac 侧 bridge 已经验证连续发送成功。
       </div>
     </section>
 
