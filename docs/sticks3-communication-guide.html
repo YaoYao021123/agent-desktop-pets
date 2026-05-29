@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StickS3 通信指导 - Agent Desktop Pets</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --ink: #101114;
+      --muted: #626b76;
+      --line: #dfe4ea;
+      --soft: #f5f7f9;
+      --black: #050607;
+      --green: #15b84a;
+      --blue: #0584d4;
+      --orange: #d97706;
+      --red: #d92d20;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 36px;
+      align-items: end;
+      padding-bottom: 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: 64px;
+      line-height: .95;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .answer {
+      background: var(--black);
+      color: #fff;
+      border-radius: 8px;
+      padding: 22px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .14);
+    }
+
+    .answer strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .answer span {
+      color: #c8d0d9;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 28px 0;
+    }
+
+    .tile {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .tile b {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .tile p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .tag.ok { background: #eaf8ef; color: var(--green); }
+    .tag.warn { background: #fff7ed; color: var(--orange); }
+    .tag.no { background: #fef3f2; color: var(--red); }
+
+    section {
+      padding: 36px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 32px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 28px 0 10px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    p { margin: 0 0 14px; }
+
+    ul, ol {
+      padding-left: 1.25rem;
+      margin: 0 0 18px;
+    }
+
+    li { margin: 7px 0; }
+
+    code {
+      font-family: "SF Mono", "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
+      font-size: .92em;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 12px 0 20px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #090a0b;
+      color: #f6f8fa;
+      font: 13px/1.55 "SF Mono", "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
+    }
+
+    pre code {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--soft);
+      min-height: 112px;
+    }
+
+    .step b {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0 8px;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: var(--soft);
+    }
+
+    .callout {
+      border-left: 4px solid var(--blue);
+      background: #f2f8fd;
+      padding: 16px 18px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .callout.warn {
+      border-left-color: var(--orange);
+      background: #fff8ed;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 820px) {
+      .hero,
+      .two,
+      .grid,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .page { padding: 32px 16px 56px; }
+
+      h1 { font-size: 42px; }
+      h2 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Agent Desktop Pets / StickS3 communication</p>
+        <h1>通信不是只能靠线，正式运行推荐 BLE。</h1>
+        <p>USB-C 负责刷机、上传 LittleFS、供电和串口调试；Mac 到 StickS3 的 Codex 状态同步，在当前项目里主要通过 BLE Nordic UART Service 完成。</p>
+      </div>
+      <aside class="answer">
+        <strong>结论</strong>
+        <span>插线不是运行时数据通信的硬要求。刷完固件后，只要 StickS3 有电并且 Mac 蓝牙可用，就可以通过 BLE 收到 Codex quota 和 pet state。USB-C 仍然建议接着，因为 StickS3 电池小，长时间桌面显示更稳。</span>
+      </aside>
+    </header>
+
+    <section>
+      <h2>当前链路怎么分工</h2>
+      <p>M5Stack 官方页面把 StickS3 定义为 ESP32-S3-PICO-1-N8R8 设备，并列出 2.4GHz Wi-Fi 能力；Espressif 的芯片资料还说明这颗 SiP 支持 Bluetooth LE。也就是说，硬件层面并不只有线。当前仓库已经落地的是 BLE 和 USB Serial，Wi-Fi 目前只是硬件能力，还没有接成 Codex 数据通道。</p>
+      <div class="grid">
+        <article class="tile">
+          <span class="tag ok">推荐运行链路</span>
+          <b>BLE 数据同步</b>
+          <p>Codex 插件启动本地 bridge，扫描名为 <code>Codex-XXXX</code> 的 StickS3，并向 BLE NUS RX characteristic 写入小 JSON 包。</p>
+        </article>
+        <article class="tile">
+          <span class="tag warn">必须用于刷机</span>
+          <b>USB-C 线</b>
+          <p>用于 PlatformIO 上传固件和 LittleFS，也可以作为供电线。运行时不一定需要用线传数据。</p>
+        </article>
+        <article class="tile">
+          <span class="tag">调试备用</span>
+          <b>USB Serial</b>
+          <p>固件会读 <code>Serial</code> 上的 JSON 行，所以可以写测试脚本验证屏幕更新。但当前自动 Codex bridge 默认不是串口版。</p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <b>硬件能力 vs 当前实现</b>
+        <p>可以理解成三层：USB-C 是刷机和稳定供电；BLE 是当前项目已经跑通的 Mac 到 StickS3 状态同步；Wi-Fi 设备支持，但本仓库暂时没有写 Wi-Fi server/client，也没有 Codex Wi-Fi bridge。</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>场景</th>
+            <th>是否需要 USB-C</th>
+            <th>是否需要 BLE</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>刷固件</td>
+            <td>需要，且要数据线</td>
+            <td>不需要</td>
+            <td><code>pio run -e m5stack-sticks3 -t upload</code></td>
+          </tr>
+          <tr>
+            <td>上传 pet GIF / LittleFS</td>
+            <td>推荐 USB-C</td>
+            <td>不需要</td>
+            <td><code>pio run -e m5stack-sticks3 -t uploadfs</code> 或 <code>tools/flash_character.py</code></td>
+          </tr>
+          <tr>
+            <td>显示 Codex quota / state</td>
+            <td>只需要供电</td>
+            <td>需要</td>
+            <td>当前稳定方案：Mac bridge 每隔几秒通过 BLE 发包。</td>
+          </tr>
+          <tr>
+            <td>快速验证屏幕能否收包</td>
+            <td>可用 USB Serial</td>
+            <td>可不用</td>
+            <td>固件同时监听 <code>Serial</code> 和 BLE；串口适合排错。</td>
+          </tr>
+          <tr>
+            <td>完全无线桌面显示</td>
+            <td>不需要数据线，但需要电池供电</td>
+            <td>需要</td>
+            <td>可以无线跑，但 StickS3 电池只有约 250mAh，建议长时间使用时接 USB 电源。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>推荐运行方式：USB 供电 + BLE 数据</h2>
+      <div class="flow">
+        <div class="step"><b>1. 插 USB-C</b><span>主要为了供电，也便于后续刷机和看串口日志。</span></div>
+        <div class="step"><b>2. 固件启动</b><span>StickS3 开机后会显示 Codex usage monitor，并广播 <code>Codex-XXXX</code>。</span></div>
+        <div class="step"><b>3. Mac 开蓝牙</b><span>macOS Bluetooth 必须打开，Python bridge 需要 <code>bleak</code>。</span></div>
+        <div class="step"><b>4. Codex hook</b><span>发送任意 Codex prompt，插件 hook 会启动后台 bridge。</span></div>
+        <div class="step"><b>5. 屏幕更新</b><span>StickS3 收到 JSON 后更新 pet state、5h/7d quota 和 token 数。</span></div>
+      </div>
+
+      <h3>手动启动 bridge</h3>
+      <p>如果不想等 Codex hook，或者正在排错，可以在仓库根目录手动启动：</p>
+      <pre><code>python3 plugins/codex-usage-stick/scripts/start_bridge.py --status
+python3 plugins/codex-usage-stick/scripts/start_bridge.py --foreground</code></pre>
+
+      <p>成功时，日志里会出现类似：</p>
+      <pre><code>sent {"state":"busy","tokens":...,"primary":...,"secondary":...}</code></pre>
+
+      <p>查看日志：</p>
+      <pre><code>tail -n 20 ~/.codex/codex-usage-bridge/hook.log
+tail -n 40 ~/.codex/codex-usage-bridge/bridge.log</code></pre>
+    </section>
+
+    <section>
+      <h2>USB Serial 是什么角色</h2>
+      <p>固件并没有把 USB 串口废掉。代码里 <code>Serial.begin(115200)</code>，并且 <code>dataPoll()</code> 同时读取 <code>Serial</code> 和 BLE ring buffer。也就是说，StickS3 可以从 USB 串口收 JSON 行。</p>
+
+      <div class="two">
+        <div>
+          <h3>适合做什么</h3>
+          <ul>
+            <li>验证设备是否被 Mac 识别。</li>
+            <li>验证屏幕是否能响应 JSON 状态包。</li>
+            <li>调试 character 文件传输和 ACK。</li>
+            <li>未来实现一个串口版 Codex bridge。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>现在不适合做什么</h3>
+          <ul>
+            <li>当前 Codex 插件自动启动的不是串口 bridge。</li>
+            <li>不能只靠插线就自动显示 quota，除非你运行串口发送脚本或后续补一个 serial bridge。</li>
+            <li>串口设备名在 macOS 上可能是 <code>/dev/cu.usbmodem*</code>，旧测试脚本只扫 <code>/dev/cu.usbserial-*</code> 时可能需要改一下。</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>串口快速验证</h3>
+      <p>先确认端口：</p>
+      <pre><code>ls /dev/cu.usbmodem* /dev/cu.usbserial* 2&gt;/dev/null</code></pre>
+
+      <p>如果要手动发一个 Codex 状态包，可以用串口工具或临时脚本写入一行 JSON：</p>
+      <pre><code>{"state":"busy","tokens":159297887,"primary":62,"secondary":44,"now":1778671200}</code></pre>
+    </section>
+
+    <section>
+      <h2>BLE 连接排错</h2>
+      <ol>
+        <li>确认 StickS3 已经刷入本项目固件，开机后会广播 <code>Codex-XXXX</code>。</li>
+        <li>确认 Mac 蓝牙已开启，且安装了 <code>bleak</code>：<code>python3 -m pip install bleak</code>。</li>
+        <li>运行 <code>start_bridge.py --foreground</code>，看能否扫描并连接。</li>
+        <li>如果 macOS 缓存了旧 BLE 名称，在 <code>~/.codex/codex-usage-bridge/config.json</code> 里设置 <code>address</code>，或删除旧配对记录。</li>
+        <li>如果日志显示连接被旧电脑占用，先在旧电脑上停止 bridge：<code>python3 plugins/codex-usage-stick/scripts/start_bridge.py --stop</code>。</li>
+      </ol>
+
+      <div class="callout warn">
+        <b>当前安全取舍</b>
+        <p>当前工作版本为了稳定显示 quota，BLE NUS 写入是开放的，没有启用 passkey 加密。它只发送本机 usage 百分比、token 数和状态字符串，不发送代码或外部网络数据。后续如果要把硬件审批也做到生产级，建议单独恢复加密配对或改为 USB Serial 专用审批链路。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>什么时候选哪条链路</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>你的目标</th>
+            <th>选择</th>
+            <th>原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>日常看 Codex pet 和 quota</td>
+            <td>BLE + USB 供电</td>
+            <td>最接近桌面摆件体验，线只供电，不占数据链路。</td>
+          </tr>
+          <tr>
+            <td>刚刷机、刚换 pet、调固件</td>
+            <td>USB-C</td>
+            <td>刷固件和上传 LittleFS 必须依赖 USB 数据连接。</td>
+          </tr>
+          <tr>
+            <td>蓝牙不好使，先证明屏幕没问题</td>
+            <td>USB Serial</td>
+            <td>串口直接喂 JSON，能快速判断问题在 BLE 还是屏幕解析。</td>
+          </tr>
+          <tr>
+            <td>把同一个 StickS3 换到另一台电脑</td>
+            <td>先停旧 bridge，再用新电脑 BLE</td>
+            <td>一个 StickS3 最好同一时间只被一台电脑的 bridge 占用。</td>
+          </tr>
+          <tr>
+            <td>想做完全脱离 Mac 蓝牙的局域网版本</td>
+            <td>未来可做 Wi-Fi</td>
+            <td>硬件支持 2.4GHz Wi-Fi，但当前仓库还没有实现 Wi-Fi 通信链路。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>实现依据</h2>
+      <ul>
+        <li><code>src/ble_bridge.cpp</code>：实现 Nordic UART Service，设备名广播为 <code>Codex-XXXX</code>，Mac bridge 写入 NUS RX。</li>
+        <li><code>src/data.h</code>：同时读取 <code>Serial</code> 和 BLE buffer，只要收到 JSON 行就更新状态。</li>
+        <li><code>plugins/codex-usage-stick/scripts/start_bridge.py</code>：Codex 插件启动和复用后台 BLE bridge。</li>
+        <li><code>plugins/codex-usage-stick/scripts/codex_usage_ble_bridge.py</code>：读取本机 Codex usage，并通过 BLE 写 JSON 包。</li>
+        <li><code>tools/test_serial.py</code> / <code>tools/test_xfer.py</code>：USB 串口调试和文件传输验证脚本。</li>
+        <li><a href="https://docs.m5stack.com/en/core/StickS3">M5Stack StickS3 官方文档</a>：确认 StickS3 使用 ESP32-S3-PICO-1-N8R8，并列出 2.4GHz Wi-Fi、USB Type-C、250mAh 电池等硬件信息。</li>
+        <li><a href="https://documentation.espressif.com/esp32-s3-pico-1_datasheet_en.html">Espressif ESP32-S3-PICO-1 数据手册</a>：确认该 SiP 支持 2.4GHz Wi-Fi 和 Bluetooth LE。</li>
+      </ul>
+      <p class="small">更新时间：2026-05-29。本文档面向当前仓库工作版本，不代表所有未来分支的通信策略。</p>
+    </section>
+  </main>
+</body>
+</html>
