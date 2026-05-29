@@ -1,0 +1,20 @@
+{
+  "name": "codex-usage-stick-marketplace",
+  "interface": {
+    "displayName": "Codex Usage Stick Local"
+  },
+  "plugins": [
+    {
+      "name": "codex-usage-stick",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-usage-stick"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    }
+  ]
+}

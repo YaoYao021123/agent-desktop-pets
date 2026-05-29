@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Usage Pet"
+  short_description: "Hatch seven-state Codex Usage Stick pet spritesheets"
+  default_prompt: "Create a Codex Usage Stick animated pet from a concept, reference images, or both. Use $imagegen for the base and grounded row strips, generate the seven states sleep, idle, busy, attention, completed, dizzy, and heart, then use this skill's deterministic scripts to ingest outputs, validate frames, assemble the spritesheet, and package pet.json plus spritesheet.webp."

@@ -1,0 +1,39 @@
+{
+  "name": "codex-usage-stick",
+  "version": "0.4.0",
+  "description": "Automatically starts a BLE bridge that sends Codex usage to an M5Stack StickS3 display.",
+  "author": {
+    "name": "Hugo Makerhund"
+  },
+  "homepage": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+  "repository": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "ble",
+    "m5stick",
+    "m5stack",
+    "usage"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks.json",
+  "interface": {
+    "displayName": "Codex Usage Stick",
+    "shortDescription": "Start the StickS3 Codex usage BLE bridge",
+    "longDescription": "Starts a local Python BLE bridge when a Codex session starts. The bridge reads local Codex usage data and sends token totals, 5h usage, and 7d usage to a StickS3 running the matching firmware.",
+    "developerName": "Hugo Makerhund",
+    "category": "Engineering",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "websiteURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+    "privacyPolicyURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+    "termsOfServiceURL": "https://github.com/openelab-commits/claude-desktop-buddy-GIF",
+    "defaultPrompt": [
+      "Check my Codex Usage Stick bridge status"
+    ],
+    "brandColor": "#10A37F",
+    "screenshots": []
+  }
+}
