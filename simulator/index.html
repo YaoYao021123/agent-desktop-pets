@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Desktop Pets Simulator</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="stage" aria-label="StickS3 simulator">
+      <div class="device-wrap">
+        <div class="device">
+          <div class="usb-slot"></div>
+          <div class="lcd" id="lcd">
+            <section class="screen screen-dashboard" id="dashboardScreen">
+              <div class="pet-pane">
+                <div class="status-icons">
+                  <span class="wifi" aria-hidden="true"></span>
+                  <span class="battery" aria-hidden="true"><i></i></span>
+                </div>
+                <img id="petSprite" class="pet-sprite" alt="Current pet animation">
+                <div class="pet-name" id="petName">KUMA</div>
+              </div>
+
+              <div class="divider" aria-hidden="true"></div>
+
+              <div class="usage-pane">
+                <div class="usage-head">
+                  <span>CODEX USAGE</span>
+                  <strong id="liveBadge">LIVE</strong>
+                </div>
+
+                <div class="meter" data-window="5h">
+                  <div class="meter-row">
+                    <strong id="primaryPct">98%</strong>
+                    <span>5h</span>
+                  </div>
+                  <div class="bar"><i id="primaryBar"></i></div>
+                  <div class="reset" id="primaryReset">resets in 1h 13m</div>
+                </div>
+
+                <div class="meter" data-window="7d">
+                  <div class="meter-row">
+                    <strong id="secondaryPct">44%</strong>
+                    <span>7d</span>
+                  </div>
+                  <div class="bar"><i id="secondaryBar"></i></div>
+                  <div class="reset" id="secondaryReset">resets in 2d 08h</div>
+                </div>
+
+                <div class="micro-row">
+                  <div class="terminal-mark"><span>&gt;</span><em id="stateChip">busy</em></div>
+                  <div class="token-mark"><span id="tokenText">159.3M</span><em>tokens</em></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="screen screen-credits" id="creditsScreen" hidden>
+              <div class="credit-col">
+                <span>made by</span>
+                <strong>YaoYao + Codex</strong>
+                <span>fork from</span>
+                <strong>Felix Rieseberg</strong>
+              </div>
+              <div class="credit-col">
+                <span>source</span>
+                <strong>github.com/</strong>
+                <strong>YaoYao021123/</strong>
+                <strong>agent-desktop</strong>
+                <strong>-pets</strong>
+              </div>
+            </section>
+          </div>
+          <div class="button-plate" aria-hidden="true">
+            <span class="m5">M5</span>
+            <span class="button"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="control-panel" aria-label="Simulator controls">
+      <header class="panel-head">
+        <h1>Agent Desktop Pets</h1>
+        <p>Mac UI simulator for StickS3 quota and pet states.</p>
+      </header>
+
+      <div class="control-grid">
+        <label class="field">
+          <span>Pet</span>
+          <select id="petSelect"></select>
+        </label>
+
+        <label class="field">
+          <span>View</span>
+          <select id="viewSelect">
+            <option value="dashboard">Dashboard</option>
+            <option value="credits">Credits</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>5h quota</span>
+          <input id="primaryInput" type="range" min="0" max="100" value="98">
+        </label>
+
+        <label class="field">
+          <span>7d quota</span>
+          <input id="secondaryInput" type="range" min="0" max="100" value="44">
+        </label>
+      </div>
+
+      <div class="state-grid" id="stateGrid" aria-label="Pet state controls"></div>
+
+      <div class="json-box">
+        <label for="jsonInput">Bridge JSON</label>
+        <textarea id="jsonInput" spellcheck="false">{"state":"busy","tokens":159297887,"primary":98,"secondary":44}</textarea>
+        <div class="actions">
+          <button id="applyJson" type="button">Apply JSON</button>
+          <button id="sampleJson" type="button">Sample</button>
+          <button id="streamToggle" type="button">Start stream</button>
+        </div>
+        <p id="message" role="status"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
