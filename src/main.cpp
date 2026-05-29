@@ -700,6 +700,8 @@ void drawPasskey() {
   spr.print(b);
 }
 
+static uint8_t quotaRemainingPct(uint8_t usedPct);
+
 void drawInfo() {
   const Palette& p = characterPalette();
   const int TOP = 70;
@@ -719,7 +721,7 @@ void drawInfo() {
     y += 6;
     ln("The home screen shows");
     ln("tokens plus short and");
-    ln("long usage windows.");
+    ln("long quota left.");
     y += 6;
     spr.setTextColor(p.text, p.bg);
     ln("Primary is fixed 5h.");
@@ -747,8 +749,8 @@ void drawInfo() {
     _infoHeader(p, y, "CODEX", infoPage);
     spr.setTextColor(p.textDim, p.bg);
     ln("  tokens    %lu", (unsigned long)tama.codexTokens);
-    ln("  primary   %u%%", tama.codexPrimary);
-    ln("  secondary %u%%", tama.codexSecondary);
+    ln("  5h left   %u%%", quotaRemainingPct(tama.codexPrimary));
+    ln("  7d left   %u%%", quotaRemainingPct(tama.codexSecondary));
     y += 8;
     spr.setTextColor(p.text, p.bg);
     ln("LINK");
@@ -1063,10 +1065,14 @@ void drawPet() {
   spr.printf("%u/%u", petPage + 1, PET_PAGES);
 }
 
-static uint16_t usageColor(uint8_t pct, const Palette& p) {
-  if (pct >= 70) return HOT;
-  if (pct >= 35) return GREEN;
-  return 0x04DF;
+static uint8_t quotaRemainingPct(uint8_t usedPct) {
+  return usedPct >= 100 ? 0 : (uint8_t)(100 - usedPct);
+}
+
+static uint16_t quotaRemainingColor(uint8_t remainingPct) {
+  if (remainingPct >= 70) return GREEN;
+  if (remainingPct >= 35) return 0xFD20;
+  return HOT;
 }
 
 static uint16_t resetColor(uint32_t resetAt, const char* windowLabel, bool live, const Palette& p) {
@@ -1138,12 +1144,12 @@ static void resetTimeText(uint32_t resetAt, char* out, size_t len) {
 }
 
 static void drawUsageMeterOn(lgfx::v1::LGFXBase* dst, int x, int y, int w,
-                             uint8_t pct, const char* windowLabel,
+                             uint8_t remainingPct, const char* windowLabel,
                              uint32_t resetAt, bool live, const Palette& p) {
-  if (pct > 100) pct = 100;
-  uint16_t fill = live ? usageColor(pct, p) : p.textDim;
+  if (remainingPct > 100) remainingPct = 100;
+  uint16_t fill = live ? quotaRemainingColor(remainingPct) : p.textDim;
   char left[8];
-  snprintf(left, sizeof(left), "%u%%", pct);
+  snprintf(left, sizeof(left), "%u%%", remainingPct);
 
   dst->setTextSize(2);
   dst->setTextDatum(TL_DATUM);
@@ -1155,7 +1161,7 @@ static void drawUsageMeterOn(lgfx::v1::LGFXBase* dst, int x, int y, int w,
   const int bx = x, by = y + 24, bw = w, bh = 13;
   dst->drawRect(bx, by, bw, bh, p.textDim);
   dst->fillRect(bx + 1, by + 1, bw - 2, bh - 2, p.bg);
-  int fw = (int)((uint32_t)(bw - 2) * pct / 100);
+  int fw = (int)((uint32_t)(bw - 2) * remainingPct / 100);
   if (fw > 0) dst->fillRect(bx + 1, by + 1, fw, bh - 2, fill);
 
   dst->setTextSize(1);
@@ -1189,8 +1195,8 @@ static void drawUsageMeter(int y, uint8_t pct, const char* windowLabel,
 static void drawUsageDashboard() {
   const Palette& p = characterPalette();
   bool live = tama.connected;
-  uint8_t primary = live ? tama.codexPrimary : 0;
-  uint8_t secondary = live ? tama.codexSecondary : 0;
+  uint8_t primary = live ? quotaRemainingPct(tama.codexPrimary) : 0;
+  uint8_t secondary = live ? quotaRemainingPct(tama.codexSecondary) : 0;
 
   if (!usageLiveKnown || usageLastLive != live) {
     usageLiveKnown = true;
@@ -1217,7 +1223,7 @@ static void drawUsageDashboard() {
     spr.setTextSize(1);
     spr.setTextDatum(TL_DATUM);
     spr.setTextColor(p.textDim, p.bg);
-    spr.drawString("CODEX USAGE", 8, 8);
+    spr.drawString("CODEX QUOTA", 8, 8);
     spr.setTextDatum(TR_DATUM);
     spr.setTextColor(live ? GREEN : HOT, p.bg);
     spr.drawString(live ? "LIVE" : "WAIT", W - 8, 8);
@@ -1232,8 +1238,8 @@ static void drawUsageDashboard() {
 static void drawUsageDashboardLandscape() {
   const Palette& p = characterPalette();
   bool live = tama.connected;
-  uint8_t primary = live ? tama.codexPrimary : 0;
-  uint8_t secondary = live ? tama.codexSecondary : 0;
+  uint8_t primary = live ? quotaRemainingPct(tama.codexPrimary) : 0;
+  uint8_t secondary = live ? quotaRemainingPct(tama.codexSecondary) : 0;
   uint32_t primaryReset = live ? tama.codexPrimaryResetsAt : 0;
   uint32_t secondaryReset = live ? tama.codexSecondaryResetsAt : 0;
 
@@ -1278,7 +1284,7 @@ static void drawUsageDashboardLandscape() {
     M5.Lcd.setTextSize(1);
     M5.Lcd.setTextDatum(TL_DATUM);
     M5.Lcd.setTextColor(p.textDim, p.bg);
-    M5.Lcd.drawString("CODEX USAGE", rightX, 7);
+    M5.Lcd.drawString("CODEX QUOTA", rightX, 7);
     M5.Lcd.setTextDatum(TR_DATUM);
     M5.Lcd.setTextColor(live ? GREEN : HOT, p.bg);
     M5.Lcd.drawString(live ? "LIVE" : "WAIT", lw - 8, 7);

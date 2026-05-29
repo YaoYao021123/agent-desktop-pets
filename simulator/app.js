@@ -87,10 +87,14 @@ function clampPct(value) {
   return Math.max(0, Math.min(100, Number(value) || 0));
 }
 
-function usageColor(pct) {
-  if (pct >= 70) return "var(--orange)";
-  if (pct >= 35) return "var(--green)";
-  return "var(--cyan)";
+function quotaRemainingPct(usedPct) {
+  return 100 - clampPct(usedPct);
+}
+
+function quotaRemainingColor(remainingPct) {
+  if (remainingPct >= 70) return "var(--green)";
+  if (remainingPct >= 35) return "var(--orange)";
+  return "var(--red)";
 }
 
 function resetColor(secondsLeft, windowLabel) {
@@ -209,15 +213,17 @@ function renderPet() {
 function renderMeters() {
   const primaryReset = resetText(app.primaryResetsAt, "5h");
   const secondaryReset = resetText(app.secondaryResetsAt, "7d");
+  const primaryRemaining = quotaRemainingPct(app.primary);
+  const secondaryRemaining = quotaRemainingPct(app.secondary);
 
   els.liveBadge.textContent = app.live ? "LIVE" : "WAIT";
   els.liveBadge.style.color = app.live ? "var(--green)" : "var(--red)";
-  els.primaryPct.textContent = `${app.primary}%`;
-  els.secondaryPct.textContent = `${app.secondary}%`;
-  els.primaryBar.style.width = `${app.primary}%`;
-  els.secondaryBar.style.width = `${app.secondary}%`;
-  els.primaryBar.style.background = usageColor(app.primary);
-  els.secondaryBar.style.background = usageColor(app.secondary);
+  els.primaryPct.textContent = `${primaryRemaining}%`;
+  els.secondaryPct.textContent = `${secondaryRemaining}%`;
+  els.primaryBar.style.width = `${primaryRemaining}%`;
+  els.secondaryBar.style.width = `${secondaryRemaining}%`;
+  els.primaryBar.style.background = quotaRemainingColor(primaryRemaining);
+  els.secondaryBar.style.background = quotaRemainingColor(secondaryRemaining);
   els.primaryReset.textContent = primaryReset.text;
   els.secondaryReset.textContent = secondaryReset.text;
   els.primaryReset.style.color = primaryReset.color;

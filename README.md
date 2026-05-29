@@ -3,8 +3,8 @@
 Agent Desktop Pets is a firmware and local agent bridge for turning an
 M5Stack StickS3 into a tiny desktop companion for AI coding agents.
 
-The StickS3 shows live agent state over BLE: a GIF pet, a 5-hour usage bar, a
-7-day usage bar, reset countdowns, and state-driven animations such as `busy`,
+The StickS3 shows live agent state over BLE: a GIF pet, 5-hour remaining quota,
+7-day remaining quota, reset countdowns, and state-driven animations such as `busy`,
 `idle`, `completed`, `attention`, `dizzy`, `heart`, and `sleep`.
 
 This project is a fork of Anthropic's
@@ -24,20 +24,20 @@ not an inherited screenshot from the upstream desktop buddy repository.
 ## What It Displays
 
 - GIF pet area.
-- `CODEX USAGE` header with `LIVE` or `WAIT`.
-- Primary usage window labeled `5h`.
-- Secondary usage window labeled `7d`.
+- `CODEX QUOTA` header with `LIVE` or `WAIT`.
+- Primary quota window labeled `5h`.
+- Secondary quota window labeled `7d`.
 - Reset countdowns for both windows.
-- Color-coded usage bars:
-  - `0-34%`: blue
-  - `35-69%`: green
-  - `70-100%`: orange
+- Color-coded remaining quota bars:
+  - `0-34%`: red-orange
+  - `35-69%`: orange
+  - `70-100%`: green
 - Color-coded reset time values:
   - `5h`: green above 3h, orange above 1h, red at 1h or below
   - `7d`: green above 4d, orange above 2d, red at 2d or below
 
-Portrait mode places the pet above the usage bars. Landscape mode places the
-pet on the left and usage bars on the right.
+Portrait mode places the pet above the quota bars. Landscape mode places the
+pet on the left and quota bars on the right.
 
 ## Hardware
 
@@ -278,8 +278,8 @@ The bridge sends compact JSON over BLE:
 | --- | --- |
 | `state` | Pet state: `busy`, `idle`, `completed`, `attention`, `dizzy`, `heart`, or `sleep` |
 | `tokens` | Total token usage value read by the bridge |
-| `primary` | 5-hour usage percentage |
-| `secondary` | 7-day usage percentage |
+| `primary` | 5-hour used percentage from Codex; the screen displays `100 - primary` as remaining quota |
+| `secondary` | 7-day used percentage from Codex; the screen displays `100 - secondary` as remaining quota |
 | `primary_resets_at` | Unix timestamp for primary reset |
 | `secondary_resets_at` | Unix timestamp for secondary reset |
 | `now` | Sender timestamp |
