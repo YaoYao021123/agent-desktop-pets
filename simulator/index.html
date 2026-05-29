@@ -10,8 +10,9 @@
   <main class="app-shell">
     <section class="stage" aria-label="StickS3 simulator">
       <div class="device-wrap">
-        <div class="device">
-          <div class="usb-slot"></div>
+        <div class="device-model" id="deviceModel">
+          <img class="device-photo" src="../assets/sticks3-front-crop.png" alt="M5Stack StickS3 front view">
+          <button class="device-hotspot front-key-hotspot" id="frontKeyHotspot" type="button" aria-label="KEY1 front button"></button>
           <div class="lcd" id="lcd">
             <section class="screen screen-dashboard" id="dashboardScreen">
               <div class="pet-pane">
@@ -72,11 +73,27 @@
               </div>
             </section>
           </div>
-          <div class="button-plate" aria-hidden="true">
-            <span class="m5">M5</span>
-            <span class="button"></span>
-          </div>
         </div>
+
+        <div class="hardware-controls" aria-label="StickS3 hardware buttons">
+          <button class="hardware-button hardware-key1" id="key1Button" type="button">
+            <strong>KEY1</strong>
+            <span>G11</span>
+          </button>
+          <button class="hardware-button" id="key2Button" type="button">
+            <strong>KEY2</strong>
+            <span>G12</span>
+          </button>
+          <button class="hardware-button" id="powerButton" type="button">
+            <strong>PWR</strong>
+            <span>side</span>
+          </button>
+        </div>
+
+        <figure class="side-reference">
+          <img src="../assets/sticks3-buttons.jpg" alt="StickS3 side button reference">
+          <figcaption>Official side button reference</figcaption>
+        </figure>
       </div>
     </section>
 

@@ -40,6 +40,12 @@ const els = {
   sampleJson: document.querySelector("#sampleJson"),
   streamToggle: document.querySelector("#streamToggle"),
   message: document.querySelector("#message"),
+  lcd: document.querySelector("#lcd"),
+  deviceModel: document.querySelector("#deviceModel"),
+  frontKeyHotspot: document.querySelector("#frontKeyHotspot"),
+  key1Button: document.querySelector("#key1Button"),
+  key2Button: document.querySelector("#key2Button"),
+  powerButton: document.querySelector("#powerButton"),
   dashboardScreen: document.querySelector("#dashboardScreen"),
   creditsScreen: document.querySelector("#creditsScreen"),
   petSprite: document.querySelector("#petSprite"),
@@ -68,7 +74,9 @@ const app = {
   secondaryResetsAt: secondsFromNow((2 * 24 + 8) * 3600),
   streamTimer: null,
   sampleIndex: 0,
-  idleFrame: 0
+  idleFrame: 0,
+  screenOff: false,
+  hardwarePulseTimer: null
 };
 
 function secondsFromNow(delta) {
@@ -184,6 +192,8 @@ function renderView() {
   const dashboard = app.view === "dashboard";
   els.dashboardScreen.hidden = !dashboard;
   els.creditsScreen.hidden = dashboard;
+  els.viewSelect.value = app.view;
+  els.lcd.classList.toggle("screen-off", app.screenOff);
 }
 
 function renderPet() {
@@ -225,6 +235,14 @@ function render() {
   renderStateButtons();
 }
 
+function pulseHardware(key) {
+  els.deviceModel.dataset.activeKey = key;
+  clearTimeout(app.hardwarePulseTimer);
+  app.hardwarePulseTimer = setTimeout(() => {
+    els.deviceModel.dataset.activeKey = "";
+  }, 180);
+}
+
 function applyPacket(packet) {
   if (typeof packet !== "object" || packet === null || Array.isArray(packet)) {
     throw new Error("JSON must be an object");
@@ -246,6 +264,38 @@ function nextSample() {
   packet.secondary_resets_at = secondsFromNow((2 * 86400) + app.sampleIndex * 3700);
   els.jsonInput.value = JSON.stringify(packet);
   applyPacket(packet);
+}
+
+function pressKey1() {
+  pulseHardware("key1");
+  if (app.screenOff) {
+    app.screenOff = false;
+    setMessage("KEY1 woke the display.");
+    render();
+    return;
+  }
+  nextSample();
+  setMessage("KEY1 advanced the bridge packet.");
+}
+
+function pressKey2() {
+  pulseHardware("key2");
+  if (app.screenOff) {
+    app.screenOff = false;
+    setMessage("KEY2 woke the display.");
+    render();
+    return;
+  }
+  app.view = app.view === "dashboard" ? "credits" : "dashboard";
+  render();
+  setMessage("KEY2 switched the screen.");
+}
+
+function pressPower() {
+  pulseHardware("power");
+  app.screenOff = !app.screenOff;
+  render();
+  setMessage(app.screenOff ? "Display off." : "Display on.");
 }
 
 function toggleStream() {
@@ -303,6 +353,10 @@ function bindEvents() {
 
   els.sampleJson.addEventListener("click", nextSample);
   els.streamToggle.addEventListener("click", toggleStream);
+  els.frontKeyHotspot.addEventListener("click", pressKey1);
+  els.key1Button.addEventListener("click", pressKey1);
+  els.key2Button.addEventListener("click", pressKey2);
+  els.powerButton.addEventListener("click", pressPower);
 }
 
 async function init() {
