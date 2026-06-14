@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StickS3 Mac Agent Dashboard 项目总览</title>
+  <style>
+    @font-face {
+      font-family: "Fusion Pixel";
+      src: url("./assets/fonts/fusion-pixel-12px-proportional-latin.otf.woff2") format("woff2");
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #050605;
+      --ink: #f5f2e9;
+      --muted: #a9a397;
+      --soft: #d7d1c4;
+      --line: rgba(245, 242, 233, .2);
+      --line-strong: rgba(126, 224, 152, .62);
+      --panel: #0b0e0b;
+      --panel-2: #101510;
+      --green: #7ee098;
+      --amber: #e7c66a;
+      --coral: #ec806e;
+      --mono: "Fusion Pixel", "SFMono-Regular", Consolas, monospace;
+      --sans: "Avenir Next", "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: var(--sans);
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: #030403;
+    }
+
+    .brand {
+      font-family: var(--mono);
+      font-size: clamp(15px, 1.8vw, 22px);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid transparent;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: var(--green);
+      border-color: var(--line);
+      outline: none;
+    }
+
+    .hero {
+      min-height: calc(100vh - 58px);
+      display: grid;
+      align-items: center;
+      padding: 64px 24px 56px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-inner,
+    .section-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .kicker {
+      margin-bottom: 20px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      font-size: clamp(42px, 8vw, 108px);
+      line-height: .95;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin-top: 28px;
+      color: var(--soft);
+      font-size: clamp(18px, 2.2vw, 26px);
+      line-height: 1.5;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 26px;
+      align-items: end;
+      margin-top: 54px;
+    }
+
+    .signal-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .signal {
+      min-height: 112px;
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .signal svg,
+    .work-card svg,
+    .roadmap-card svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .signal b {
+      display: block;
+      margin-top: 20px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .signal span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .demo-link {
+      min-height: 112px;
+      display: grid;
+      align-content: center;
+      padding: 22px;
+      border: 1px solid var(--line-strong);
+      background: var(--panel-2);
+    }
+
+    .demo-link span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .demo-link b {
+      display: block;
+      margin-top: 10px;
+      color: var(--green);
+      font-size: clamp(24px, 3vw, 42px);
+      line-height: 1;
+    }
+
+    section {
+      padding: 78px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 30px;
+      align-items: start;
+      margin-bottom: 34px;
+    }
+
+    .section-index {
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      max-width: 780px;
+      font-size: clamp(32px, 5vw, 64px);
+      line-height: 1;
+      font-weight: 780;
+    }
+
+    .section-summary {
+      max-width: 760px;
+      margin-top: 18px;
+      color: var(--soft);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .work-grid,
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .work-card,
+    .roadmap-card {
+      min-height: 246px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 16px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .work-card:nth-child(even),
+    .roadmap-card:nth-child(even) {
+      background: #070907;
+    }
+
+    .work-card h3,
+    .roadmap-card h3 {
+      font-size: 23px;
+      line-height: 1.18;
+    }
+
+    .work-card p,
+    .roadmap-card p {
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-self: end;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .tag.done {
+      color: var(--green);
+      border-color: rgba(126, 224, 152, .42);
+    }
+
+    .tag.next {
+      color: var(--amber);
+      border-color: rgba(231, 198, 106, .45);
+    }
+
+    .tag.risk {
+      color: var(--coral);
+      border-color: rgba(236, 128, 110, .48);
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .callout {
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .callout h3 {
+      margin-bottom: 14px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .callout ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .callout li {
+      display: grid;
+      grid-template-columns: 106px 1fr;
+      gap: 14px;
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .callout li b {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .milestones {
+      display: grid;
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .milestone {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 76px 1fr 170px;
+      gap: 20px;
+      align-items: center;
+      min-height: 104px;
+      padding: 18px 22px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .milestone::before {
+      content: counter(step, decimal-leading-zero);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 28px;
+    }
+
+    .milestone h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .milestone p {
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .milestone time {
+      justify-self: end;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .footer-links a {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      color: var(--soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--green);
+      border-color: var(--line-strong);
+      outline: none;
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .section-head,
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .work-grid,
+      .roadmap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .signal-board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 16px;
+      }
+
+      .hero,
+      section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .work-grid,
+      .roadmap-grid,
+      .signal-board {
+        grid-template-columns: 1fr;
+      }
+
+      .milestone {
+        grid-template-columns: 1fr;
+      }
+
+      .milestone time {
+        justify-self: start;
+      }
+
+      .callout li {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top">StickS3 Project Overview</a>
+    <nav class="nav" aria-label="项目导航">
+      <a href="#done">已有工作</a>
+      <a href="#expand">拓展方向</a>
+      <a href="#next">下一步</a>
+      <a href="agent-dashboard-stick-s3-full-simulator.html">模拟器</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-inner">
+        <div class="kicker">Mac agent companion on M5Stack StickS3</div>
+        <h1 id="title">StickS3 Mac Agent Companion：当前成果与拓展路线</h1>
+        <p class="lead">这个项目把 Mac 上的 agent 状态、审批请求、系统负载、专注信号和桌面宠物，压缩到一个可以常亮摆在桌面的 StickS3 小屏里。</p>
+        <div class="hero-grid">
+          <div class="signal-board" aria-label="核心能力">
+            <div class="signal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M8 21h8M12 18v3"></path></svg>
+              <b>Screen</b>
+              <span>Home、Agent、Schedule、Power、Pet 和详情页。</span>
+            </div>
+            <div class="signal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0M8 12a4 4 0 0 1 8 0M10 16a2 2 0 0 1 4 0"></path><path d="M12 19v1"></path></svg>
+              <b>Live Link</b>
+              <span>Mac 本地同步 agent、审批、CPU、RAM 和日程。</span>
+            </div>
+            <div class="signal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="3"></rect><path d="M8 12h3M13 12h3"></path></svg>
+              <b>Buttons</b>
+              <span>A / B 双键承担翻页、详情、返回、审批和语音输入。</span>
+            </div>
+            <div class="signal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"></path><rect x="5" y="11" width="14" height="9" rx="3"></rect><path d="M9 15h.01M15 15h.01"></path></svg>
+              <b>Pet</b>
+              <span>无操作进入宠物待机，忙碌、完成和等待用情绪化状态表达。</span>
+            </div>
+          </div>
+          <a class="demo-link" href="agent-dashboard-stick-s3-full-simulator.html">
+            <span>Interactive HTML</span>
+            <b>打开全量模拟器</b>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="done" aria-labelledby="done-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-index">01 Existing Work</div>
+          <div>
+            <h2 id="done-title">我们现在已有的工作</h2>
+            <p class="section-summary">这些内容已经在本次 session 和项目文件中形成了可运行原型、固件逻辑、桥接脚本、模拟器或文档记录。</p>
+          </div>
+        </div>
+
+        <div class="work-grid">
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h10"></path></svg>
+            <h3>产品方向收敛</h3>
+            <p>从 ESP32 小屏、AI agent dashboard、桌面系统监控和 macro remote 中，收敛到 StickS3 适合承载的“单一关键状态 + 少量操作”。</p>
+            <div class="tag-row"><span class="tag done">esp32.md</span><span class="tag done">direction</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="4"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg>
+            <h3>StickS3 固件页面</h3>
+            <p>当前固件视口覆盖 Home、Welcome、Agent Hub、Schedule、Power、Pet、详情页和审批覆盖层，适配横屏展示。</p>
+            <div class="tag-row"><span class="tag done">firmware</span><span class="tag done">landscape</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3"></circle><circle cx="16" cy="12" r="3"></circle><path d="M8 15v3M16 15v3"></path></svg>
+            <h3>A / B / Fn 按键逻辑</h3>
+            <p>A 负责下一页和批准，B 负责详情和拒绝，B 双击返回；B 长按作为 Fn 入口，打开 Codex 语音输入。</p>
+            <div class="tag-row"><span class="tag done">controls</span><span class="tag done">voice</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6M8 18V9M12 18V4M16 18v-6M20 18V8"></path></svg>
+            <h3>Power 页面改造</h3>
+            <p>Power 不再展示电量，改为 CPU、RAM 和 Bridge 状态，更贴近 Mac agent dashboard 的运行监控。</p>
+            <div class="tag-row"><span class="tag done">cpu</span><span class="tag done">ram</span><span class="tag done">bridge</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M5 8l2 2M19 8l-2 2"></path><rect x="5" y="10" width="14" height="9" rx="3"></rect><path d="M9 14h.01M15 14h.01"></path></svg>
+            <h3>桌面宠物接入</h3>
+            <p>Pet 资源来自 <code>~/.codex/pets</code> 的 Codex pet 包，当前可作为无操作后的待机层进入；A / B 唤醒，B 双击可关闭自动待机。</p>
+            <div class="tag-row"><span class="tag done">pet</span><span class="tag done">idle</span><span class="tag done">assets</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"></path><path d="M7 7v10M17 7v10"></path></svg>
+            <h3>Mac 实时连接</h3>
+            <p>Mac 本地 bridge 已能把 agent 状态、审批请求、系统负载和连接状态同步到设备。用户看到的是在线、过期、离线和异常。</p>
+            <div class="tag-row"><span class="tag done">live link</span><span class="tag done">ble</span><span class="tag done">5s</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h12v14H6z"></path><path d="M9 9h6M9 13h6M9 17h3"></path></svg>
+            <h3>全量 HTML 模拟器</h3>
+            <p>已有一个可交互页面，把横向 StickS3 机型、固件页面、按键、状态场景、详情页、实时连接和用户场景放到同一个展示门户里。</p>
+            <div class="tag-row"><span class="tag done">html</span><span class="tag done">simulator</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path><circle cx="12" cy="12" r="8"></circle></svg>
+            <h3>交互逻辑图</h3>
+            <p>已输出 XMind，用于描述页面切换、详情聚焦、审批覆盖层和双键交互关系。</p>
+            <div class="tag-row"><span class="tag done">xmind</span><span class="tag done">flow</span></div>
+          </article>
+
+          <article class="work-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h14"></path><path d="M7 19V8l5-4 5 4v11"></path><path d="M10 19v-5h4v5"></path></svg>
+            <h3>硬件验证记录</h3>
+            <p>项目记录显示固件、LittleFS、pet 资源、BLE bridge 都曾成功跑通。当前网页和后续固件改动需要按需重新 build / flash。</p>
+            <div class="tag-row"><span class="tag done">flashed</span><span class="tag next">refash as needed</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="expand" aria-labelledby="expand-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-index">02 Expansion Map</div>
+          <div>
+            <h2 id="expand-title">结合整个项目可以拓展的内容</h2>
+            <p class="section-summary">这些方向都能复用当前的屏幕、按键、Mac 本地同步和实时状态基础。优先级应围绕“桌面上能一眼看懂并能立即操作”来排序。</p>
+          </div>
+        </div>
+
+        <div class="roadmap-grid">
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12l3 3 7-7"></path><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg>
+            <h3>Agent Approval Buddy</h3>
+            <p>把 Codex、Claude、Cursor 或本地 agent 的权限请求统一到硬件屏。A 批准，B 拒绝，详情页显示风险、命令和来源。</p>
+            <div class="tag-row"><span class="tag next">priority 1</span><span class="tag risk">security</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v5l3 2"></path></svg>
+            <h3>Focus + Interruptibility</h3>
+            <p>接入日历、专注模式和 agent awaiting 状态。屏幕显示是否可以打断，以及哪个 agent 正在等你。</p>
+            <div class="tag-row"><span class="tag next">focus</span><span class="tag">calendar</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16"></path><path d="M7 17V9M12 17V5M17 17v-6"></path></svg>
+            <h3>Mac Ops Mini Monitor</h3>
+            <p>扩展 CPU、RAM、磁盘、网络、温度、风扇和 bridge heartbeat。StickS3 只显示关键告警，大量图表留给 Mac 页面。</p>
+            <div class="tag-row"><span class="tag next">low risk</span><span class="tag">ops</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h10M5 18h7"></path></svg>
+            <h3>Personal Now Terminal</h3>
+            <p>把 Calendar、Reminders、Mail、Messages、天气或 RSS 经 Mac bridge 脱敏摘要后送到屏幕，形成桌面即时信息终端。</p>
+            <div class="tag-row"><span class="tag">digest</span><span class="tag risk">privacy</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg>
+            <h3>Agent Macro Remote</h3>
+            <p>把 StickS3 升级成小型 Stream Deck：停止任务、重试、打开日志、切换 agent、打开语音输入、控制音乐或触发 IDE 快捷动作。</p>
+            <div class="tag-row"><span class="tag next">hid</span><span class="tag">remote</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14M5 16h14"></path><circle cx="8" cy="8" r="2"></circle><circle cx="16" cy="16" r="2"></circle></svg>
+            <h3>Multi Agent Hub</h3>
+            <p>把 Codex、Claude、Cursor、本地脚本或 CI agent 统一成列表，显示 idle、busy、done、error、stale、offline。</p>
+            <div class="tag-row"><span class="tag">schema</span><span class="tag">agents</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h8v8H8z"></path><path d="M3 12h5M16 12h5M12 3v5M12 16v5"></path></svg>
+            <h3>Pet System</h3>
+            <p>扩充 mood 动画、睡眠/唤醒、角色切换和工作状态映射。短期重点是把 pet 做成可关闭的 idle 层，而不是单独的装饰页面。</p>
+            <div class="tag-row"><span class="tag">assets</span><span class="tag">mood</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4h14v16"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg>
+            <h3>Config / OTA Portal</h3>
+            <p>做一个本地配置页：亮度、默认页面、agent 源、pet 资源、刷新频率、BLE/USB 通道和固件更新状态。</p>
+            <div class="tag-row"><span class="tag">config</span><span class="tag risk">ota</span></div>
+          </article>
+
+          <article class="roadmap-card">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18h12"></path><path d="M8 18V7h8v11"></path><path d="M10 10h4M10 14h4"></path></svg>
+            <h3>Hardware Variants</h3>
+            <p>StickS3 继续做最小可用状态屏。若要图表、触摸和多窗口，可评估 T-Display-S3、CYD 或 4.3 寸 ESP32-S3 屏。</p>
+            <div class="tag-row"><span class="tag">stick first</span><span class="tag">larger screen</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" aria-labelledby="next-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-index">03 Next Steps</div>
+          <div>
+            <h2 id="next-title">建议下一步</h2>
+            <p class="section-summary">当前最重要的是先把“展示清楚”和“真实硬件一致”锁住，再决定下一轮扩展是否偏审批、专注、系统监控或 macro remote。</p>
+          </div>
+        </div>
+
+        <div class="milestones">
+          <article class="milestone">
+            <div>
+              <h3>锁定展示叙事</h3>
+              <p>让模拟页首页一眼说明它是什么，后续页面解释屏幕内容、实体按键、Mac 实时连接、Pet idle 和典型使用场景。</p>
+            </div>
+            <time>now</time>
+          </article>
+          <article class="milestone">
+            <div>
+              <h3>完成 1 / 2 / 3</h3>
+              <p>把 Agent Approval Buddy、Focus + Interruptibility、Mac Ops Mini Monitor 做成同一个可演示工作流，并确保 HTML 和固件按键逻辑一致。</p>
+            </div>
+            <time>now</time>
+          </article>
+          <article class="milestone">
+            <div>
+              <h3>同步固件并重新烧录</h3>
+              <p>把当前页面逻辑和最新固件实现对齐，重新 build / flash，避免 HTML 演示领先硬件太多。</p>
+            </div>
+            <time>hardware</time>
+          </article>
+          <article class="milestone">
+            <div>
+              <h3>加固 bridge action 协议</h3>
+              <p>审批、拒绝、返回和状态刷新都需要可追踪日志、超时、重试和 stale/offline fallback。</p>
+            </div>
+            <time>protocol</time>
+          </article>
+          <article class="milestone">
+            <div>
+              <h3>选择一个扩展方向</h3>
+              <p>优先建议走 Agent Approval Buddy；如果要稳妥 demo，则先扩 Mac Ops Mini Monitor。</p>
+            </div>
+            <time>roadmap</time>
+          </article>
+        </div>
+
+        <div class="matrix" style="margin-top: 38px;">
+          <div class="callout">
+            <h3>当前边界</h3>
+            <ul>
+              <li><b>屏幕</b><span>StickS3 屏幕小，适合主状态、短标签、单个操作，不适合完整 dashboard。</span></li>
+              <li><b>传输</b><span>BLE 已跑通，但安全审批链路应单独加固；USB serial 仍是稳定 MVP 备选。</span></li>
+              <li><b>展示</b><span>HTML 模拟器是演示层；硬件表现以固件 build / flash 后结果为准。</span></li>
+            </ul>
+          </div>
+          <div class="callout">
+            <h3>相关文件</h3>
+            <ul>
+              <li><b>Simulator</b><span><a href="agent-dashboard-stick-s3-full-simulator.html">agent-dashboard-stick-s3-full-simulator.html</a></span></li>
+              <li><b>Pet Intro</b><span><a href="agent-desktop-pet-intro.html">agent-desktop-pet-intro.html</a></span></li>
+              <li><b>Guide</b><span><a href="sticks3-communication-guide.html">sticks3-communication-guide.html</a></span></li>
+              <li><b>Build</b><span><a href="codex-stick-build-record.html">codex-stick-build-record.html</a></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <a href="agent-dashboard-stick-s3-full-simulator.html">全量模拟器</a>
+          <a href="agent-desktop-pet-intro.html">Pet 展示页</a>
+          <a href="sticks3-communication-guide.html">通信说明</a>
+          <a href="#top">回到顶部</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

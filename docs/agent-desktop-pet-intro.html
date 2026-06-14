@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Desktop Pet - StickS3 Guide</title>
+  <style>
+    @font-face {
+      font-family: "FusionPixel10";
+      src: url("assets/fonts/fusion-pixel-10px-proportional-latin.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0000-00FF, U+0100-024F, U+2000-206F, U+20A0-20CF;
+    }
+
+    @font-face {
+      font-family: "FusionPixel10";
+      src: url("assets/fonts/fusion-pixel-10px-proportional-zh_hans.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+2E80-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF;
+    }
+
+    @font-face {
+      font-family: "FusionPixel12";
+      src: url("assets/fonts/fusion-pixel-12px-proportional-latin.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0000-00FF, U+0100-024F, U+2000-206F, U+20A0-20CF;
+    }
+
+    @font-face {
+      font-family: "FusionPixel12";
+      src: url("assets/fonts/fusion-pixel-12px-proportional-zh_hans.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+2E80-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF;
+    }
+
+    :root {
+      color-scheme: dark;
+      --bg: #000000;
+      --panel: #040504;
+      --panel-2: #080a08;
+      --ink: #f5f7fb;
+      --muted: #8b949f;
+      --line: #5e6670;
+      --line-soft: #23282e;
+      --codex: #0169cc;
+      --live: #7dd3fc;
+      --skill: #ffcc57;
+      --danger: #e02e2a;
+      --warn: #cc7d5e;
+      --pixel: "FusionPixel10", "SF Mono", Monaco, Menlo, ui-monospace, monospace;
+      --pixel-heading: "FusionPixel12", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+      --device-font: "SF Mono", Monaco, Menlo, "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
+      --mono: var(--device-font);
+      --sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --topbar-h: 54px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-variant-ligatures: none;
+      line-height: 1.62;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+
+    .topbar {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: #020202;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .brand strong {
+      color: #fff;
+      font-size: clamp(16px, 2.1vw, 22px);
+      font-family: var(--pixel);
+      font-weight: 400;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid transparent;
+    }
+
+    .nav a:hover {
+      color: var(--live);
+      border-color: var(--line);
+      background: #050706;
+    }
+
+    .workspace {
+      height: calc(100vh - var(--topbar-h));
+      display: grid;
+      grid-template-columns: clamp(420px, 34vw, 540px) minmax(0, 1fr);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .device-stage {
+      position: sticky;
+      top: var(--topbar-h);
+      height: calc(100vh - var(--topbar-h));
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      place-items: center;
+      padding: 16px 14px 14px;
+      border-right: 1px solid var(--line);
+      min-width: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px) 0 0 / 24px 24px,
+        linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 24px 24px,
+        #050606;
+    }
+
+    .device-showcase {
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .device-wrap {
+      width: min(100%, 390px);
+      min-width: 0;
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+    }
+
+    .device-model {
+      position: relative;
+      width: auto;
+      max-width: 100%;
+      height: min(680px, calc(100vh - var(--topbar-h) - 118px));
+      aspect-ratio: 420 / 900;
+    }
+
+    .device-cad {
+      display: block;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 34px 48px rgba(0, 0, 0, .7));
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .cad-shell {
+      fill: #151819;
+      stroke: #808993;
+      stroke-width: 2.2;
+    }
+
+    .cad-panel {
+      fill: #0a0c0d;
+      stroke: #69727d;
+      stroke-width: 1.7;
+    }
+
+    .cad-cut {
+      fill: none;
+      stroke: #252b30;
+      stroke-width: 3;
+    }
+
+    .cad-detail {
+      fill: none;
+      stroke: #8a949f;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .cad-button {
+      fill: #101314;
+      stroke: #87919b;
+      stroke-width: 2;
+    }
+
+    .cad-button-glow {
+      fill: #0169cc;
+      opacity: .72;
+    }
+
+    .cad-side {
+      fill: #0b0d0e;
+      stroke: #87919b;
+      stroke-width: 1.4;
+    }
+
+    .cad-label {
+      fill: #20262c;
+      font-family: var(--mono);
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .cad-small {
+      fill: #69727d;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .lcd {
+      position: absolute;
+      left: 20.5%;
+      top: 12.4%;
+      width: 59%;
+      height: 49.7%;
+      overflow: hidden;
+      border: 2px solid #050607;
+      border-radius: 3.6%;
+      background: #020403;
+      color: #f5f7fb;
+      container-type: inline-size;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .18),
+        inset 0 0 22px rgba(0, 0, 0, .88);
+    }
+
+    .lcd-screen {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 7% 34% 24% 24% 7%;
+      gap: 1.2%;
+      padding: 3.2% 4%;
+      background: #020403;
+      font-family: var(--device-font);
+    }
+
+    .pet-pane {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      padding-top: 0;
+    }
+
+    .status-icons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wifi {
+      position: relative;
+      width: 10px;
+      height: 9px;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      border: 1px solid #f5f7fb;
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .wifi::before {
+      top: 1px;
+      width: 9px;
+      height: 6px;
+    }
+
+    .wifi::after {
+      top: 5px;
+      left: 4px;
+      width: 3px;
+      height: 3px;
+    }
+
+    .pet-sprite {
+      width: clamp(60px, 46cqw, 116px);
+      max-height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 2px 0 rgba(255, 255, 255, .08));
+    }
+
+    .pet-name {
+      position: absolute;
+      top: 13px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: #f5f7fb;
+      font-family: var(--device-font);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      text-shadow: 1px 1px 0 #111;
+      text-transform: uppercase;
+      display: none;
+    }
+
+    .lcd-status {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      color: #f5f7fb;
+      font-size: 8px;
+      line-height: 1;
+    }
+
+    .battery {
+      position: relative;
+      width: 14px;
+      height: 7px;
+      border: 1px solid currentColor;
+      border-radius: 1px;
+    }
+
+    .battery::before {
+      content: "";
+      position: absolute;
+      inset: 1px 3px 1px 1px;
+      background: var(--live);
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -3px;
+      top: 2px;
+      width: 2px;
+      height: 3px;
+      background: currentColor;
+    }
+
+    .pet {
+      white-space: pre;
+      text-align: center;
+      color: #f5f7fb;
+      font-size: clamp(8px, 1.2vw, 11px);
+      line-height: 1.05;
+    }
+
+    .divider {
+      display: none;
+      height: 1px;
+      background: rgba(245, 247, 251, .7);
+    }
+
+    .quota {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr 1fr auto;
+      gap: 6px;
+      padding-top: 1px;
+    }
+
+    .usage-pane {
+      display: contents;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .quota-head,
+    .usage-head,
+    .meter-row,
+    .micro-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .quota-head {
+      color: #aab3bc;
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .quota-head b { color: var(--live); }
+
+    .usage-head {
+      color: #f5f7fb;
+      font-size: clamp(7px, 4.4cqw, 13px);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .usage-head strong {
+      color: var(--live);
+      font-size: inherit;
+    }
+
+    .meter {
+      min-width: 0;
+      border: 0;
+      padding: 0;
+      display: grid;
+      grid-template-rows: auto auto auto;
+      align-content: center;
+      gap: 4%;
+    }
+
+    .meter-row strong {
+      color: var(--codex);
+      font-size: clamp(24px, 16cqw, 42px);
+      line-height: 1;
+    }
+
+    .meter-row strong.skill-text { color: var(--skill); }
+
+    .meter-row span {
+      color: #dce3ea;
+      font-size: clamp(18px, 12cqw, 34px);
+      line-height: 1;
+    }
+
+    .bar {
+      height: clamp(10px, 7cqw, 20px);
+      padding: 2px;
+      border: 2px solid rgba(245, 247, 251, .9);
+      background: #020403;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      width: 78%;
+      height: 100%;
+      background: var(--codex);
+    }
+
+    .bar.week i {
+      width: 44%;
+      background: var(--skill);
+    }
+
+    .reset {
+      margin-top: 0;
+      color: var(--live);
+      font-size: clamp(8px, 5.2cqw, 15px);
+      line-height: 1.1;
+    }
+
+    .meter.week .reset { color: var(--skill); }
+
+    .micro-row {
+      padding-top: 1px;
+      color: #aab3bc;
+      font-size: clamp(7px, 4.2cqw, 13px);
+    }
+
+    .micro-row b { color: #f5f7fb; }
+
+    .device-caption {
+      width: min(100%, 360px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .device-status {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .device-status b {
+      display: block;
+      margin-top: 3px;
+      color: var(--live);
+      font-size: 13px;
+    }
+
+    .action-rail {
+      align-self: center;
+      display: grid;
+      gap: 8px;
+      width: 118px;
+      min-width: 0;
+    }
+
+    .action-rail-label {
+      color: var(--muted);
+      font-family: var(--pixel);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .pet-action {
+      --action-color: #cfd6de;
+      appearance: none;
+      width: 100%;
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #050706;
+      color: var(--action-color);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1;
+      text-align: left;
+      cursor: pointer;
+      transition:
+        border-color .16s ease,
+        background .16s ease,
+        color .16s ease,
+        transform .16s ease;
+    }
+
+    .pet-action:hover,
+    .pet-action:focus-visible {
+      border-color: var(--action-color);
+      outline: 0;
+      background: rgba(125, 211, 252, .08);
+    }
+
+    .pet-action.is-active {
+      color: #020403;
+      border-color: var(--action-color);
+      background: var(--action-color);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, .9) inset,
+        0 0 18px color-mix(in srgb, var(--action-color) 30%, transparent);
+      transform: translateX(-3px);
+    }
+
+    .pet-action[data-state="busy"] { --action-color: var(--live); }
+    .pet-action[data-state="attention"] { --action-color: #ffe884; }
+    .pet-action[data-state="completed"] { --action-color: #dce3ea; }
+    .pet-action[data-state="dizzy"] { --action-color: var(--danger); }
+    .pet-action[data-state="heart"] { --action-color: var(--skill); }
+
+    .doc-scroll {
+      height: calc(100vh - var(--topbar-h));
+      min-width: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px clamp(12px, 1.3vw, 18px) 28px;
+      scroll-padding-top: 18px;
+      background: #000;
+    }
+
+    .doc-inner {
+      width: min(920px, 100%);
+      max-width: 100%;
+      min-width: 0;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #030403, #010101);
+      color: var(--ink);
+      padding: 22px;
+    }
+
+    .panel.hero {
+      display: block;
+      min-height: 0;
+      padding: 26px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      color: var(--codex);
+      font-family: var(--pixel);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+    }
+
+    .panel-head small {
+      color: var(--live);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .panel h1,
+    .panel h2,
+    .panel h3,
+    .panel p {
+      margin-top: 0;
+    }
+
+    .panel h1 {
+      margin-bottom: 16px;
+      color: #fff;
+      font-family: var(--pixel);
+      font-size: clamp(34px, 4.4vw, 62px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .pixel-title {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      isolation: isolate;
+      white-space: normal;
+    }
+
+    .title-core {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      max-width: 100%;
+      animation: title-core-jitter 7.6s steps(1, end) infinite;
+      text-shadow:
+        1px 0 0 rgba(1, 105, 204, .5),
+        0 1px 0 rgba(125, 211, 252, .2);
+      overflow-wrap: anywhere;
+    }
+
+    .title-flow {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: block;
+      max-width: 100%;
+      pointer-events: none;
+      color: transparent;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      background-image:
+        linear-gradient(90deg, transparent 0 28%, rgba(125, 211, 252, .72) 38%, rgba(255, 255, 255, .95) 44%, rgba(1, 105, 204, .62) 52%, transparent 64%),
+        repeating-linear-gradient(90deg, rgba(125, 211, 252, .42) 0 4px, transparent 4px 12px),
+        repeating-linear-gradient(0deg, rgba(1, 105, 204, .36) 0 4px, transparent 4px 12px);
+      background-size: 180px 100%, 14px 14px, 14px 14px;
+      background-position: -180px 0, 0 0, 0 0;
+      mix-blend-mode: screen;
+      opacity: .74;
+      animation:
+        title-letter-flow 5.6s steps(22, end) infinite,
+        title-letter-spark 8.4s steps(1, end) infinite;
+    }
+
+    .pixel-title::before,
+    .pixel-title::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .pixel-title::before {
+      color: rgba(125, 211, 252, .28);
+      clip-path: polygon(0 0, 74% 0, 67% 34%, 3% 29%);
+      transform: translate(7px, -4px);
+      animation: title-slice-a 5.8s steps(1, end) infinite;
+    }
+
+    .pixel-title::after {
+      color: rgba(1, 105, 204, .34);
+      clip-path: polygon(22% 62%, 100% 54%, 100% 100%, 12% 100%);
+      transform: translate(-5px, 5px);
+      animation: title-slice-b 6.4s steps(1, end) infinite;
+    }
+
+    .title-pixels {
+      position: absolute;
+      inset: -12px -18px -10px -18px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .title-pixels i {
+      position: absolute;
+      display: block;
+      width: 5px;
+      height: 5px;
+      background: var(--live);
+      box-shadow:
+        10px -6px 0 rgba(125, 211, 252, .45),
+        -8px 9px 0 rgba(1, 105, 204, .55);
+      opacity: .58;
+      animation: title-pixel-drift 4.8s steps(1, end) infinite;
+    }
+
+    .title-pixels i:nth-child(1) { left: 3%; top: 16%; }
+    .title-pixels i:nth-child(2) { left: 33%; top: -2%; background: #fff; opacity: .7; animation-delay: -1.1s; }
+    .title-pixels i:nth-child(3) { right: 10%; top: 12%; animation-delay: -2.2s; }
+    .title-pixels i:nth-child(4) { right: 2%; bottom: 14%; background: var(--codex); animation-delay: -3.4s; }
+
+    .panel h2 {
+      margin-bottom: 14px;
+      color: #fff;
+      font-family: var(--pixel-heading);
+      font-weight: 400;
+      font-size: clamp(25px, 3vw, 34px);
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    @keyframes title-core-jitter {
+      0%, 72%, 100% { transform: translate(0, 0); }
+      73% { transform: translate(1px, 0); }
+      74% { transform: translate(0, 0); }
+      86% { transform: translate(0, -1px); }
+      87% { transform: translate(0, 0); }
+    }
+
+    @keyframes title-slice-a {
+      0%, 64%, 100% { transform: translate(2px, -1px); opacity: .42; }
+      65% { transform: translate(3px, -2px); opacity: .58; }
+      66% { transform: translate(1px, -1px); opacity: .3; }
+      67% { transform: translate(2px, -1px); opacity: .42; }
+      91% { transform: translate(3px, -1px); opacity: .5; }
+      92% { transform: translate(2px, -1px); opacity: .42; }
+    }
+
+    @keyframes title-slice-b {
+      0%, 58%, 100% { transform: translate(-2px, 2px); opacity: .45; }
+      59% { transform: translate(-3px, 3px); opacity: .62; }
+      60% { transform: translate(-1px, 1px); opacity: .32; }
+      61% { transform: translate(-2px, 2px); opacity: .45; }
+      82% { transform: translate(-3px, 2px); opacity: .56; }
+      83% { transform: translate(-2px, 2px); opacity: .45; }
+    }
+
+    @keyframes title-letter-flow {
+      0% { background-position: -180px 0, 0 0, 0 0; }
+      100% { background-position: 180px 0, 56px 0, 0 42px; }
+    }
+
+    @keyframes title-letter-spark {
+      0%, 68%, 100% { opacity: .68; filter: none; }
+      69% { opacity: .94; filter: drop-shadow(0 0 3px rgba(125, 211, 252, .45)); }
+      70% { opacity: .58; filter: none; }
+      86% { opacity: .84; }
+      87% { opacity: .68; }
+    }
+
+    @keyframes title-pixel-drift {
+      0%, 70%, 100% { transform: translate(0, 0); opacity: .84; }
+      71% { transform: translate(2px, -2px); opacity: .98; }
+      72% { transform: translate(0, 0); opacity: .7; }
+      88% { transform: translate(-1px, 2px); opacity: .92; }
+      89% { transform: translate(0, 0); opacity: .84; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .title-core,
+      .title-flow,
+      .pixel-title::before,
+      .pixel-title::after,
+      .title-pixels i {
+        animation: none;
+      }
+    }
+
+    .panel h3 {
+      margin-bottom: 8px;
+      color: var(--live);
+      font-size: 15px;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+
+    .panel p {
+      max-width: 760px;
+      color: #cfd6de;
+      font-size: 15px;
+    }
+
+    .lead {
+      max-width: 780px;
+      color: #e7edf4;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .terminal-note {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--line-soft);
+      background: #050706;
+      color: #cfd6de;
+      font-size: 13px;
+    }
+
+    .terminal-note b {
+      color: var(--live);
+      font-weight: 800;
+    }
+
+    .meter-line {
+      display: grid;
+      grid-template-columns: 90px minmax(120px, 1fr) 70px;
+      gap: 12px;
+      align-items: center;
+      max-width: 520px;
+      color: #cfd6de;
+      font-size: 13px;
+    }
+
+    .meter-line i {
+      display: block;
+      height: 8px;
+      border: 1px solid #4a525c;
+      background:
+        repeating-linear-gradient(90deg, var(--codex) 0 5px, transparent 5px 7px);
+    }
+
+    .meter-line.week i {
+      background:
+        repeating-linear-gradient(90deg, var(--skill) 0 5px, transparent 5px 7px);
+    }
+
+    .section-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .section-list li {
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      gap: 18px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line-soft);
+      color: #cfd6de;
+      font-size: 14px;
+    }
+
+    .section-list li:first-child { border-top: 0; }
+
+    .section-list b {
+      color: var(--live);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .state {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      color: #cfd6de;
+      background: #050706;
+      font-size: 13px;
+    }
+
+    .state.live { color: var(--live); }
+    .state.warn { color: #ffe884; }
+    .state.hot { color: var(--danger); }
+    .state.skill { color: var(--skill); }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding: 14px 14px 14px 58px;
+      border: 1px solid var(--line-soft);
+      background: #050706;
+      color: #cfd6de;
+      font-size: 14px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      color: var(--live);
+      font-weight: 800;
+    }
+
+    .step b {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .button-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #cfd6de;
+    }
+
+    .button-table th,
+    .button-table td {
+      padding: 10px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .button-table th {
+      color: var(--live);
+      background: #050706;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    code {
+      color: #fff;
+      background: #070a08;
+      border: 1px solid var(--line-soft);
+      padding: 1px 5px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0 0;
+      padding: 14px;
+      border: 1px solid var(--line-soft);
+      background: #050706;
+      color: #e7edf4;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre;
+    }
+
+    .future-list {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      color: #cfd6de;
+      font-size: 14px;
+    }
+
+    .future-list li {
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .future-list li::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: .72em;
+      width: 7px;
+      height: 7px;
+      background: var(--live);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 0 2px 8px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .workspace {
+        height: auto;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: visible;
+      }
+      .device-stage {
+        position: relative;
+        top: auto;
+        height: auto;
+        min-height: 560px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .doc-scroll {
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: visible;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        height: auto;
+        min-height: var(--topbar-h);
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px;
+      }
+      .brand {
+        flex-wrap: wrap;
+        white-space: normal;
+      }
+      .nav {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+      .panel {
+        padding: 16px;
+      }
+      .panel.hero {
+        padding: 18px;
+      }
+      .panel h1 {
+        font-size: clamp(30px, 9vw, 46px);
+      }
+      .section-list li {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .meter-line {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .button-table {
+        min-width: 760px;
+      }
+      .table-scroll {
+        overflow-x: auto;
+        margin-top: 12px;
+      }
+      .device-stage {
+        min-height: 520px;
+        padding: 18px 12px;
+      }
+      .device-showcase {
+        gap: 10px;
+      }
+      .action-rail {
+        width: 104px;
+      }
+      .pet-action {
+        min-height: 34px;
+        padding: 0 8px;
+        font-size: 13px;
+      }
+      .device-status {
+        grid-template-columns: 1fr;
+      }
+      .footer {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .device-showcase {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .action-rail {
+        width: min(100%, 340px);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .action-rail-label {
+        grid-column: 1 / -1;
+      }
+      .pet-action.is-active {
+        transform: translateY(-2px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <strong>{ Agent Desktop Pet }</strong>
+      <span>StickS3 Agent Companion</span>
+    </div>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#intro">Intro</a>
+      <a href="#play">玩法</a>
+      <a href="#capability">能力</a>
+      <a href="#connect">连接</a>
+      <a href="#buttons">按键</a>
+      <a href="#power">关机</a>
+      <a href="#future">拓展</a>
+    </nav>
+  </header>
+
+  <main class="workspace">
+    <section class="device-stage" aria-label="StickS3 固定设备预览">
+      <div class="device-showcase">
+        <div class="device-wrap">
+          <div class="device-model">
+            <svg class="device-cad" viewBox="70 0 420 900" role="img" aria-label="CAD drawing of M5Stack StickS3">
+              <defs>
+                <linearGradient id="shellShade" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#202425"></stop>
+                  <stop offset=".55" stop-color="#131617"></stop>
+                  <stop offset="1" stop-color="#0b0d0e"></stop>
+                </linearGradient>
+                <linearGradient id="buttonShade" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#0197e0"></stop>
+                  <stop offset="1" stop-color="#014f91"></stop>
+                </linearGradient>
+              </defs>
+
+              <rect x="96" y="42" width="368" height="812" rx="54" class="cad-shell" fill="url(#shellShade)"></rect>
+              <rect x="118" y="65" width="324" height="766" rx="38" class="cad-cut"></rect>
+              <rect x="156" y="112" width="248" height="448" rx="18" class="cad-panel"></rect>
+              <rect x="166" y="124" width="228" height="424" rx="10" class="cad-detail"></rect>
+
+              <rect x="458" y="268" width="17" height="92" rx="5" class="cad-side"></rect>
+              <rect x="85" y="551" width="16" height="72" rx="5" class="cad-side"></rect>
+              <rect x="188" y="657" width="184" height="55" rx="21" class="cad-button"></rect>
+              <rect x="204" y="670" width="152" height="23" rx="11" class="cad-button-glow" fill="url(#buttonShade)"></rect>
+
+              <path d="M190 774v-76c0-24 16-40 40-40h100c24 0 40 16 40 40v76" class="cad-cut"></path>
+              <text x="280" y="751" text-anchor="middle" class="cad-label">M5</text>
+              <text x="280" y="884" text-anchor="middle" class="cad-small">StickS3 135 x 240 LCD</text>
+
+              <path d="M122 110h44M394 110h44M122 802h44M394 802h44" class="cad-detail"></path>
+              <path d="M280 42v-22M280 854v22M96 448H70M464 448h26" class="cad-detail"></path>
+            </svg>
+            <div class="lcd" aria-label="Agent Desktop Pet LCD preview">
+              <div class="lcd-screen">
+                <div class="usage-head"><span>CODEX QUOTA</span><strong>LIVE</strong></div>
+                <div class="pet-pane">
+                  <img class="pet-sprite" id="petSprite" src="characters/kuma/busy.gif" alt="KUMA busy animation">
+                  <div class="pet-name">KUMA</div>
+                </div>
+                <div class="usage-pane">
+                  <div class="meter" data-window="5h">
+                    <div class="meter-row"><strong>78%</strong><span>5h</span></div>
+                    <div class="bar"><i></i></div>
+                    <div class="reset">resets in 1h 13m</div>
+                  </div>
+                  <div class="meter" data-window="7d">
+                    <div class="meter-row"><strong class="skill-text">44%</strong><span>7d</span></div>
+                    <div class="bar week"><i></i></div>
+                    <div class="reset">resets in 2d 08h</div>
+                  </div>
+                  <div class="micro-row"><span id="petStateText">&gt; busy</span><b>159.3M tokens</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="device-caption">
+            <span>M5Stack StickS3</span>
+            <span>135 x 240 LCD</span>
+          </div>
+        </div>
+
+        <div class="action-rail" aria-label="切换宠物状态">
+          <div class="action-rail-label">Pet state</div>
+          <button class="pet-action" type="button" data-state="sleep" aria-pressed="false">sleep</button>
+          <button class="pet-action" type="button" data-state="idle" aria-pressed="false">idle</button>
+          <button class="pet-action is-active" type="button" data-state="busy" aria-pressed="true">busy</button>
+          <button class="pet-action" type="button" data-state="attention" aria-pressed="false">attention</button>
+          <button class="pet-action" type="button" data-state="completed" aria-pressed="false">completed</button>
+          <button class="pet-action" type="button" data-state="dizzy" aria-pressed="false">dizzy</button>
+          <button class="pet-action" type="button" data-state="heart" aria-pressed="false">heart</button>
+        </div>
+      </div>
+
+      <div class="device-status">
+        <span>Status <b>Live</b></span>
+        <span>Agent <b>Codex</b></span>
+        <span>Build <b>2026.05</b></span>
+      </div>
+    </section>
+
+    <section class="doc-scroll" aria-label="介绍文档滚动区">
+      <div class="doc-inner">
+        <article class="panel hero" id="intro">
+          <div class="panel-head"><span>00 Intro</span><small>&gt; LIVE</small></div>
+          <h1 class="pixel-title" data-text="Agent Desktop Pet" aria-label="Agent Desktop Pet"><span class="title-core" aria-hidden="true">Agent Desktop Pet</span><span class="title-flow" aria-hidden="true">Agent Desktop Pet</span><span class="title-pixels" aria-hidden="true"><i></i><i></i><i></i><i></i></span></h1>
+          <p class="lead">把 Codex 和其他 coding agent 的运行状态放到桌面小屏上。StickS3 通过本地 BLE bridge 接收 agent 状态、额度、重置倒计时和权限请求；你看一眼小屏就知道现在是 busy、idle、attention，或者额度是否接近危险区。</p>
+          <div class="terminal-note">
+            <div><b>当前定位</b>：不是营销页，也不是复杂仪表盘；它是一个常亮在桌面的 agent companion。</div>
+            <div><b>设计原则</b>：小屏只显示高价值状态，长说明留在本页右侧滚动文档。</div>
+          </div>
+        </article>
+
+        <article class="panel" id="play">
+          <div class="panel-head"><span>01 玩法</span><small>glance-first</small></div>
+          <h2>默认只需要看屏幕和按两颗键</h2>
+          <p>设备平时显示宠物、5h 剩余额度、7d 剩余额度、reset countdown 和 token 数。Codex 运行时进入 busy；需要权限时进入 attention；任务完成、摇晃和按键互动会触发对应宠物状态。</p>
+          <div class="states" aria-label="宠物状态">
+            <span class="state">sleep</span>
+            <span class="state">idle</span>
+            <span class="state live">busy</span>
+            <span class="state warn">attention</span>
+            <span class="state">completed</span>
+            <span class="state hot">dizzy</span>
+            <span class="state skill">heart</span>
+          </div>
+          <ul class="section-list">
+            <li><b>看额度</b><span>5h 和 7d 是两个独立窗口；屏幕显示 remaining quota，桥接 JSON 里发送的是 used percentage。</span></li>
+            <li><b>看状态</b><span>LIVE 表示本地 bridge 正在连接；WAIT 表示设备还没收到有效数据或 BLE 未连接。</span></li>
+            <li><b>做决定</b><span>权限请求出现时，KEY1 accept，KEY2 cancel；如果设备离线，Codex 仍保留电脑端原生确认。</span></li>
+          </ul>
+        </article>
+
+        <article class="panel" id="capability">
+          <div class="panel-head"><span>02 能力</span><small>local bridge</small></div>
+          <h2>现在已经打通的能力</h2>
+          <ul class="section-list">
+            <li><b>BLE 本地桥</b><span>StickS3 广播名类似 <code>Codex-XXXX</code>，电脑上的 Python bridge 发送紧凑 JSON，不需要 Wi-Fi。</span></li>
+            <li><b>额度仪表</b><span>显示 5 小时与 7 天剩余额度、两个窗口的 reset countdown，以及累计 tokens。</span></li>
+            <li><b>权限响应</b><span>Codex PermissionRequest hook 会推送到设备；设备通过 BLE 把 accept/cancel 发回电脑。</span></li>
+            <li><b>宠物资源</b><span>支持 LittleFS character pack 和内置 ASCII species；可以在设置里切换。</span></li>
+            <li><b>主题识别</b><span>桥接 JSON 支持 <code>agent</code> 字段；当前已为 Codex、Claude、Generic 准备主题映射。</span></li>
+          </ul>
+          <div class="terminal-note" aria-label="额度示例">
+            <div class="meter-line"><span>5h remaining</span><i></i><b>78%</b></div>
+            <div class="meter-line week"><span>7d remaining</span><i></i><b>44%</b></div>
+          </div>
+        </article>
+
+        <article class="panel" id="connect">
+          <div class="panel-head"><span>03 连接</span><small>Codex-XXXX</small></div>
+          <h2>从刷机到 LIVE 的路径</h2>
+          <div class="steps">
+            <div class="step"><b>刷入 firmware 和 LittleFS</b>使用 PlatformIO 运行 build、upload、uploadfs；刷机时按住 lower-left side button 进入 flashing mode。</div>
+            <div class="step"><b>安装 Codex plugin</b>安装 <code>bleak</code>，在 Codex 插件市场加入本 repo，选择 Codex Usage Stick Local。</div>
+            <div class="step"><b>启用并信任 hooks</b>生成 SessionStart、UserPromptSubmit、PermissionRequest 三个 hook，并在 Codex 弹窗中确认信任。</div>
+            <div class="step"><b>触发 BLE pairing</b>打开 Mac 蓝牙，发送任意 Codex prompt；设备显示配对码后在电脑端完成配对。</div>
+            <div class="step"><b>确认 LIVE</b>屏幕出现 <code>CODEX QUOTA / LIVE</code>、额度条和 tokens，即表示链路正常。</div>
+          </div>
+          <pre><code># firmware
+pio run -e m5stack-sticks3
+pio run -e m5stack-sticks3 -t upload
+pio run -e m5stack-sticks3 -t uploadfs
+
+# first BLE pairing fallback
+python3 ~/.codex/plugins/cache/codex-usage-stick-marketplace/codex-usage-stick/0.4.0/scripts/codex_usage_ble_bridge.py --verbose --state busy</code></pre>
+        </article>
+
+        <article class="panel" id="buttons">
+          <div class="panel-head"><span>04 按键</span><small>A next / B confirm</small></div>
+          <h2>KEY1、KEY2、PWR 的实际语义</h2>
+          <p>按键会根据界面上下文变化。日常记忆方式是：KEY1 负责下一项或切视图，KEY2 负责确认或互动，PWR 负责熄屏和唤醒。</p>
+          <div class="table-scroll">
+            <table class="button-table">
+              <thead>
+                <tr>
+                  <th>场景</th>
+                  <th>KEY1 短按</th>
+                  <th>KEY1 长按</th>
+                  <th>KEY2 短按</th>
+                  <th>PWR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>仪表</td>
+                  <td>切换 quota / info 页面</td>
+                  <td>打开或关闭菜单</td>
+                  <td>heart 互动</td>
+                  <td>熄屏 / 唤醒</td>
+                </tr>
+                <tr>
+                  <td>权限</td>
+                  <td>accept</td>
+                  <td>非主要确认动作</td>
+                  <td>cancel</td>
+                  <td>熄屏 / 唤醒</td>
+                </tr>
+                <tr>
+                  <td>菜单</td>
+                  <td>下一项</td>
+                  <td>关闭菜单</td>
+                  <td>确认当前项</td>
+                  <td>熄屏 / 唤醒</td>
+                </tr>
+                <tr>
+                  <td>设置</td>
+                  <td>下一项</td>
+                  <td>退出设置</td>
+                  <td>修改当前设置</td>
+                  <td>熄屏 / 唤醒</td>
+                </tr>
+                <tr>
+                  <td>info / pet</td>
+                  <td>切回主视图</td>
+                  <td>打开菜单</td>
+                  <td>翻页或切宠物页</td>
+                  <td>熄屏 / 唤醒</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel" id="power">
+          <div class="panel-head"><span>05 关机</span><small>safe power</small></div>
+          <h2>熄屏、关机、换电脑要分开处理</h2>
+          <ul class="section-list">
+            <li><b>熄屏</b><span>PWR 短按只让 LCD sleep；再按 PWR 或按 A/B 会唤醒。唤醒用的那次 A/B 会被固件吞掉，避免误开菜单。</span></li>
+            <li><b>关机</b><span>长按 KEY1 打开菜单，选到 <code>turn off</code>，KEY2 确认；也可以使用 StickS3 的硬件长按电源关机逻辑。</span></li>
+            <li><b>换电脑</b><span>先停止旧电脑的 bridge 或退出 Codex，再在新电脑提交 prompt。一个 StickS3 同时只建议连一台电脑。</span></li>
+          </ul>
+          <pre><code># stop bridge before moving to another computer
+python3 plugins/codex-usage-stick/scripts/start_bridge.py --stop
+
+# inspect logs
+tail -n 20 ~/.codex/codex-usage-bridge/hook.log
+tail -n 40 ~/.codex/codex-usage-bridge/bridge.log</code></pre>
+        </article>
+
+        <article class="panel" id="future">
+          <div class="panel-head"><span>06 拓展</span><small>roadmap</small></div>
+          <h2>后续扩展方向</h2>
+          <p>小屏继续保持克制：状态、确认、额度、少量情绪反馈。复杂解释和历史数据放在电脑端或文档页。</p>
+          <ul class="future-list">
+            <li>多 agent 主题：Codex、Claude、Generic、自定义 agent 自动换色。</li>
+            <li>更细颗粒度权限面板：展示路径、命令类型、风险等级，但不牺牲一键确认。</li>
+            <li>宠物生成流水线：把 app pet、自定义 GIF、hatch-pet 统一转为 LittleFS character pack。</li>
+            <li>工作节奏统计：响应速度、批准/拒绝次数、token level、nap time。</li>
+            <li>更多交互：提醒、小成就、情绪反馈，但不把小屏做成复杂操作台。</li>
+          </ul>
+        </article>
+
+        <footer class="footer">
+          <span>Agent Desktop Pet // YaoYao + Codex</span>
+          <span>local BLE // StickS3 // MIT license</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const sprite = document.querySelector("#petSprite");
+      const stateText = document.querySelector("#petStateText");
+      const actions = Array.from(document.querySelectorAll(".pet-action"));
+
+      if (!sprite || !stateText || actions.length === 0) return;
+
+      const setPetState = (state) => {
+        sprite.src = `characters/kuma/${state}.gif`;
+        sprite.alt = `KUMA ${state} animation`;
+        stateText.textContent = `> ${state}`;
+
+        actions.forEach((button) => {
+          const isActive = button.dataset.state === state;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+      };
+
+      actions.forEach((button) => {
+        button.addEventListener("click", () => {
+          setPetState(button.dataset.state);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

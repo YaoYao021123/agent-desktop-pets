@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Desktop Pets - Demo Portal</title>
+  <meta name="description" content="StickS3 Mac Agent Companion demo portal for firmware screens, button logic, bridge state, packet behavior, and Codex Pet idle mode.">
+  <style>
+    :root {
+      --bg: #050604;
+      --panel: #0e120f;
+      --panel-2: #151a16;
+      --ink: #f3f1e8;
+      --muted: #aaa89f;
+      --line: #384039;
+      --accent: #76cf92;
+      --accent-2: #d8c88f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 6, 4, .9);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar .shell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 72px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .brand svg {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    nav a:hover { color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(320px, .94fr);
+      gap: 40px;
+      align-items: center;
+      min-height: calc(100vh - 72px);
+      padding: 76px 0 56px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0 0 18px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(46px, 7vw, 86px);
+      line-height: .92;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 24px 0 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: clamp(17px, 2.1vw, 22px);
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--panel);
+      font-weight: 760;
+    }
+
+    .button.primary {
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+      background: var(--accent);
+      color: #071008;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .device-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 26px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .35);
+    }
+
+    .device {
+      position: relative;
+      aspect-ratio: 1.58 / 1;
+      border: 3px solid #6f7880;
+      border-radius: 42px;
+      background: #111716;
+      overflow: hidden;
+    }
+
+    .device::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 4px solid #252d31;
+      border-radius: 36px;
+    }
+
+    .screen {
+      position: absolute;
+      left: 8.5%;
+      top: 23%;
+      width: 54%;
+      height: 54%;
+      border: 1px solid #5e6870;
+      border-radius: 14px;
+      background: #010201;
+      padding: 18px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .screen-top,
+    .screen-bottom {
+      display: flex;
+      justify-content: space-between;
+      color: #c9c6ba;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .screen h2 {
+      margin: 24px 0 0;
+      max-width: 230px;
+      font-size: clamp(22px, 3vw, 35px);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .screen p {
+      margin: 10px 0 0;
+      color: #8f8c82;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .side-slot {
+      position: absolute;
+      right: 16.5%;
+      top: 34%;
+      width: 5.4%;
+      height: 32%;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 12px #20282b;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+      margin-top: 18px;
+    }
+
+    .stat {
+      min-height: 110px;
+      padding: 18px;
+      background: var(--panel);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    section {
+      padding: 86px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 520px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      min-height: 220px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card svg {
+      width: 30px;
+      height: 30px;
+      color: var(--accent-2);
+    }
+
+    .card h3 {
+      margin: 24px 0 10px;
+      font-size: 24px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.56;
+    }
+
+    .link-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .demo-link {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      min-height: 150px;
+      padding: 24px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .demo-link:hover {
+      border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+    }
+
+    .demo-link span {
+      color: var(--accent);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 12px;
+    }
+
+    .demo-link b {
+      display: block;
+      margin-top: 16px;
+      font-size: 28px;
+      line-height: 1.12;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 0 42px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .topbar .shell,
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        flex-wrap: wrap;
+        gap: 14px 18px;
+      }
+
+      .hero,
+      .cards,
+      .link-row,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 0;
+        padding-top: 44px;
+      }
+
+      .screen {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell">
+      <a class="brand" href="#top" aria-label="Agent Desktop Pets home">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="4" y="5" width="24" height="22" rx="6" stroke="currentColor" stroke-width="2"/>
+          <rect x="10" y="11" width="12" height="10" rx="2" fill="#76cf92"/>
+          <path d="M11 2v5M21 2v5M11 25v5M21 25v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Agent Desktop Pets
+      </a>
+      <nav aria-label="Demo navigation">
+        <a href="#what">它是什么</a>
+        <a href="#demo">演示入口</a>
+        <a href="agent-dashboard-stick-s3-full-simulator.html">功能模拟器</a>
+        <a href="sticks3-project-status-and-roadmap.html">项目总览</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">StickS3 Mac Agent Companion</p>
+        <h1>把 Codex 的工作状态放进一块真实小屏。</h1>
+        <p class="lead">这个演示站展示当前已完成的横屏 StickS3 门户、A/B 双键交互、Bridge 数据状态、审批覆盖层，以及 Codex Pet idle 形态。</p>
+        <div class="actions">
+          <a class="button primary" href="agent-dashboard-stick-s3-full-simulator.html">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 4l10 6-10 6V4z" fill="currentColor"/></svg>
+            打开功能模拟器
+          </a>
+          <a class="button" href="sticks3-project-status-and-roadmap.html">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            查看内容总览
+          </a>
+        </div>
+      </div>
+
+      <div class="device-panel" aria-label="StickS3 landscape device preview">
+        <div class="device">
+          <div class="screen">
+            <div class="screen-top"><span>10:09</span><span>Home</span><span>S3</span></div>
+            <div>
+              <h2>Mac Agent Dashboard</h2>
+              <p>Codex busy · pet idle ready</p>
+            </div>
+            <div class="screen-bottom"><span>A next</span><span>B detail</span></div>
+          </div>
+          <div class="side-slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <section id="what">
+      <div class="shell">
+        <div class="section-head">
+          <h2>当前演示范围</h2>
+          <p>页面按“真实硬件视口”和“市场说明门户”两条线组织：先让用户看懂这是什么，再让用户能实际点击体验。</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>6</b><span>固件主页面：Home、Welcome、Agent Hub、Schedule、Power、Pet。</span></div>
+          <div class="stat"><b>A/B</b><span>单击、双击、长按 Fn 语音入口都在模拟器中可点击。</span></div>
+          <div class="stat"><b>Bridge</b><span>CPU、RAM、连接新鲜度、任务状态以 Mac bridge 口径模拟。</span></div>
+          <div class="stat"><b>Pet</b><span>无操作进入 Pet idle，动画三轮后静态停留。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="shell">
+        <div class="section-head">
+          <h2>演示入口</h2>
+          <p>功能页适合现场交互，内容页适合说明我们已经做了什么，以及下一步可以怎么扩展。</p>
+        </div>
+        <div class="link-row">
+          <a class="demo-link" href="agent-dashboard-stick-s3-full-simulator.html">
+            <span>Interactive</span>
+            <b>StickS3 全量功能模拟器</b>
+          </a>
+          <a class="demo-link" href="sticks3-project-status-and-roadmap.html">
+            <span>Overview</span>
+            <b>当前成果与拓展路线</b>
+          </a>
+          <a class="demo-link" href="agent-desktop-pet-intro.html">
+            <span>Pet Concept</span>
+            <b>Codex Pet 小屏形态说明</b>
+          </a>
+          <a class="demo-link" href="manual.html">
+            <span>Manual</span>
+            <b>现有硬件使用手册</b>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <h2>页面覆盖内容</h2>
+          <p>这些内容都已经整理进 GitHub 演示站，不依赖现场烧录；后续如果需要，可以再把 Pages 链接放进 README、插件市场说明或演示材料。</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 9h4M8 13h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <h3>Screen</h3>
+              <p>横屏机型、锁定比例、各固件页面和详情态都在同一个视口中展示。</p>
+            </div>
+          </article>
+          <article class="card">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 8h10M7 16h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="8" r="3" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="16" r="3" stroke="currentColor" stroke-width="2"/></svg>
+              <h3>Button</h3>
+              <p>A 继续或允许，B 查看详情或拒绝，B 双击返回，B 长按进入 Fn 语音输入。</p>
+            </div>
+          </article>
+          <article class="card">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 4v16M16 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <h3>Bridge</h3>
+              <p>模拟 Mac bridge 数据刷新、在线和离线状态，以及 CPU / RAM 状态页。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">Agent Desktop Pets demo portal for YaoYao021123/agent-desktop-pets.</div>
+  </footer>
+</body>
+</html>

@@ -3,6 +3,8 @@
 Agent Desktop Pets is a firmware and local agent bridge for turning an
 M5Stack StickS3 into a tiny desktop companion for AI coding agents.
 
+Live demo: [Agent Desktop Pets demo portal](https://yaoyao021123.github.io/agent-desktop-pets/)
+
 The StickS3 shows live agent state over BLE: a GIF pet, 5-hour remaining quota,
 7-day remaining quota, reset countdowns, and state-driven animations such as `busy`,
 `idle`, `completed`, `attention`, `dizzy`, `heart`, and `sleep`.
