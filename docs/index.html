@@ -3,514 +3,2916 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agent Desktop Pets - Demo Portal</title>
-  <meta name="description" content="StickS3 Mac Agent Companion demo portal for firmware screens, button logic, bridge state, packet behavior, and Codex Pet idle mode.">
+  <title>StickS3 Mac Agent Companion - Product Tour</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000000'/%3E%3Crect x='3' y='3' width='10' height='10' rx='2' fill='%2376cf92'/%3E%3C/svg%3E">
   <style>
+    @font-face {
+      font-family: "FusionPixel10";
+      src: url("assets/fonts/fusion-pixel-10px-proportional-latin.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0000-00FF, U+0100-024F, U+2000-206F, U+20A0-20CF;
+    }
+
+    @font-face {
+      font-family: "FusionPixel10";
+      src: url("assets/fonts/fusion-pixel-10px-proportional-zh_hans.otf.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+2E80-9FFF, U+3400-4DBF, U+3000-303F, U+FF00-FFEF;
+    }
+
     :root {
-      --bg: #050604;
-      --panel: #0e120f;
-      --panel-2: #151a16;
-      --ink: #f3f1e8;
-      --muted: #aaa89f;
-      --line: #384039;
-      --accent: #76cf92;
-      --accent-2: #d8c88f;
+      color-scheme: dark;
+      --bg: #000;
+      --stage: #050605;
+      --panel: #080908;
+      --panel-2: #10120f;
+      --screen: #020302;
+      --screen-panel: #181b18;
+      --screen-panel-2: #20231f;
+      --line: #3b413a;
+      --line-soft: #242922;
+      --ink: #f6f2e8;
+      --muted: #9b988e;
+      --soft: #cbc5b9;
+      --green: #76cf92;
+      --amber: #d7ad5d;
+      --coral: #df7f70;
+      --red: #d75b4f;
+      --white: #fff;
+      --shadow: rgba(0, 0, 0, .72);
+      --pixel: "FusionPixel10", "SF Mono", Monaco, Menlo, ui-monospace, monospace;
+      --mono: "SF Mono", Monaco, Menlo, "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
+      --sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --topbar-h: 56px;
+      --lcd-design-w: 300px;
+      --lcd-design-h: 164px;
     }
 
     * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-      background: var(--bg);
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
     }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      color: var(--ink);
+      overflow-x: hidden;
       background: var(--bg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.55;
+      letter-spacing: 0;
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: inherit; text-decoration: none; }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
 
-    .shell {
-      width: min(1160px, calc(100% - 40px));
-      margin: 0 auto;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 10;
-      border-bottom: 1px solid var(--line);
-      background: rgba(5, 6, 4, .9);
-      backdrop-filter: blur(10px);
-    }
-
-    .topbar .shell {
+      z-index: 20;
+      height: var(--topbar-h);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      min-height: 72px;
+      gap: 16px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: #030403;
     }
 
     .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .brand strong {
+      font-family: var(--pixel);
+      font-size: clamp(15px, 2vw, 22px);
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: .02em;
+      min-height: 32px;
+      padding: 0 9px;
+      border: 1px solid transparent;
     }
 
-    .brand svg {
-      width: 28px;
-      height: 28px;
-      flex: 0 0 auto;
+    .nav a:hover {
+      color: var(--green);
+      border-color: var(--line);
+      background: #070807;
     }
 
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 22px;
-      color: var(--muted);
-      font-size: 14px;
+    .workspace {
+      min-height: calc(100vh - var(--topbar-h));
+      overflow: visible;
     }
 
-    nav a:hover { color: var(--ink); }
-
-    .hero {
+    .device-stage {
+      min-width: 0;
+      min-height: calc(100vh - var(--topbar-h));
       display: grid;
-      grid-template-columns: minmax(0, 1.06fr) minmax(320px, .94fr);
-      gap: 40px;
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
       align-items: center;
-      min-height: calc(100vh - 72px);
-      padding: 76px 0 56px;
+      gap: clamp(14px, 2.2vh, 22px);
+      padding: clamp(18px, 2.8vh, 30px) clamp(14px, 3vw, 40px) 12px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px) 0 0 / 24px 24px,
+        linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 24px 24px,
+        var(--stage);
     }
 
-    .eyebrow {
-      color: var(--accent);
+    .hero-copy {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-kicker {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 10px;
+      color: var(--green);
+      font-family: var(--pixel);
+      font-size: 16px;
       text-transform: uppercase;
-      letter-spacing: .18em;
-      font-size: 13px;
-      font-weight: 800;
-      margin: 0 0 18px;
     }
 
-    h1 {
-      margin: 0;
-      max-width: 760px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(46px, 7vw, 86px);
-      line-height: .92;
+    .hero-kicker span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
       letter-spacing: 0;
     }
 
-    .lead {
-      margin: 24px 0 0;
-      max-width: 680px;
-      color: var(--muted);
-      font-size: clamp(17px, 2.1vw, 22px);
-      line-height: 1.55;
+    .hero-copy h1 {
+      margin-bottom: 12px;
     }
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
+    .hero-copy .lead {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .portal-summary {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .feature-strip {
+      width: min(920px, 100%);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      min-height: 70px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 0, 0, .34);
+      font-family: var(--mono);
+    }
+
+    .feature-card b {
+      display: block;
+      color: var(--green);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .feature-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .device-showcase {
+      min-height: 0;
+      display: grid;
+      justify-items: center;
       gap: 12px;
-      margin-top: 34px;
-    }
-
-    .button {
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
+    }
+
+    .device-wrap {
+      min-width: 0;
+      display: grid;
+      justify-items: center;
       gap: 10px;
-      min-height: 46px;
-      padding: 0 18px;
-      border: 1px solid var(--line);
-      color: var(--ink);
-      background: var(--panel);
-      font-weight: 760;
     }
 
-    .button.primary {
-      border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
-      background: var(--accent);
-      color: #071008;
-    }
-
-    .button svg {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 auto;
-    }
-
-    .device-panel {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      padding: 26px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, .35);
-    }
-
-    .device {
+    .device-model {
       position: relative;
-      aspect-ratio: 1.58 / 1;
-      border: 3px solid #6f7880;
-      border-radius: 42px;
-      background: #111716;
+      width: min(84vw, 760px);
+      max-width: 100%;
+      aspect-ratio: 900 / 420;
+    }
+
+    .device-model-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 46.667%;
+      height: 214.286%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .device-cad {
+      display: block;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 34px 48px var(--shadow));
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .cad-shell {
+      fill: #151819;
+      stroke: #808993;
+      stroke-width: 2.2;
+    }
+
+    .cad-cut {
+      fill: none;
+      stroke: #252b30;
+      stroke-width: 3;
+    }
+
+    .cad-panel {
+      fill: #0a0c0d;
+      stroke: #69727d;
+      stroke-width: 1.7;
+    }
+
+    .cad-detail {
+      fill: none;
+      stroke: #8a949f;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .cad-side {
+      fill: #0b0d0e;
+      stroke: #87919b;
+      stroke-width: 1.4;
+    }
+
+    .cad-button {
+      fill: #101314;
+      stroke: #87919b;
+      stroke-width: 2;
+    }
+
+    .cad-button-glow {
+      fill: var(--green);
+      opacity: .72;
+    }
+
+    .cad-label {
+      fill: #20262c;
+      font-family: var(--mono);
+      font-size: 46px;
+      font-weight: 800;
+    }
+
+    .cad-small {
+      fill: #69727d;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .lcd {
+      position: absolute;
+      left: 12.44%;
+      top: 20.48%;
+      width: 49.78%;
+      height: 59.05%;
+      z-index: 2;
+      overflow: hidden;
+      border: 2px solid #050607;
+      border-radius: 3.6% / 6.2%;
+      background: #020403;
+      color: var(--ink);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .18),
+        inset 0 0 22px rgba(0, 0, 0, .88);
+    }
+
+    .lcd-inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--lcd-design-w);
+      height: var(--lcd-design-h);
+      background: var(--screen);
+      overflow: hidden;
+      font-family: var(--mono);
+      image-rendering: pixelated;
+      transform: translate(var(--lcd-offset-x, 0), var(--lcd-offset-y, 0)) scale(var(--lcd-scale, 1));
+      transform-origin: 0 0;
+    }
+
+    .s3-screen {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--lcd-design-w);
+      height: var(--lcd-design-h);
+      padding: 8px;
+      background: var(--screen);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 10px;
+      line-height: 1.15;
+    }
+
+    .s-head,
+    .s-hint,
+    .metric-row,
+    .meter-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .s-head {
+      height: 17px;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .s-head b {
+      max-width: 96px;
+      overflow: hidden;
+      color: var(--ink);
+      font-weight: 700;
+      text-overflow: ellipsis;
+    }
+
+    .s-head span:last-child {
+      color: var(--soft);
+      text-align: right;
+    }
+
+    .s-hint {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      white-space: nowrap;
+    }
+
+    .screen-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--screen-panel);
+    }
+
+    .agent-card {
+      position: relative;
+      padding: 8px;
+      min-width: 0;
       overflow: hidden;
     }
 
-    .device::before {
-      content: "";
-      position: absolute;
-      inset: 22px;
-      border: 4px solid #252d31;
-      border-radius: 36px;
+    .agent-card.is-compact {
+      padding: 7px;
     }
 
-    .screen {
-      position: absolute;
-      left: 8.5%;
-      top: 23%;
-      width: 54%;
-      height: 54%;
-      border: 1px solid #5e6870;
-      border-radius: 14px;
-      background: #010201;
-      padding: 18px;
+    .agent-top {
       display: grid;
-      align-content: space-between;
+      grid-template-columns: 20px minmax(0, 1fr) 8px;
+      gap: 7px;
+      align-items: center;
     }
 
-    .screen-top,
-    .screen-bottom {
-      display: flex;
-      justify-content: space-between;
-      color: #c9c6ba;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
+    .agent-icon {
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--green);
+      background: var(--screen-panel-2);
+      font-size: 9px;
+      font-weight: 800;
     }
 
-    .screen h2 {
-      margin: 24px 0 0;
-      max-width: 230px;
-      font-size: clamp(22px, 3vw, 35px);
-      line-height: 1.03;
-      letter-spacing: 0;
+    .agent-name {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .screen p {
-      margin: 10px 0 0;
-      color: #8f8c82;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-    }
-
-    .side-slot {
-      position: absolute;
-      right: 16.5%;
-      top: 34%;
-      width: 5.4%;
-      height: 32%;
+    .dot {
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 12px #20282b;
+      background: var(--green);
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      border: 1px solid var(--line);
-      background: var(--line);
-      margin-top: 18px;
-    }
-
-    .stat {
-      min-height: 110px;
-      padding: 18px;
-      background: var(--panel);
-    }
-
-    .stat b {
-      display: block;
-      font-size: 28px;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    section {
-      padding: 86px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 28px;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1;
-      letter-spacing: 0;
-    }
-
-    .section-head p {
-      margin: 0;
-      max-width: 520px;
-      color: var(--muted);
-      line-height: 1.6;
+    .agent-state {
+      margin-top: 8px;
+      color: var(--ink);
       font-size: 16px;
+      font-weight: 800;
     }
 
-    .cards {
+    .agent-card.is-compact .agent-state {
+      margin-top: 6px;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .agent-task {
+      margin-top: 6px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .agent-card.is-compact .agent-task {
+      margin-top: 5px;
+      font-size: 9px;
+      line-height: 1.1;
+    }
+
+    .progress {
+      height: 5px;
+      margin-top: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--line);
+    }
+
+    .progress i {
+      display: block;
+      width: var(--value, 68%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent, var(--green));
+    }
+
+    .home-main {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 8px;
+      padding-top: 8px;
     }
 
-    .card {
-      min-height: 220px;
+    .home-logo {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
       border: 1px solid var(--line);
-      background: var(--panel);
-      padding: 24px;
+      border-radius: 7px;
+      color: var(--green);
+      background: var(--screen-panel);
+      font-weight: 900;
+    }
+
+    .home-title {
+      margin-top: 7px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .preview-card {
+      height: 82px;
+      padding: 8px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .small-label {
+      color: var(--muted);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .welcome-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      padding-top: 6px;
+    }
+
+    .welcome-card {
+      height: 70px;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .welcome-card b {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .welcome-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.28;
+    }
+
+    .hub-one {
+      display: grid;
+      grid-template-columns: 112px 1fr 1fr;
+      grid-template-rows: 33px 33px;
+      gap: 8px;
+      padding-top: 8px;
+    }
+
+    .hub-one .agent-card {
+      grid-row: 1 / span 2;
+      height: 76px;
+    }
+
+    .widget {
+      padding: 6px 7px;
+      overflow: hidden;
+    }
+
+    .widget b {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 500;
+    }
+
+    .widget span {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .hub-many {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 8px;
+    }
+
+    .hub-many .agent-card {
+      height: 78px;
+    }
+
+    .dots {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 5px;
     }
 
-    .card svg {
-      width: 30px;
-      height: 30px;
-      color: var(--accent-2);
+    .dots i {
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--line);
     }
 
-    .card h3 {
-      margin: 24px 0 10px;
+    .dots i.is-active {
+      background: var(--ink);
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 106px minmax(0, 1fr);
+      gap: 8px;
+      padding-top: 6px;
+    }
+
+    .schedule-next,
+    .schedule-list,
+    .schedule-focus {
+      height: 78px;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .schedule-detail-card {
+      height: 108px;
+      margin-top: 6px;
+      padding: 9px 11px;
+      overflow: hidden;
+    }
+
+    .schedule-detail-card .schedule-time {
+      margin-top: 8px;
       font-size: 24px;
     }
 
-    .card p {
-      margin: 0;
+    .schedule-detail-card .schedule-title {
+      margin-top: 8px;
+      font-size: 10px;
+    }
+
+    .schedule-detail-card .schedule-place {
+      margin-top: 4px;
+      font-size: 9px;
+    }
+
+    .schedule-time {
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .schedule-title {
+      margin-top: 5px;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 10px;
+      line-height: 1.1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .schedule-place {
+      margin-top: 2px;
+      overflow: hidden;
+      color: var(--green);
+      font-size: 9px;
+      line-height: 1.1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 8px;
+      padding: 5px 0;
+      border-top: 1px solid var(--line-soft);
       color: var(--muted);
-      line-height: 1.56;
+      font-size: 9px;
     }
 
-    .link-row {
+    .event-row:first-of-type {
+      border-top: 0;
+    }
+
+    .event-row b {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 9px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .power-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      padding-top: 7px;
     }
 
-    .demo-link {
+    .metric {
+      height: 34px;
+      padding: 6px;
+      overflow: hidden;
+    }
+
+    .metric b {
+      display: block;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 500;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 1px;
+      overflow: hidden;
+      color: var(--green);
+      font-size: 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .load-card {
+      height: 36px;
+      margin-top: 8px;
+      padding: 6px 7px;
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      align-items: end;
+      gap: 2px;
+      height: 17px;
+      margin-top: 3px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bars i {
+      min-height: 2px;
+      border-radius: 1px 1px 0 0;
+      background: var(--green);
+    }
+
+    .pet-layout {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding-top: 8px;
+    }
+
+    .pet-bot {
+      position: relative;
+      width: 76px;
+      height: 76px;
+    }
+
+    .pet-bot.is-sprite {
+      display: grid;
+      place-items: center;
+    }
+
+    .pet-bot::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      right: 5px;
+      bottom: 2px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--screen-panel);
+    }
+
+    .pet-bot.is-sprite::after {
+      left: 10px;
+      right: 10px;
+      bottom: -1px;
+      background: rgba(126, 224, 152, .16);
+    }
+
+    .pet-sprite-window {
+      position: relative;
+      width: 68px;
+      aspect-ratio: 192 / 208;
+      overflow: hidden;
+      filter: drop-shadow(0 10px 12px rgba(0, 0, 0, .38));
+    }
+
+    .pet-sprite-window img {
+      position: absolute;
+      left: 0;
+      top: calc(var(--pet-row, 0) * -100%);
+      width: 800%;
+      height: 900%;
+      max-width: none;
+      object-fit: fill;
+      animation: pet-sheet var(--pet-duration, .9s) steps(var(--pet-shift, 5), end) var(--pet-loops, 3) forwards;
+      transform: translateX(0);
+    }
+
+    .pet-sprite-window.is-static img {
+      animation: none;
+      transform: translateX(calc(var(--pet-shift, 5) * -12.5%));
+    }
+
+    .pet-sprite-window.is-large {
+      width: min(160px, 38vw);
+    }
+
+    .pet-sprite-window.is-card {
+      width: 70px;
+    }
+
+    .pet-sprite-window.is-tiny {
+      width: 44px;
+      filter: drop-shadow(0 5px 7px rgba(0, 0, 0, .32));
+    }
+
+    @keyframes pet-sheet {
+      to {
+        transform: translateX(calc(var(--pet-shift, 5) * -12.5%));
+      }
+    }
+
+    .pet-body {
+      position: absolute;
+      left: 13px;
+      top: 18px;
+      width: 50px;
+      height: 44px;
+      border: 1px solid var(--pet-color, var(--green));
+      border-radius: 11px;
+      background: var(--screen-panel-2);
+      animation: pet-bob 1.8s steps(2, end) infinite;
+    }
+
+    .pet-body::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: -9px;
+      width: 24px;
+      height: 8px;
+      border: 1px solid var(--pet-color, var(--green));
+      border-radius: 5px;
+      background: var(--screen-panel-2);
+    }
+
+    .pet-face {
+      position: absolute;
+      left: 7px;
+      top: 12px;
+      width: 34px;
+      height: 23px;
       border: 1px solid var(--line);
-      background: var(--panel-2);
-      min-height: 150px;
-      padding: 24px;
+      border-radius: 6px;
+      background: var(--screen);
+    }
+
+    .eye {
+      position: absolute;
+      top: 7px;
+      width: 7px;
+      height: 7px;
+      border-radius: 3px;
+      background: var(--pet-color, var(--green));
+    }
+
+    .eye.left { left: 7px; }
+    .eye.right { right: 7px; }
+
+    .mouth {
+      position: absolute;
+      left: 12px;
+      bottom: 5px;
+      width: 10px;
+      height: 2px;
+      background: var(--pet-color, var(--green));
+    }
+
+    .s3-screen[data-mood="Need you"] .eye,
+    .s3-screen[data-mood="Stale"] .eye {
+      background: var(--amber);
+      box-shadow: 0 0 6px rgba(215, 173, 93, .55);
+    }
+
+    .s3-screen[data-mood="Blocked"] .eye {
+      border-radius: 0;
+      background: var(--red);
+      transform: rotate(45deg);
+    }
+
+    .s3-screen[data-mood="Offline"] .eye {
+      height: 2px;
+      margin-top: 3px;
+      border-radius: 0;
+      background: var(--muted);
+    }
+
+    .pet-info {
+      height: 78px;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .pet-info strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--pet-color, var(--green));
+      font-size: 13px;
+    }
+
+    .pet-info b {
+      display: block;
+      margin-top: 6px;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 10px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .pet-info span {
+      display: block;
+      margin-top: 4px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    code {
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: .92em;
+    }
+
+    .pet-os-grid {
       display: grid;
-      align-content: space-between;
+      grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+      gap: 14px;
+      margin-top: 20px;
     }
 
-    .demo-link:hover {
-      border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+    .pet-desktop-stage,
+    .pet-library-panel,
+    .pet-contract-panel {
+      border: 1px solid var(--line);
+      background: #050605;
     }
 
-    .demo-link span {
-      color: var(--accent);
-      font-weight: 800;
+    .pet-desktop-stage {
+      min-height: 336px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+
+    .pet-window-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 34px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: .12em;
+    }
+
+    .pet-window-area {
+      position: relative;
+      min-height: 224px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .pet-floating-bubble {
+      position: absolute;
+      right: 22px;
+      top: 24px;
+      max-width: 190px;
+      padding: 11px 12px;
+      border: 1px solid rgba(126, 224, 152, .42);
+      background: rgba(5, 6, 5, .88);
+      color: var(--soft);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .pet-floating-bubble b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--green);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .pet-desktop-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .pet-desktop-meta span {
+      min-height: 58px;
+      padding: 10px;
+      border-right: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .pet-desktop-meta span:last-child {
+      border-right: 0;
+    }
+
+    .pet-desktop-meta b {
+      display: block;
+      margin-top: 6px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    .pet-library-panel,
+    .pet-contract-panel {
+      padding: 16px;
+    }
+
+    .pet-library-panel h3,
+    .pet-contract-panel h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .pet-library-copy {
+      margin-top: 10px;
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .pet-choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .pet-choice {
+      appearance: none;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-height: 86px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #030403;
+      color: var(--soft);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .pet-choice.is-active,
+    .pet-choice:hover,
+    .pet-choice:focus-visible {
+      border-color: var(--line-strong);
+      color: var(--ink);
+      outline: none;
+    }
+
+    .pet-choice b {
+      display: block;
+      overflow: hidden;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 13px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .pet-choice span {
+      display: block;
+      margin-top: 5px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .pet-contract-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pet-contract-grid span {
+      min-height: 92px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .pet-contract-grid b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .detail-box {
+      margin-top: 6px;
+      height: 84px;
+      padding: 9px 10px;
+      overflow: hidden;
+    }
+
+    .detail-title {
+      color: var(--muted);
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .detail-main {
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .detail-sub {
+      margin-top: 5px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.15;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .detail-sub + .detail-sub {
+      margin-top: 4px;
+    }
+
+    .approval {
+      margin-top: 8px;
+      height: 82px;
+      padding: 11px 14px;
+      border-color: var(--amber);
+      box-shadow: inset 4px 0 0 var(--amber);
+    }
+
+    .approval strong {
+      display: block;
+      overflow: hidden;
+      color: var(--amber);
+      font-size: 14px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .approval span {
+      display: block;
+      margin-top: 9px;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 11px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .approval-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .approval-actions b {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      height: 17px;
+      border-radius: 5px;
+      color: #020302;
+      font-size: 9px;
+      background: var(--green);
+    }
+
+    .approval-actions b:last-child {
+      background: var(--coral);
+    }
+
+    @keyframes pet-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    .side-rail {
+      display: grid;
+      align-content: center;
+      gap: 8px;
+    }
+
+    .rail-label {
+      color: var(--muted);
+      font-family: var(--pixel);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .rail-button,
+    .control-button,
+    .chip-button {
+      appearance: none;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #050605;
+      color: var(--soft);
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+    }
+
+    .rail-button {
+      width: 100%;
+      padding: 0 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .rail-button:hover,
+    .control-button:hover,
+    .chip-button:hover,
+    .rail-button.is-active,
+    .chip-button.is-active {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(118, 207, 146, .08);
+    }
+
+    .rail-button.is-active {
+      transform: translateX(-3px);
+    }
+
+    .device-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: min(100%, 760px);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .hero-controls {
+      width: min(820px, 100%);
+      margin: 0 auto;
+    }
+
+    .next-peek {
+      display: inline-flex;
+      justify-self: center;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      background: rgba(0, 0, 0, .36);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .next-peek:hover {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .status-section {
+      min-height: auto;
+      display: block;
+      padding: clamp(28px, 5vw, 64px) clamp(14px, 4vw, 56px);
+      border-bottom: 1px solid var(--line);
+      background: #000;
+      scroll-margin-top: var(--topbar-h);
+    }
+
+    .status-inner {
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .device-status {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .device-status b {
+      display: block;
+      margin-top: 8px;
+      color: var(--green);
+      font-size: clamp(20px, 3.4vw, 36px);
+      line-height: 1;
+    }
+
+    .device-status span {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: #050605;
+    }
+
+    .device-status em {
+      display: block;
+      color: var(--soft);
+      font-style: normal;
+      font-size: 12px;
+      text-transform: none;
+    }
+
+    .doc-scroll {
+      min-width: 0;
+      overflow: visible;
+      padding: 28px clamp(12px, 1.4vw, 18px) 40px;
+      background: #000;
+      scroll-margin-top: var(--topbar-h);
+    }
+
+    .doc-inner {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #030403, #010101);
+      padding: 20px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      color: var(--green);
+      font-family: var(--pixel);
+      font-size: 17px;
+      text-transform: uppercase;
+    }
+
+    .panel-head small {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .section-brief {
+      max-width: 720px;
+      margin: -4px 0 16px;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 14px;
+      color: var(--white);
+      font-family: var(--pixel);
+      font-size: clamp(34px, 4.4vw, 58px);
+      font-weight: 400;
+      line-height: 1.03;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      color: var(--white);
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.18;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      color: var(--green);
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    p {
+      max-width: 780px;
+      color: var(--soft);
+      font-size: 15px;
+    }
+
+    .lead {
+      max-width: 820px;
+      color: #e8e3d8;
+      font-size: 18px;
+      line-height: 1.72;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .control-button {
+      padding: 0 10px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .control-button.primary {
+      border-color: var(--green);
+      color: #061006;
+      background: var(--green);
+    }
+
+    .control-button.warn {
+      border-color: var(--amber);
+      color: #100b02;
+      background: var(--amber);
+    }
+
+    .control-button.coral {
+      border-color: var(--coral);
+      color: #100403;
+      background: var(--coral);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip-button {
+      min-height: 31px;
+      padding: 0 10px;
+      color: var(--muted);
+      font-family: var(--mono);
       font-size: 12px;
     }
 
-    .demo-link b {
-      display: block;
-      margin-top: 16px;
-      font-size: 28px;
-      line-height: 1.12;
+    .logic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 34px 0 42px;
+    .logic-card {
+      min-height: 132px;
+      padding: 14px;
+      border: 1px solid var(--line-soft);
+      background: #050605;
+    }
+
+    .logic-card ul {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .logic-card li {
+      display: grid;
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 10px;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 8px;
+    }
+
+    .logic-card li:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .logic-card b {
+      color: var(--green);
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .flow button {
+      min-height: 82px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      background: #050605;
+      color: var(--soft);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .flow button b {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .flow button span {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 11px;
     }
 
-    @media (max-width: 860px) {
-      .topbar .shell,
-      .section-head {
+    .flow button.is-active {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(118, 207, 146, .08);
+    }
+
+    .flow button.is-active b,
+    .flow button.is-active span {
+      color: var(--green);
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .scenario-card {
+      min-height: 136px;
+      padding: 16px;
+      border: 1px solid var(--line-soft);
+      background: #050605;
+    }
+
+    .scenario-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .scenario-card span {
+      display: block;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line-soft);
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .timeline-row:first-child {
+      border-top: 0;
+    }
+
+    .timeline-row b {
+      color: var(--green);
+      font-family: var(--mono);
+    }
+
+    @media (max-width: 1060px) {
+      .device-stage {
+        min-height: calc(100vh - var(--topbar-h));
+        padding-inline: 14px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
         align-items: flex-start;
+        height: auto;
+        min-height: var(--topbar-h);
         flex-direction: column;
+        padding: 12px;
       }
 
-      nav {
-        flex-wrap: wrap;
-        gap: 14px 18px;
+      .nav {
+        width: 100%;
+        overflow-x: auto;
       }
 
-      .hero,
-      .cards,
-      .link-row,
-      .stats {
+      .device-showcase {
         grid-template-columns: 1fr;
       }
 
-      .hero {
-        min-height: 0;
-        padding-top: 44px;
+      .device-model {
+        width: min(94vw, 620px);
       }
 
-      .screen {
-        padding: 14px;
+      .control-grid,
+      .logic-grid,
+      .scenario-grid,
+      .pet-os-grid,
+      .pet-contract-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .device-status {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .device-status span {
+        min-height: 104px;
+        padding: 13px;
+      }
+
+      .flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .feature-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pet-choice-grid,
+      .pet-desktop-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-row,
+      .logic-card li {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .device-status,
+      .flow,
+      .scenario-grid,
+      .feature-strip,
+      .pet-choice-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="shell">
-      <a class="brand" href="#top" aria-label="Agent Desktop Pets home">
-        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect x="4" y="5" width="24" height="22" rx="6" stroke="currentColor" stroke-width="2"/>
-          <rect x="10" y="11" width="12" height="10" rx="2" fill="#76cf92"/>
-          <path d="M11 2v5M21 2v5M11 25v5M21 25v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Agent Desktop Pets
-      </a>
-      <nav aria-label="Demo navigation">
-        <a href="#what">它是什么</a>
-        <a href="#demo">演示入口</a>
-        <a href="agent-dashboard-stick-s3-full-simulator.html">功能模拟器</a>
-        <a href="sticks3-project-status-and-roadmap.html">项目总览</a>
-      </nav>
+    <div class="brand">
+      <strong>StickS3 Agent Companion</strong>
     </div>
+    <nav class="nav" aria-label="页面导航">
+      <a href="#simulator">首页</a>
+      <a href="#status">功能</a>
+      <a href="#flow">界面</a>
+      <a href="#buttons">操作</a>
+      <a href="#live">实时连接</a>
+      <a href="#pet-system">宠物</a>
+      <a href="#scenarios">场景</a>
+      <a href="sticks3-project-status-and-roadmap.html">总览</a>
+    </nav>
   </header>
 
-  <main id="top">
-    <div class="shell hero">
-      <div>
-        <p class="eyebrow">StickS3 Mac Agent Companion</p>
-        <h1>把 Codex 的工作状态放进一块真实小屏。</h1>
-        <p class="lead">这个演示站展示当前已完成的横屏 StickS3 门户、A/B 双键交互、Bridge 数据状态、审批覆盖层，以及 Codex Pet idle 形态。</p>
-        <div class="actions">
-          <a class="button primary" href="agent-dashboard-stick-s3-full-simulator.html">
-            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 4l10 6-10 6V4z" fill="currentColor"/></svg>
-            打开功能模拟器
-          </a>
-          <a class="button" href="sticks3-project-status-and-roadmap.html">
-            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            查看内容总览
-          </a>
+  <main class="workspace">
+    <section class="device-stage" id="simulator" aria-label="StickS3 横向设备首页">
+      <div class="hero-copy">
+        <h1>StickS3 Mac Agent Companion</h1>
+        <div class="portal-summary">一个摆在桌面的 AI agent 状态灯、审批遥控器、专注提示和语音入口：不用切回 Mac，也能知道任务是否在跑、是否等你确认、系统是否正常。</div>
+        <div class="feature-strip" aria-label="核心功能">
+          <div class="feature-card"><b>Agent Approval</b><span>A / B 键处理批准、拒绝和详情</span></div>
+          <div class="feature-card"><b>Focus Signal</b><span>日程、专注和 agent 等待状态</span></div>
+          <div class="feature-card"><b>Mac Ops</b><span>CPU、RAM、连接状态一眼可见</span></div>
+          <div class="feature-card"><b>Codex Pet</b><span>官方 pet 包进入桌面与小屏待机层</span></div>
         </div>
       </div>
 
-      <div class="device-panel" aria-label="StickS3 landscape device preview">
-        <div class="device">
-          <div class="screen">
-            <div class="screen-top"><span>10:09</span><span>Home</span><span>S3</span></div>
-            <div>
-              <h2>Mac Agent Dashboard</h2>
-              <p>Codex busy · pet idle ready</p>
+      <div class="device-showcase">
+        <div class="device-wrap">
+          <div class="device-model">
+            <div class="device-model-core">
+              <svg class="device-cad" viewBox="70 0 420 900" role="img" aria-label="CAD drawing of M5Stack StickS3">
+                <defs>
+                  <linearGradient id="shellShade" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#23282b"></stop>
+                    <stop offset=".5" stop-color="#101315"></stop>
+                    <stop offset="1" stop-color="#050607"></stop>
+                  </linearGradient>
+                  <linearGradient id="buttonShade" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#9bcaa1"></stop>
+                    <stop offset="1" stop-color="#32543a"></stop>
+                  </linearGradient>
+                </defs>
+                <rect x="96" y="42" width="368" height="812" rx="54" class="cad-shell" fill="url(#shellShade)"></rect>
+                <rect x="118" y="65" width="324" height="766" rx="38" class="cad-cut"></rect>
+                <rect x="156" y="112" width="248" height="448" rx="18" class="cad-panel"></rect>
+                <rect x="166" y="124" width="228" height="424" rx="10" class="cad-detail"></rect>
+                <rect x="458" y="268" width="17" height="92" rx="5" class="cad-side"></rect>
+                <rect x="85" y="551" width="16" height="72" rx="5" class="cad-side"></rect>
+                <rect x="188" y="657" width="184" height="55" rx="21" class="cad-button"></rect>
+                <rect x="204" y="670" width="152" height="23" rx="11" class="cad-button-glow" fill="url(#buttonShade)"></rect>
+                <path d="M190 774v-76c0-24 16-40 40-40h100c24 0 40 16 40 40v76" class="cad-cut"></path>
+                <text x="280" y="751" text-anchor="middle" class="cad-label">M5</text>
+                <path d="M122 110h44M394 110h44M122 802h44M394 802h44" class="cad-detail"></path>
+                <path d="M280 42v-22M280 854v22M96 448H70M464 448h26" class="cad-detail"></path>
+              </svg>
             </div>
-            <div class="screen-bottom"><span>A next</span><span>B detail</span></div>
+            <div class="lcd" aria-label="StickS3 LCD preview">
+              <div class="lcd-inner">
+                <div class="s3-screen" id="screen"></div>
+              </div>
+            </div>
           </div>
-          <div class="side-slot"></div>
         </div>
       </div>
-    </div>
 
-    <section id="what">
-      <div class="shell">
-        <div class="section-head">
-          <h2>当前演示范围</h2>
-          <p>页面按“真实硬件视口”和“市场说明门户”两条线组织：先让用户看懂这是什么，再让用户能实际点击体验。</p>
+      <div class="hero-controls">
+        <div class="control-grid" aria-label="设备按键模拟">
+          <button class="control-button primary" type="button" id="btnA">A 下一页 / 批准</button>
+          <button class="control-button" type="button" id="btnB">B 详情 / 拒绝</button>
+          <button class="control-button" type="button" id="btnBDouble">B 双击返回</button>
+          <button class="control-button" type="button" id="btnALong">A 长按状态</button>
+          <button class="control-button" type="button" id="btnBLong">B 长按 / Fn 语音</button>
         </div>
-        <div class="stats">
-          <div class="stat"><b>6</b><span>固件主页面：Home、Welcome、Agent Hub、Schedule、Power、Pet。</span></div>
-          <div class="stat"><b>A/B</b><span>单击、双击、长按 Fn 语音入口都在模拟器中可点击。</span></div>
-          <div class="stat"><b>Bridge</b><span>CPU、RAM、连接新鲜度、任务状态以 Mac bridge 口径模拟。</span></div>
-          <div class="stat"><b>Pet</b><span>无操作进入 Pet idle，动画三轮后静态停留。</span></div>
+        <div class="chip-row" aria-label="场景切换">
+          <button class="chip-button is-active" type="button" data-scenario="busy">工作中</button>
+          <button class="chip-button" type="button" data-scenario="approval">待审批</button>
+          <button class="chip-button" type="button" data-scenario="done">已完成</button>
+          <button class="chip-button" type="button" data-scenario="error">异常</button>
+          <button class="chip-button" type="button" data-scenario="stale">数据过期</button>
+          <button class="chip-button" type="button" data-scenario="offline">离线</button>
+          <button class="chip-button" type="button" id="toggleAgents">4 个 Agent</button>
+          <button class="chip-button" type="button" id="previewPetIdle">Pet idle 预览</button>
+          <button class="chip-button is-active" type="button" id="togglePetIdle">Pet idle on</button>
+        </div>
+      </div>
+
+      <a class="next-peek" href="#status">查看功能与场景</a>
+    </section>
+
+    <section class="status-section" id="status" aria-label="核心价值说明">
+      <div class="status-inner">
+        <div class="panel-head"><span>01 What It Does</span></div>
+        <h2>把 AI 工作流放到桌面小屏上</h2>
+        <div class="section-brief">StickS3 不替代 Mac 大屏，而是承担“常亮提示”和“快速确认”：你抬眼就能看见 agent 是否需要你，伸手就能处理审批。</div>
+        <div class="device-status">
+          <span><em>当前视图</em><b id="statusMode">Home</b></span>
+          <span><em>Mac 连接</em><b id="statusBridge">在线</b></span>
+          <span><em>最近操作</em><b id="statusAction">就绪</b></span>
+          <span><em>Pet 待机</em><b id="statusPet">开启</b></span>
         </div>
       </div>
     </section>
 
-    <section id="demo">
-      <div class="shell">
-        <div class="section-head">
-          <h2>演示入口</h2>
-          <p>功能页适合现场交互，内容页适合说明我们已经做了什么，以及下一步可以怎么扩展。</p>
-        </div>
-        <div class="link-row">
-          <a class="demo-link" href="agent-dashboard-stick-s3-full-simulator.html">
-            <span>Interactive</span>
-            <b>StickS3 全量功能模拟器</b>
-          </a>
-          <a class="demo-link" href="sticks3-project-status-and-roadmap.html">
-            <span>Overview</span>
-            <b>当前成果与拓展路线</b>
-          </a>
-          <a class="demo-link" href="agent-desktop-pet-intro.html">
-            <span>Pet Concept</span>
-            <b>Codex Pet 小屏形态说明</b>
-          </a>
-          <a class="demo-link" href="manual.html">
-            <span>Manual</span>
-            <b>现有硬件使用手册</b>
-          </a>
-        </div>
-      </div>
-    </section>
+    <section class="doc-scroll" aria-label="模拟说明滚动区">
+      <div class="doc-inner">
+        <article class="panel" id="flow">
+          <div class="panel-head"><span>02 Screens</span></div>
+          <h2>每一屏都服务一个明确场景</h2>
+          <div class="section-brief">点击卡片可以直接切换左侧 StickS3 屏幕。真实硬件上，A 键按顺序浏览这些页面。</div>
+          <div class="flow" aria-label="页面环">
+            <button type="button" data-page="0"><b>Home</b><span>主 agent 状态</span></button>
+            <button type="button" data-page="1"><b>Welcome</b><span>第一次上手</span></button>
+            <button type="button" data-page="2"><b>Agent Hub</b><span>多 agent 队列</span></button>
+            <button type="button" data-page="3"><b>Schedule</b><span>日程与专注</span></button>
+            <button type="button" data-page="4"><b>Power</b><span>CPU / RAM / 连接</span></button>
+            <button type="button" data-page="5"><b>Pet</b><span>情绪化状态反馈</span></button>
+          </div>
+        </article>
 
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <h2>页面覆盖内容</h2>
-          <p>这些内容都已经整理进 GitHub 演示站，不依赖现场烧录；后续如果需要，可以再把 Pages 链接放进 README、插件市场说明或演示材料。</p>
-        </div>
-        <div class="cards">
-          <article class="card">
-            <div>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 9h4M8 13h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              <h3>Screen</h3>
-              <p>横屏机型、锁定比例、各固件页面和详情态都在同一个视口中展示。</p>
+        <article class="panel" id="buttons">
+          <div class="panel-head"><span>03 Hardware Buttons</span></div>
+          <h2>两颗实体键完成主要操作</h2>
+        <div class="section-brief">页面上方按钮模拟真实硬件效果。日常使用时，A 用来继续或批准，B 用来看详情或拒绝；B 长按进入 Fn 语音输入。长时间无操作会进入 Pet idle，B 双击可关闭自动待机。</div>
+          <div class="logic-grid">
+            <div class="logic-card">
+              <h3>日常浏览</h3>
+              <ul>
+                <li><b>A</b><span>下一页；Agent Hub 中先翻 agent 分组</span></li>
+                <li><b>B</b><span>查看当前页面详情</span></li>
+                <li><b>B x2</b><span>从详情返回；普通页回到 Home</span></li>
+                <li><b>A hold</b><span>快速查看设备状态</span></li>
+                <li><b>B hold</b><span>Fn 语音输入，打开 Codex dictation</span></li>
+                <li><b>Idle</b><span>无操作进入 Pet；A / B 唤醒，B x2 关闭自动待机</span></li>
+              </ul>
             </div>
-          </article>
-          <article class="card">
-            <div>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 8h10M7 16h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="8" r="3" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="16" r="3" stroke="currentColor" stroke-width="2"/></svg>
-              <h3>Button</h3>
-              <p>A 继续或允许，B 查看详情或拒绝，B 双击返回，B 长按进入 Fn 语音输入。</p>
+            <div class="logic-card">
+              <h3>审批请求</h3>
+              <ul>
+                <li><b>Prompt</b><span>审批请求会覆盖当前屏幕</span></li>
+                <li><b>A</b><span>允许 agent 继续执行</span></li>
+                <li><b>B</b><span>拒绝这次操作</span></li>
+                <li><b>B x2</b><span>快速取消并回到安全状态</span></li>
+              </ul>
             </div>
-          </article>
-          <article class="card">
-            <div>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 4v16M16 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              <h3>Bridge</h3>
-              <p>模拟 Mac bridge 数据刷新、在线和离线状态，以及 CPU / RAM 状态页。</p>
+          </div>
+        </article>
+
+        <article class="panel" id="live">
+          <div class="panel-head"><span>04 Live Link</span></div>
+          <h2>Mac 状态实时同步到 StickS3</h2>
+          <div class="section-brief">Mac 本地 bridge 把 agent 状态、审批请求、CPU、RAM、日程和连接状态同步到设备。用户看到的是在线、过期、离线和异常，不需要理解内部连接细节。</div>
+          <div class="scenario-grid">
+            <div class="scenario-card"><b>Agent 状态</b><span>Busy、Done、Need you、Error 会直接反映到 Home、Agent Hub 和 Pet。</span></div>
+            <div class="scenario-card"><b>审批请求</b><span>权限请求会覆盖当前屏幕，硬件按键立即变成允许和拒绝。</span></div>
+            <div class="scenario-card"><b>Mac 负载</b><span>Power 页面只展示 CPU、RAM 和连接状态，避免小屏塞满指标。</span></div>
+            <div class="scenario-card"><b>语音入口</b><span>B 长按作为 Fn 键，打开 Mac 上的 Codex 语音输入。</span></div>
+            <div class="scenario-card"><b>Pet 资源</b><span>宠物资源来自 <code>~/.codex/pets</code> 的 Codex pet 包，待机层只展示状态，不打断审批。</span></div>
+          </div>
+        </article>
+
+        <article class="panel" id="pet-system">
+          <div class="panel-head"><span>05 Codex Pet OS</span></div>
+          <h2>Pet 是桌面 companion，不只是小屏装饰</h2>
+          <div class="section-brief">这里结合你在 <code>anker_pet_app</code> 里的 Mac 桌面宠物形态和 Codex 官方 pet 包方式：Mac 上负责透明悬浮、拖拽、hook 状态和宠物库；StickS3 只承接“状态缩略图”和无操作后的 idle companion。</div>
+          <div class="pet-os-grid">
+            <div class="pet-desktop-stage" aria-label="Mac desktop pet preview">
+              <div class="pet-window-bar"><span>Agent Pethub floating window</span><span>127.0.0.1:27182</span></div>
+              <div class="pet-window-area">
+                <div class="pet-floating-bubble"><b id="desktopPetState">Working</b><span id="desktopPetReason">PreToolUse -> running-right</span></div>
+                <div id="desktopPetSprite"></div>
+              </div>
+              <div class="pet-desktop-meta">
+                <span>window<b>transparent</b></span>
+                <span>gesture<b>drag / click</b></span>
+                <span>idle<b>30s waiting</b></span>
+              </div>
             </div>
-          </article>
-        </div>
+
+            <div class="pet-library-panel">
+              <h3>Codex pet library</h3>
+              <div class="pet-library-copy">当前页面直接读取展示用资产，源格式来自 <code>~/.codex/pets</code>：每个 pet 是一个 <code>spritesheet.webp</code> 加 <code>pet.json</code>。点击下面角色会同步更新左侧 StickS3 的 Pet 页面。</div>
+              <div class="pet-choice-grid" id="petChoices" aria-label="Pet library selector"></div>
+            </div>
+          </div>
+
+          <div class="pet-contract-panel" style="margin-top:14px">
+            <h3>状态映射</h3>
+            <div class="pet-contract-grid">
+              <span><b>Mac desktop</b>透明浮窗常驻桌面，支持拖拽、点击、自动移动和系统托盘管理。</span>
+              <span><b>Codex hooks</b><code>PreToolUse</code>、<code>PostToolUse</code>、<code>PermissionRequest</code>、<code>Stop</code> 映射到 pet state。</span>
+              <span><b>StickS3</b>只显示当前角色、agent 情绪和 A/B 操作，不承载完整宠物管理器。</span>
+              <span><b>Codex package</b>官方 pet 包保留轻量 <code>pet.json</code>；atlas 和 state 可按默认 8x9 定义解析。</span>
+              <span><b>Sprite atlas</b><code>1536x1872</code>、<code>8x9</code>、单帧 <code>192x208</code>，9 个状态行。</span>
+              <span><b>Idle layer</b>无操作进入 <code>waiting</code> 语义的 Pet idle；审批覆盖层永远优先。</span>
+              <span><b>Review state</b>Edit / Write / code review 类事件可以进入 <code>review</code>，比普通 busy 更明确。</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel" id="scenarios">
+          <div class="panel-head"><span>06 User Scenarios</span></div>
+          <h2>它适合放在真实桌面工作流里</h2>
+          <div class="section-brief">这个页面展示的是产品体验，不是协议调试台。核心目标是让你少切窗口、少错过审批、少猜 agent 状态。</div>
+          <div class="scenario-grid">
+            <div class="scenario-card"><b>编码时</b><span>你可以一眼看到 Codex 是否还在跑、当前任务是否完成，以及是否进入异常状态。</span></div>
+            <div class="scenario-card"><b>等待审批时</b><span>权限请求直接出现在硬件屏幕上，A 批准，B 拒绝，不需要先找到 Mac 上的弹窗。</span></div>
+            <div class="scenario-card"><b>语音输入时</b><span>长按 B 作为 Fn 快捷键，直接打开 Codex 语音输入，把临时想法说给 agent。</span></div>
+            <div class="scenario-card"><b>专注工作时</b><span>Schedule 显示下一段任务；无操作后进入 Pet idle，用更柔和的方式展示 agent 状态。</span></div>
+            <div class="scenario-card"><b>排查问题时</b><span>Power 页面只保留 CPU、RAM 和连接状态，快速判断是 agent、Mac 负载还是连接出了问题。</span></div>
+          </div>
+        </article>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="shell">Agent Desktop Pets demo portal for YaoYao021123/agent-desktop-pets.</div>
-  </footer>
+  <script>
+    const pages = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
+    const pageLabels = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
+    const scheduleLabels = ["Next", "Today", "Focus"];
+    const screen = document.querySelector("#screen");
+    const staticPetSprites = new Set();
+    const armedPetSprites = new WeakSet();
+    const state = {
+      page: 0,
+      detail: false,
+      voice: false,
+      idlePetEnabled: true,
+      idlePetActive: false,
+      idlePetMs: 45000,
+      lastInteractionAt: Date.now(),
+      petId: "kuma",
+      agentPage: 0,
+      agentCount: 4,
+      scheduleView: 0,
+      prompt: null,
+      scenario: "busy",
+      connected: true,
+      usageStale: false,
+      bridgeState: "ok",
+      usageAgeSec: 2,
+      usageSource: "rollout",
+      pendingApprovals: 0,
+      cpu: 34,
+      ram: 62,
+      primaryUsed: 28,
+      secondaryUsed: 41,
+      log: "ready"
+    };
+
+    const baseAgents = [
+      { name: "Codex", state: "busy", task: "implement pet page", progress: 68 },
+      { name: "Claude", state: "idle", task: "review notes", progress: 22 },
+      { name: "Cursor", state: "editing", task: "sync UI copy", progress: 51 },
+      { name: "Local", state: "completed", task: "build passed", progress: 100 }
+    ];
+
+    const schedule = {
+      next: { time: "10:30", title: "Design review", place: "Zoom" },
+      today: [
+        { time: "10:30", title: "Design review" },
+        { time: "13:20", title: "Firmware burn" },
+        { time: "16:00", title: "Agent cleanup" }
+      ],
+      focus: { start: "14:00", end: "15:30", title: "Deep work", status: "mute non-urgent" }
+    };
+
+    const petStateDefs = {
+      idle: { row: 0, frames: 6, fps: 8 },
+      "running-right": { row: 1, frames: 8, fps: 12 },
+      "running-left": { row: 2, frames: 8, fps: 12 },
+      waving: { row: 3, frames: 4, fps: 8 },
+      jumping: { row: 4, frames: 5, fps: 10 },
+      failed: { row: 5, frames: 8, fps: 8 },
+      waiting: { row: 6, frames: 6, fps: 6 },
+      running: { row: 7, frames: 6, fps: 10 },
+      review: { row: 8, frames: 6, fps: 8 }
+    };
+
+    const petCatalog = [
+      {
+        id: "kuma",
+        displayName: "Kuma",
+        source: "Codex pet",
+        src: "assets/pets/kuma/spritesheet.webp",
+        description: "温和、清晰、最适合做默认桌面状态宠物。"
+      },
+      {
+        id: "silverloaf",
+        displayName: "Silverloaf",
+        source: "Codex pet",
+        src: "assets/pets/silverloaf/spritesheet.webp",
+        description: "更克制的猫形态，适合 dashboard 和常驻状态。"
+      },
+      {
+        id: "david",
+        displayName: "david",
+        source: "Codex pet",
+        src: "assets/pets/david/spritesheet.webp",
+        description: "当前项目记录中的默认角色，可复用现有转换流程。"
+      },
+      {
+        id: "lulu-capybara-2",
+        displayName: "噜噜",
+        source: "Codex pet",
+        src: "assets/pets/lulu-capybara-2/spritesheet.webp",
+        description: "安静治愈，适合 idle / waiting 的低打扰表达。"
+      },
+      {
+        id: "kunkun",
+        displayName: "kunkun",
+        source: "Agent Pethub sample",
+        src: "assets/pets/kunkun/spritesheet.webp",
+        description: "来自 anker_pet_app 的 8x9 标准 sample 包。"
+      }
+    ];
+
+    const history = [22, 25, 28, 31, 27, 33, 38, 44, 41, 36, 34, 39, 45, 52, 49, 43, 37, 35, 32, 34, 40, 46, 42, 34];
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    function pctRemaining(used) {
+      return Math.max(0, Math.min(100, 100 - used));
+    }
+
+    function activePet() {
+      return petCatalog.find((pet) => pet.id === state.petId) || petCatalog[0];
+    }
+
+    function petRenderState() {
+      const mood = petMood();
+      if (mood === "Need you" || mood === "Stale" || mood === "Offline") return "waiting";
+      if (mood === "Blocked") return "failed";
+      if (mood === "Done") return "waving";
+      if (mood === "Editing") return "review";
+      if (mood === "Working") return "running-right";
+      return "idle";
+    }
+
+    function petStateReason(renderState) {
+      return {
+        idle: "agent:idle -> idle",
+        "running-right": "PreToolUse Write/Bash -> running-right",
+        "running-left": "drag left -> running-left",
+        waving: "Stop -> waving",
+        jumping: "click -> jumping",
+        failed: "StopFailure -> failed",
+        waiting: "idle timeout / permission -> waiting",
+        running: "Read/Glob/Grep -> running",
+        review: "Edit/Write review -> review"
+      }[renderState] || "agent state";
+    }
+
+    function petSprite(className = "", overridePetId = state.petId, overrideState = petRenderState()) {
+      const pet = petCatalog.find((item) => item.id === overridePetId) || activePet();
+      const def = petStateDefs[overrideState] || petStateDefs.idle;
+      const duration = Math.max(0.45, def.frames / Math.max(def.fps, 1));
+      const shift = Math.max(1, def.frames - 1);
+      const spriteKey = `${pet.id}:${overrideState}`;
+      const staticClass = staticPetSprites.has(spriteKey) ? "is-static" : "";
+      return `
+        <div class="pet-sprite-window ${esc(className)} ${staticClass}" data-pet-sprite-key="${esc(spriteKey)}" style="--pet-row:${def.row};--pet-shift:${shift};--pet-duration:${duration.toFixed(2)}s;--pet-loops:3">
+          <img src="${esc(pet.src)}" alt="${esc(pet.displayName)} ${esc(overrideState)}">
+        </div>
+      `;
+    }
+
+    function markPetSpriteStatic(sprite) {
+      const key = sprite?.dataset.petSpriteKey;
+      if (!key) return;
+      staticPetSprites.add(key);
+      sprite.classList.add("is-static");
+    }
+
+    function armPetStaticTimers(root = document) {
+      root.querySelectorAll(".pet-sprite-window:not(.is-static)").forEach((sprite) => {
+        const key = sprite.dataset.petSpriteKey;
+        if (!key) return;
+        if (staticPetSprites.has(key)) {
+          sprite.classList.add("is-static");
+          return;
+        }
+        if (armedPetSprites.has(sprite)) return;
+        armedPetSprites.add(sprite);
+        const duration = Number.parseFloat(sprite.style.getPropertyValue("--pet-duration")) || .9;
+        const loops = Number.parseInt(sprite.style.getPropertyValue("--pet-loops"), 10) || 3;
+        window.setTimeout(() => {
+          if (sprite.isConnected && !sprite.classList.contains("is-static")) markPetSpriteStatic(sprite);
+        }, duration * loops * 1000 + 80);
+      });
+    }
+
+    function agentLabel(agentState) {
+      if (!state.connected) return "Offline";
+      if (agentState === "busy" || agentState === "running") return "Busy";
+      if (agentState === "attention" || agentState === "wait" || agentState === "waiting") return "Wait";
+      if (agentState === "completed" || agentState === "complete" || agentState === "done") return "Done";
+      if (agentState === "edit" || agentState === "editing") return "Edit";
+      if (agentState === "error") return "Error";
+      return "Idle";
+    }
+
+    function accentFor(agentState) {
+      if (!state.connected) return "var(--muted)";
+      if (agentState === "busy" || agentState === "running") return "var(--green)";
+      if (agentState === "attention" || agentState === "wait" || agentState === "waiting") return "var(--amber)";
+      if (agentState === "edit" || agentState === "editing") return "var(--coral)";
+      if (agentState === "error") return "var(--red)";
+      return "var(--soft)";
+    }
+
+    function actionLabel(log) {
+      if (String(log || "").startsWith("agentCount")) return "切换 Agent 数";
+      if (String(log || "").startsWith("pet ")) return `Pet ${activePet().displayName}`;
+      return {
+        ready: "就绪",
+        page: "翻页",
+        accept: "已批准",
+        cancel: "已拒绝",
+        detail: "查看详情",
+        "already detail": "详情中",
+        back: "已返回",
+        home: "回到 Home",
+        status: "查看状态",
+        "agent page": "切换 agent",
+        "schedule view": "切换日程",
+        busy: "工作中",
+        approval: "待审批",
+        done: "已完成",
+        error: "异常",
+        stale: "数据过期",
+        offline: "离线",
+        refresh: "实时刷新",
+        voice: "语音输入",
+        "voice sent": "语音已发送",
+        "pet idle": "Pet 待机",
+        "pet off": "Pet 关闭",
+        "pet on": "Pet 开启",
+        wake: "已唤醒",
+        Home: "Home",
+        Welcome: "Welcome",
+        "Agent Hub": "Agent Hub",
+        Schedule: "Schedule",
+        Power: "Power",
+        Pet: "Pet"
+      }[log] || String(log || "就绪");
+    }
+
+    function agents() {
+      const copy = baseAgents.map((agent) => ({ ...agent }));
+      if (state.scenario === "approval") {
+        copy[0].state = "attention";
+        copy[0].task = "permission waiting";
+        copy[0].progress = 12;
+      } else if (state.scenario === "done") {
+        copy[0].state = "completed";
+        copy[0].task = "task complete";
+        copy[0].progress = 100;
+      } else if (state.scenario === "error") {
+        copy[0].state = "error";
+        copy[0].task = "needs recovery";
+        copy[0].progress = 0;
+      } else if (state.scenario === "offline") {
+        copy[0].state = "offline";
+        copy[0].task = "No bridge";
+        copy[0].progress = 0;
+      } else if (state.scenario === "stale") {
+        copy[0].state = "busy";
+        copy[0].task = "old snapshot";
+        copy[0].progress = 57;
+      }
+      return copy.slice(0, state.agentCount);
+    }
+
+    function firstAgent() {
+      return agents()[0] || { name: "Codex", state: state.connected ? "idle" : "offline", task: "standing by", progress: 0 };
+    }
+
+    function detailAgent() {
+      const list = agents();
+      if (state.page === 2 && list.length >= 3) {
+        const pageCount = Math.ceil(list.length / 2);
+        const start = (state.agentPage % pageCount) * 2;
+        return list[start] || firstAgent();
+      }
+      return firstAgent();
+    }
+
+    function header(title, badge) {
+      return `<div class="s-head"><span>10:09&nbsp;&nbsp;<b>${esc(title)}</b></span><span>${esc(badge)}</span></div>`;
+    }
+
+    function hint(left = "A next", right = "B detail") {
+      return `<div class="s-hint"><span>${esc(left)}</span><span>${esc(right)}</span></div>`;
+    }
+
+    function agentCard(agent, compact = false) {
+      const accent = accentFor(agent.state);
+      return `
+        <div class="agent-card ${compact ? "is-compact" : ""} screen-card" style="--accent:${accent}">
+          <div class="agent-top">
+            <div class="agent-icon">C</div>
+            <div class="agent-name">${esc(agent.name)}</div>
+            <i class="dot" style="background:${accent}"></i>
+          </div>
+          <div class="agent-state">${esc(agentLabel(agent.state))}</div>
+          <div class="agent-task">${esc(state.connected ? agent.task : "No bridge")}</div>
+          ${!compact && agent.progress > 0 ? `<div class="progress" style="--accent:${accent};--value:${agent.progress}%"><i></i></div>` : ""}
+        </div>
+      `;
+    }
+
+    function widget(label, value) {
+      return `<div class="widget screen-card"><b>${esc(label)}</b><span>${esc(value)}</span></div>`;
+    }
+
+    function renderHome() {
+      const agent = firstAgent();
+      const status = state.usageStale ? "Stale" : agentLabel(agent.state);
+      const accent = state.usageStale ? "var(--coral)" : accentFor(agent.state);
+      return `
+        ${header("Home", "S3")}
+        <div class="home-main">
+          <div>
+            <div class="home-logo">C</div>
+            <div class="home-title">Mac Agent<br>Dashboard</div>
+            <div class="agent-task">Agent-first status</div>
+          </div>
+          <div class="preview-card screen-card">
+            <div class="small-label">Live preview</div>
+            <div class="agent-name" style="margin-top:8px">${esc(agent.name)}</div>
+            <div class="agent-state" style="color:${accent};font-size:12px">${esc(status)}</div>
+            ${agent.progress > 0 ? `<div class="progress" style="--accent:${accent};--value:${agent.progress}%"><i></i></div>` : ""}
+          </div>
+        </div>
+        ${hint()}
+      `;
+    }
+
+    function renderWelcome() {
+      return `
+        ${header("Welcome", "1/3")}
+        <div class="welcome-grid">
+          <div class="welcome-card screen-card"><b>Agent</b><span>work state</span><span>needs you</span></div>
+          <div class="welcome-card screen-card"><b>Summary</b><span>mail/msg</span><span>no body</span></div>
+          <div class="welcome-card screen-card"><b>Firmware</b><span>240 x 135</span><span>M5GFX</span></div>
+        </div>
+        ${hint()}
+      `;
+    }
+
+    function renderAgentHub() {
+      const list = agents();
+      const count = list.length || 1;
+      if (count === 1) {
+        return `
+          ${header("Agent Hub", state.connected ? "Live" : "Wait")}
+          <div class="hub-one">
+            ${agentCard(list[0])}
+            ${widget("5h", `${pctRemaining(state.primaryUsed)}%`)}
+            ${widget("7d", `${pctRemaining(state.secondaryUsed)}%`)}
+            ${widget("RAM", state.connected ? `${state.ram}%` : "--")}
+            ${widget("CPU", state.connected ? `${state.cpu}%` : "--")}
+          </div>
+          ${hint()}
+        `;
+      }
+
+      const pageCount = count < 3 ? 1 : Math.ceil(count / 2);
+      const start = count < 3 ? 0 : (state.agentPage % pageCount) * 2;
+      const visible = count < 3 ? list : list.slice(start, start + 2);
+      const dots = Array.from({ length: pageCount }, (_, i) => `<i class="${i === state.agentPage % pageCount ? "is-active" : ""}"></i>`).join("");
+      const aHint = count >= 3 && state.agentPage % pageCount < pageCount - 1 ? "A scroll" : "A next";
+      return `
+        ${header("Agent Hub", count < 3 ? `${count}` : `${start + 1}-${Math.min(start + 2, count)}/${count}`)}
+        <div class="hub-many">
+          ${visible.map((agent) => agentCard(agent, true)).join("")}
+          ${visible.length === 1 ? `<div class="screen-card" style="padding:26px 12px;color:var(--muted)">end reached<br>A next</div>` : ""}
+        </div>
+        ${pageCount > 1 ? `<div class="dots">${dots}</div>` : ""}
+        ${hint(aHint, "B detail")}
+      `;
+    }
+
+    function renderSchedule() {
+      const view = state.scheduleView;
+      if (view === 1) {
+        return `
+          ${header("Schedule", "Today")}
+          <div class="schedule-list screen-card" style="height:82px;margin-top:7px">
+            <div class="small-label">Today</div>
+            ${schedule.today.map((event) => `<div class="event-row"><span>${esc(event.time)}</span><b>${esc(event.title)}</b></div>`).join("")}
+          </div>
+          ${hint()}
+        `;
+      }
+      if (view === 2) {
+        return `
+          ${header("Schedule", "Focus")}
+          <div class="schedule-focus screen-card" style="height:82px;margin-top:7px">
+            <div class="small-label">Focus</div>
+            <div class="schedule-time">${esc(schedule.focus.start)}</div>
+            <div class="schedule-title">${esc(schedule.focus.title)}</div>
+            <div class="schedule-place">${esc(schedule.focus.status)}</div>
+          </div>
+          ${hint()}
+        `;
+      }
+      return `
+        ${header("Schedule", "Next")}
+        <div class="schedule-grid">
+          <div class="schedule-next screen-card">
+            <div class="small-label">Next</div>
+            <div class="schedule-time">${esc(schedule.next.time)}</div>
+            <div class="schedule-title">${esc(schedule.next.title)}</div>
+            <div class="schedule-place">${esc(schedule.next.place)}</div>
+          </div>
+          <div class="schedule-list screen-card">
+            <div class="small-label">Today</div>
+            ${schedule.today.slice(0, 3).map((event) => `<div class="event-row"><span>${esc(event.time)}</span><b>${esc(event.title)}</b></div>`).join("")}
+          </div>
+        </div>
+        ${hint()}
+      `;
+    }
+
+    function renderScheduleDetail() {
+      const view = state.scheduleView;
+      if (view === 1) {
+        return `
+          ${header("Detail", "Today")}
+          <div class="schedule-list schedule-detail-card screen-card">
+            <div class="small-label">Today</div>
+            ${schedule.today.map((event) => `<div class="event-row"><span>${esc(event.time)}</span><b>${esc(event.title)}</b></div>`).join("")}
+          </div>
+          ${hint("A view", "B x2 back")}
+        `;
+      }
+      if (view === 2) {
+        return `
+          ${header("Detail", "Focus")}
+          <div class="schedule-focus schedule-detail-card screen-card">
+            <div class="small-label">Focus</div>
+            <div class="schedule-time">${esc(schedule.focus.start)}</div>
+            <div class="schedule-title">${esc(schedule.focus.title)}</div>
+            <div class="schedule-place">${esc(schedule.focus.status)}</div>
+          </div>
+          ${hint("A view", "B x2 back")}
+        `;
+      }
+      return `
+        ${header("Detail", "Next")}
+        <div class="schedule-next schedule-detail-card screen-card">
+          <div class="small-label">Next</div>
+          <div class="schedule-time">${esc(schedule.next.time)}</div>
+          <div class="schedule-title">${esc(schedule.next.title)}</div>
+          <div class="schedule-place">${esc(schedule.next.place)}</div>
+        </div>
+        ${hint("A view", "B x2 back")}
+      `;
+    }
+
+    function renderPower() {
+      const staleLabel = state.usageStale ? "stale" : (state.bridgeState || "ok");
+      return `
+        ${header("Power", state.usageStale ? "Stale" : staleLabel)}
+        <div class="power-grid">
+          <div class="metric screen-card"><b>CPU</b><strong>${state.connected ? `${state.cpu}%` : "--"}</strong><span>load</span></div>
+          <div class="metric screen-card"><b>RAM</b><strong>${state.connected ? `${state.ram}%` : "--"}</strong><span>${state.ram >= 70 ? "Medium" : "Low"}</span></div>
+          <div class="metric screen-card"><b>BRIDGE</b><strong>${esc(staleLabel)}</strong><span>${esc(state.usageSource)}</span></div>
+        </div>
+        <div class="load-card screen-card">
+          <div class="meter-line"><span class="small-label">LOAD</span><span>${state.cpu}%</span></div>
+          <div class="bars">${history.map((value, index) => `<i style="height:${Math.max(2, value * 0.27)}px;opacity:${index > 20 ? 1 : .72}"></i>`).join("")}</div>
+        </div>
+        ${hint("A next", "B detail")}
+      `;
+    }
+
+    function petMood() {
+      const agent = firstAgent();
+      if (!state.connected) return "Offline";
+      if (state.usageStale) return "Stale";
+      if (state.pendingApprovals > 0 || agent.state === "attention" || agent.state === "wait" || agent.state === "waiting") return "Need you";
+      if (agent.state === "busy" || agent.state === "running") return "Working";
+      if (agent.state === "edit" || agent.state === "editing") return "Editing";
+      if (agent.state === "completed" || agent.state === "complete" || agent.state === "done") return "Done";
+      if (agent.state === "error") return "Blocked";
+      return "Calm";
+    }
+
+    function petColor() {
+      const mood = petMood();
+      if (mood === "Need you") return "var(--amber)";
+      if (mood === "Stale" || mood === "Editing") return "var(--coral)";
+      if (mood === "Blocked") return "var(--red)";
+      if (mood === "Offline") return "var(--muted)";
+      if (mood === "Done") return "var(--soft)";
+      return "var(--green)";
+    }
+
+    function renderPet(detail = false, idle = false) {
+      const agent = firstAgent();
+      const mood = petMood();
+      const pet = activePet();
+      const renderState = petRenderState();
+      const line = idle ? "Idle companion" : detail ? agent.task : (
+        mood === "Need you" ? "Approval waiting" :
+        mood === "Stale" ? "Data stale" :
+        mood === "Offline" ? "No bridge" :
+        mood === "Blocked" ? "Needs recovery" :
+        mood === "Done" ? "Task complete" :
+        mood === "Editing" ? "Editing files" :
+        mood === "Working" ? "Working with Codex" :
+        "Standing by"
+      );
+      return `
+        ${header(idle ? "Pet" : detail ? "Detail" : "Pet", idle ? "Idle" : detail ? "Pet" : mood)}
+        <div class="pet-layout" style="--pet-color:${petColor()}">
+          <div class="pet-bot is-sprite">
+            ${petSprite("", pet.id, renderState)}
+          </div>
+          <div class="pet-info screen-card">
+            <div class="small-label">${esc(pet.source)}</div>
+            <strong>${esc(mood)}</strong>
+            <b>${esc(pet.displayName)}</b>
+            <span>${esc(line)}</span>
+          </div>
+        </div>
+        ${agent.progress > 0 ? `<div class="progress" style="--accent:${petColor()};--value:${agent.progress}%;margin-left:100px;margin-right:14px"><i></i></div>` : ""}
+        ${hint(idle ? "A wake" : detail ? "A next" : "A next", idle ? "B x2 off" : detail ? "B x2 back" : "B detail")}
+      `;
+    }
+
+    function renderDetail() {
+      const agent = detailAgent();
+      if (state.page === 3) {
+        return renderScheduleDetail();
+      }
+      if (state.page === 4) {
+        return `
+          ${header("Detail", state.usageStale ? "Stale" : "Power")}
+          ${renderPower().replace(/<div class="s-head">.*?<\/div>/, "").replace(/<div class="s-hint">.*?<\/div>/, "")}
+          ${hint("A next", "B x2 back")}
+        `;
+      }
+      if (state.page === 5) {
+        return renderPet(true);
+      }
+      return `
+        ${header("Detail", pages[state.page])}
+        <div class="detail-box screen-card">
+          <div class="detail-title">${esc(agent.name)}</div>
+          <div class="detail-main" style="color:${accentFor(agent.state)}">${esc(agentLabel(agent.state))}</div>
+          <div class="detail-sub">${esc(agent.task)}</div>
+          <div class="detail-sub">5h ${pctRemaining(state.primaryUsed)}%  7d ${pctRemaining(state.secondaryUsed)}%  ${state.usageStale ? "stale" : "ok"} ${state.usageAgeSec}s</div>
+        </div>
+        ${hint("A next", "B x2 back")}
+      `;
+    }
+
+    function renderPrompt() {
+      return `
+        ${header("Approval", "Need")}
+        <div class="approval screen-card">
+          <strong>${esc(state.prompt.tool)}</strong>
+          <span>${esc(state.prompt.hint)}</span>
+          <div class="approval-actions"><b>A ALLOW</b><b>B DENY</b></div>
+        </div>
+      `;
+    }
+
+    function renderVoiceInput() {
+      return `
+        ${header("Voice", "Fn")}
+        <div class="approval screen-card">
+          <strong>Codex Dictation</strong>
+          <span>B hold opens voice input on Mac</span>
+          <div class="approval-actions"><b>A SEND</b><b>B x2 BACK</b></div>
+        </div>
+      `;
+    }
+
+    function renderScreen() {
+      screen.dataset.mood = petMood();
+      if (state.prompt) {
+        screen.innerHTML = renderPrompt();
+      } else if (state.voice) {
+        screen.innerHTML = renderVoiceInput();
+      } else if (state.idlePetActive) {
+        screen.innerHTML = renderPet(false, true);
+      } else if (state.detail) {
+        screen.innerHTML = renderDetail();
+      } else if (state.page === 0) {
+        screen.innerHTML = renderHome();
+      } else if (state.page === 1) {
+        screen.innerHTML = renderWelcome();
+      } else if (state.page === 2) {
+        screen.innerHTML = renderAgentHub();
+      } else if (state.page === 3) {
+        screen.innerHTML = renderSchedule();
+      } else if (state.page === 4) {
+        screen.innerHTML = renderPower();
+      } else {
+        screen.innerHTML = renderPet(false);
+      }
+      updateChrome();
+    }
+
+    function updateChrome() {
+      document.querySelectorAll("[data-page]").forEach((button) => {
+        button.classList.toggle("is-active", Number(button.dataset.page) === state.page);
+      });
+      document.querySelectorAll("[data-scenario]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.scenario === state.scenario);
+      });
+      document.querySelector("#statusMode").textContent = state.prompt ? "Approval" : state.voice ? "Voice" : state.idlePetActive ? "Pet Idle" : state.detail ? "Detail" : pageLabels[state.page];
+      document.querySelector("#statusBridge").textContent = state.connected ? (state.usageStale ? "数据过期" : "在线") : "离线";
+      document.querySelector("#statusAction").textContent = actionLabel(state.log);
+      document.querySelector("#statusPet").textContent = `${activePet().displayName} ${state.idlePetEnabled ? (state.idlePetActive ? "待机" : "开启") : "关闭"}`;
+      updatePetIdleButton();
+      renderPetSystem();
+      armPetStaticTimers();
+    }
+
+    function markInteraction() {
+      state.lastInteractionAt = Date.now();
+    }
+
+    function updatePetIdleButton() {
+      const button = document.querySelector("#togglePetIdle");
+      if (!button) return;
+      button.textContent = state.idlePetEnabled ? "Pet idle on" : "Pet idle off";
+      button.classList.toggle("is-active", state.idlePetEnabled);
+    }
+
+    function renderPetSystem() {
+      const petChoices = document.querySelector("#petChoices");
+      if (petChoices && !petChoices.dataset.ready) {
+        petChoices.innerHTML = petCatalog.map((pet) => `
+          <button class="pet-choice" type="button" data-pet="${esc(pet.id)}">
+            ${petSprite("is-tiny", pet.id, "idle")}
+            <div><b>${esc(pet.displayName)}</b><span>${esc(pet.source)} · ${esc(pet.description)}</span></div>
+          </button>
+        `).join("");
+        petChoices.dataset.ready = "true";
+        petChoices.querySelectorAll("[data-pet]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.petId = button.dataset.pet;
+            state.page = 5;
+            state.detail = false;
+            state.voice = false;
+            state.prompt = null;
+            state.idlePetActive = false;
+            state.log = `pet ${state.petId}`;
+            markInteraction();
+            renderScreen();
+          });
+        });
+      }
+      document.querySelectorAll("[data-pet]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.pet === state.petId);
+      });
+      const renderState = petRenderState();
+      const desktopSprite = document.querySelector("#desktopPetSprite");
+      if (desktopSprite) desktopSprite.innerHTML = petSprite("is-large", state.petId, renderState);
+      const desktopState = document.querySelector("#desktopPetState");
+      if (desktopState) desktopState.textContent = renderState;
+      const desktopReason = document.querySelector("#desktopPetReason");
+      if (desktopReason) desktopReason.textContent = petStateReason(renderState);
+    }
+
+    function wakeIdlePet(disable = false) {
+      state.idlePetActive = false;
+      if (disable) {
+        state.idlePetEnabled = false;
+        state.log = "pet off";
+      } else {
+        state.log = "wake";
+      }
+      markInteraction();
+      renderScreen();
+    }
+
+    function nextPage() {
+      state.page = (state.page + 1) % pages.length;
+      state.log = "page";
+    }
+
+    function handleA() {
+      if (state.idlePetActive) {
+        wakeIdlePet(false);
+        return;
+      }
+      markInteraction();
+      if (state.voice) {
+        state.voice = false;
+        state.log = "voice sent";
+      } else if (state.prompt) {
+        state.prompt = null;
+        state.pendingApprovals = 0;
+        state.scenario = "busy";
+        state.log = "accept";
+      } else if (state.detail && state.page === 3) {
+        state.scheduleView = (state.scheduleView + 1) % 3;
+        state.log = "schedule view";
+      } else if (state.page === 2 && state.agentCount >= 3) {
+        const pageCount = Math.ceil(state.agentCount / 2);
+        if (state.agentPage < pageCount - 1) {
+          state.agentPage += 1;
+          state.log = "agent page";
+        } else {
+          state.agentPage = 0;
+          nextPage();
+        }
+      } else {
+        nextPage();
+      }
+      renderScreen();
+    }
+
+    function handleB() {
+      if (state.idlePetActive) {
+        wakeIdlePet(false);
+        return;
+      }
+      markInteraction();
+      if (state.voice) {
+        state.log = "voice";
+      } else if (state.prompt) {
+        state.prompt = null;
+        state.pendingApprovals = 0;
+        state.scenario = "busy";
+        state.log = "cancel";
+      } else if (!state.detail) {
+        state.detail = true;
+        state.log = "detail";
+      } else {
+        state.log = "already detail";
+      }
+      renderScreen();
+    }
+
+    function handleBDouble() {
+      if (state.idlePetActive) {
+        wakeIdlePet(true);
+        return;
+      }
+      markInteraction();
+      if (state.voice) {
+        state.voice = false;
+        state.log = "back";
+      } else if (state.prompt) {
+        state.prompt = null;
+        state.pendingApprovals = 0;
+        state.scenario = "busy";
+        state.log = "cancel";
+      } else if (state.detail) {
+        state.detail = false;
+        state.log = "back";
+      } else {
+        state.page = 0;
+        state.log = "home";
+      }
+      renderScreen();
+    }
+
+    function handleALong() {
+      if (state.idlePetActive) {
+        wakeIdlePet(false);
+        return;
+      }
+      markInteraction();
+      state.log = "status";
+      renderScreen();
+    }
+
+    function handleBLong() {
+      if (state.idlePetActive) {
+        wakeIdlePet(false);
+        return;
+      }
+      markInteraction();
+      state.voice = true;
+      state.detail = false;
+      state.prompt = null;
+      state.pendingApprovals = 0;
+      state.log = "voice";
+      renderScreen();
+    }
+
+    function setScenario(name) {
+      markInteraction();
+      state.scenario = name;
+      state.connected = name !== "offline";
+      state.usageStale = name === "stale";
+      state.usageAgeSec = name === "stale" ? 981 : (name === "offline" ? 0 : 2);
+      state.bridgeState = name === "offline" ? "offline" : "ok";
+      state.pendingApprovals = name === "approval" ? 1 : 0;
+      state.idlePetActive = false;
+      state.prompt = name === "approval"
+        ? { id: "approval-42", tool: "exec command", hint: "Run firmware upload?" }
+        : null;
+      state.voice = false;
+      if (name === "done") {
+        state.cpu = 18;
+        state.ram = 52;
+      } else if (name === "error") {
+        state.cpu = 12;
+        state.ram = 58;
+      } else if (name === "stale") {
+        state.cpu = 34;
+        state.ram = 62;
+      } else {
+        state.cpu = 34;
+        state.ram = 62;
+      }
+      state.log = name;
+      renderScreen();
+    }
+
+    const lcd = document.querySelector(".lcd");
+    const lcdInner = document.querySelector(".lcd-inner");
+    const LCD_DESIGN_WIDTH = 300;
+    const LCD_DESIGN_HEIGHT = 164;
+
+    function syncLcdViewport() {
+      if (!lcd || !lcdInner) return;
+      const bounds = lcd.getBoundingClientRect();
+      const availableWidth = lcd.clientWidth || bounds.width;
+      const availableHeight = lcd.clientHeight || bounds.height;
+      if (!availableWidth || !availableHeight) return;
+      const scale = Math.min(availableWidth / LCD_DESIGN_WIDTH, availableHeight / LCD_DESIGN_HEIGHT);
+      const offsetX = (availableWidth - LCD_DESIGN_WIDTH * scale) / 2;
+      const offsetY = (availableHeight - LCD_DESIGN_HEIGHT * scale) / 2;
+      lcd.style.setProperty("--lcd-scale", scale.toFixed(5));
+      lcd.style.setProperty("--lcd-offset-x", `${offsetX.toFixed(2)}px`);
+      lcd.style.setProperty("--lcd-offset-y", `${offsetY.toFixed(2)}px`);
+    }
+
+    document.querySelector("#btnA").addEventListener("click", handleA);
+    document.querySelector("#btnB").addEventListener("click", handleB);
+    document.querySelector("#btnBDouble").addEventListener("click", handleBDouble);
+    document.querySelector("#btnALong").addEventListener("click", handleALong);
+    document.querySelector("#btnBLong").addEventListener("click", handleBLong);
+    document.addEventListener("animationend", (event) => {
+      if (!(event.target instanceof HTMLImageElement)) return;
+      const sprite = event.target.closest(".pet-sprite-window");
+      markPetSpriteStatic(sprite);
+    });
+    document.querySelector("#toggleAgents").addEventListener("click", () => {
+      markInteraction();
+      state.agentCount = state.agentCount === 4 ? 1 : 4;
+      state.agentPage = 0;
+      state.log = `agentCount ${state.agentCount}`;
+      document.querySelector("#toggleAgents").textContent = `${state.agentCount} 个 Agent`;
+      renderScreen();
+    });
+    document.querySelector("#previewPetIdle").addEventListener("click", () => {
+      state.idlePetEnabled = true;
+      state.idlePetActive = true;
+      state.voice = false;
+      state.prompt = null;
+      state.pendingApprovals = 0;
+      state.log = "pet idle";
+      markInteraction();
+      renderScreen();
+    });
+    document.querySelector("#togglePetIdle").addEventListener("click", () => {
+      state.idlePetEnabled = !state.idlePetEnabled;
+      state.idlePetActive = false;
+      state.log = state.idlePetEnabled ? "pet on" : "pet off";
+      markInteraction();
+      renderScreen();
+    });
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => setScenario(button.dataset.scenario));
+    });
+    document.querySelectorAll("[data-page]").forEach((button) => {
+      button.addEventListener("click", () => {
+        markInteraction();
+        state.page = Number(button.dataset.page);
+        state.detail = false;
+        state.voice = false;
+        state.idlePetActive = false;
+        state.prompt = null;
+        if (state.scenario === "approval") state.scenario = "busy";
+        state.pendingApprovals = 0;
+        state.log = pages[state.page];
+        renderScreen();
+      });
+    });
+
+    setInterval(() => {
+      let enteredIdle = false;
+      if (state.idlePetEnabled && !state.idlePetActive && !state.prompt && !state.voice && Date.now() - state.lastInteractionAt >= state.idlePetMs) {
+        state.idlePetActive = true;
+        state.log = "pet idle";
+        enteredIdle = true;
+      }
+      if (!state.connected || state.prompt) {
+        if (enteredIdle) renderScreen();
+        return;
+      }
+      state.usageAgeSec = state.usageStale ? state.usageAgeSec + 5 : 2;
+      if (!state.usageStale) {
+        state.cpu = 24 + Math.round(Math.abs(Math.sin(Date.now() / 4200)) * 22);
+        state.ram = 56 + Math.round(Math.abs(Math.cos(Date.now() / 5600)) * 10);
+        history.push(state.cpu);
+        history.splice(0, Math.max(0, history.length - 24));
+      }
+      renderScreen();
+    }, 5000);
+
+    if ("ResizeObserver" in window && lcd) {
+      new ResizeObserver(syncLcdViewport).observe(lcd);
+    }
+    window.addEventListener("resize", syncLcdViewport);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncLcdViewport).catch(() => {});
+    }
+
+    syncLcdViewport();
+    renderScreen();
+  </script>
 </body>
 </html>
