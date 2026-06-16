@@ -1744,6 +1744,12 @@
       height: 100%;
     }
 
+    body.is-docked .device-model,
+    body.is-docked .device-model-core,
+    body.is-docked .lcd {
+      transition: none;
+    }
+
     body.dock-wide {
       --lcd-design-w: 166px;
       --lcd-design-h: 300px;
@@ -1765,10 +1771,10 @@
     }
 
     body.is-docked.dock-wide .lcd {
-      left: 20.48%;
-      top: 12.44%;
-      width: 59.05%;
-      height: 49.78%;
+      left: 23.43%;
+      top: 14.93%;
+      width: 53.15%;
+      height: 44.80%;
       border-radius: 6.2% / 3.6%;
     }
 
@@ -3612,7 +3618,7 @@
       const progress = smoothstep(progressRaw);
       const shouldDock = progressRaw > .01;
       const wide = wideDockQuery.matches;
-      const portraitDock = shouldDock && wide && progressRaw > .54;
+      const portraitDock = shouldDock && wide;
       const target = targetDockRect(wide, topbarHeight);
       const natural = rememberNaturalModelRect();
       const naturalViewport = natural ? {
@@ -3621,11 +3627,17 @@
         width: natural.width,
         height: natural.height
       } : target;
+      const fromRect = portraitDock ? {
+        left: naturalViewport.left + naturalViewport.width / 2 - target.width / 2,
+        top: naturalViewport.top + naturalViewport.height / 2 - target.height / 2,
+        width: target.width,
+        height: target.height
+      } : naturalViewport;
       const rect = {
-        left: lerp(naturalViewport.left, target.left, progress),
-        top: lerp(naturalViewport.top, target.top, progress),
-        width: lerp(naturalViewport.width, target.width, progress),
-        height: lerp(naturalViewport.height, target.height, progress)
+        left: lerp(fromRect.left, target.left, progress),
+        top: lerp(fromRect.top, target.top, progress),
+        width: lerp(fromRect.width, target.width, progress),
+        height: lerp(fromRect.height, target.height, progress)
       };
       document.documentElement.style.setProperty("--dock-content-offset", `${(target.left + target.width + 22).toFixed(2)}px`);
       document.documentElement.style.setProperty("--compact-safe-top", `${(target.top + target.height + 24).toFixed(2)}px`);
