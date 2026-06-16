@@ -51,6 +51,8 @@
       --actual-topbar-h: 56px;
       --dock-left-width: clamp(250px, 22vw, 340px);
       --compact-dock-h: clamp(190px, 44vw, 270px);
+      --dock-content-offset: calc(var(--dock-left-width) + 22px);
+      --compact-safe-top: calc(var(--actual-topbar-h) + var(--compact-dock-h) + 18px);
       --lcd-design-w: 300px;
       --lcd-design-h: 164px;
     }
@@ -1719,13 +1721,27 @@
 
     body.is-docked .device-showcase {
       position: fixed;
+      left: var(--dock-left, 10px);
+      top: var(--dock-top, calc(var(--actual-topbar-h) + 8px));
       z-index: 18;
+      width: var(--dock-width, var(--dock-left-width));
+      height: var(--dock-height, calc(100vh - var(--actual-topbar-h) - 16px));
+      padding: 0;
+      border: 0;
+      background: transparent;
       pointer-events: none;
       will-change: transform, width, height, top, left;
+      transition: none;
     }
 
     body.is-docked .device-cad {
       filter: drop-shadow(0 20px 34px rgba(0, 0, 0, .74));
+    }
+
+    body.is-docked .device-wrap,
+    body.is-docked .device-model {
+      width: 100%;
+      height: 100%;
     }
 
     body.dock-wide {
@@ -1734,20 +1750,11 @@
     }
 
     body.is-docked.dock-wide .device-showcase {
-      left: 10px;
-      top: calc(var(--actual-topbar-h) + 8px);
-      width: var(--dock-left-width);
-      height: calc(100vh - var(--actual-topbar-h) - 16px);
-      padding: 8px;
-      border: 1px solid var(--line-soft);
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 18px 18px,
-        linear-gradient(0deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 18px 18px,
-        rgba(3, 4, 3, .92);
+      align-items: center;
     }
 
     body.is-docked.dock-wide .device-model {
-      width: clamp(210px, 29vh, 304px);
+      width: 100%;
       aspect-ratio: 420 / 900;
     }
 
@@ -1767,7 +1774,7 @@
 
     body.is-docked.dock-wide .status-section,
     body.is-docked.dock-wide .doc-scroll {
-      padding-left: calc(var(--dock-left-width) + 22px);
+      padding-left: var(--dock-content-offset);
       padding-right: clamp(12px, 2vw, 34px);
       transition: padding-left .72s cubic-bezier(.16, 1, .3, 1);
     }
@@ -1794,6 +1801,194 @@
       bottom: 6px;
       gap: 4px;
       font-size: 8px;
+    }
+
+    .s3-screen[data-orientation="portrait"] {
+      padding: 7px;
+      font-size: 10px;
+      line-height: 1.12;
+    }
+
+    .s3-screen[data-orientation="portrait"] .s-head {
+      height: 18px;
+    }
+
+    .portrait-body {
+      position: absolute;
+      left: 7px;
+      right: 7px;
+      top: 31px;
+      bottom: 24px;
+      min-height: 0;
+      display: grid;
+      gap: 7px;
+      align-content: start;
+      overflow: hidden;
+    }
+
+    .portrait-body .progress {
+      margin-top: 0;
+    }
+
+    .portrait-kicker {
+      color: var(--muted);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .portrait-title {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.08;
+      text-overflow: ellipsis;
+    }
+
+    .portrait-status {
+      overflow: hidden;
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .portrait-sub {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .portrait-panel {
+      min-height: 0;
+      padding: 7px;
+      overflow: hidden;
+    }
+
+    .portrait-panel b,
+    .portrait-metric b {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .portrait-panel span,
+    .portrait-metric span {
+      display: block;
+      margin-top: 4px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .portrait-home {
+      grid-template-rows: auto auto auto auto 1fr;
+    }
+
+    .portrait-brand-row {
+      display: grid;
+      grid-template-columns: 25px minmax(0, 1fr);
+      gap: 7px;
+      align-items: center;
+    }
+
+    .portrait-brand-row .home-logo {
+      width: 25px;
+      height: 25px;
+      border-radius: 6px;
+    }
+
+    .portrait-agent-list {
+      display: grid;
+      gap: 6px;
+      min-height: 0;
+    }
+
+    .portrait-agent-list .agent-card {
+      height: 58px;
+      padding: 7px;
+    }
+
+    .portrait-agent-list .agent-state {
+      margin-top: 5px;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .portrait-metrics {
+      display: grid;
+      gap: 6px;
+    }
+
+    .portrait-metric {
+      min-height: 44px;
+      padding: 7px;
+      overflow: hidden;
+    }
+
+    .portrait-metric-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .portrait-metric strong {
+      color: var(--green);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .portrait-bars {
+      height: 22px;
+      margin-top: 6px;
+    }
+
+    .portrait-schedule {
+      grid-template-rows: auto auto auto;
+    }
+
+    .portrait-schedule .schedule-next,
+    .portrait-schedule .schedule-list,
+    .portrait-schedule .schedule-focus {
+      height: auto;
+      min-height: 57px;
+      padding: 7px;
+    }
+
+    .portrait-pet {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .portrait-pet .pet-bot {
+      width: 68px;
+      height: 68px;
+    }
+
+    .portrait-pet .pet-sprite-window {
+      width: 58px;
+    }
+
+    .portrait-pet .pet-info {
+      width: 100%;
+      height: 82px;
+      text-align: left;
+    }
+
+    .portrait-approval {
+      height: auto;
+      min-height: 172px;
+      display: grid;
+      align-content: center;
     }
 
     body.dock-wide .home-main,
@@ -1906,25 +2101,15 @@
     }
 
     body.is-docked.dock-compact .device-showcase {
-      left: 0;
-      right: 0;
-      top: var(--actual-topbar-h);
-      width: 100vw;
-      height: var(--compact-dock-h);
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--line);
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 18px 18px,
-        linear-gradient(0deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 18px 18px,
-        rgba(3, 4, 3, .96);
+      align-items: center;
     }
 
     body.is-docked.dock-compact .device-model {
-      width: min(92vw, 520px);
+      width: 100%;
     }
 
     body.is-docked.dock-compact .status-section {
-      padding-top: calc(var(--actual-topbar-h) + var(--compact-dock-h) + 18px);
+      padding-top: var(--compact-safe-top);
     }
 
     body.is-docked.dock-compact .status-section,
@@ -2252,15 +2437,22 @@
     const body = document.body;
     const topbar = document.querySelector(".topbar");
     const stage = document.querySelector("#simulator");
+    const deviceShowcase = document.querySelector(".device-showcase");
+    const deviceModel = document.querySelector(".device-model");
     const screen = document.querySelector("#screen");
     const staticPetSprites = new Set();
     const armedPetSprites = new WeakSet();
     const wideDockQuery = window.matchMedia("(min-width: 900px)");
     let dockUpdateQueued = false;
+    let naturalModelDocRect = null;
+    let dockCurrentRect = null;
+    let dockTargetRect = null;
+    let dockAnimationFrame = 0;
     const state = {
       page: 0,
       detail: false,
       voice: false,
+      screenPortrait: false,
       idlePetEnabled: true,
       idlePetActive: false,
       idlePetMs: 45000,
@@ -2361,6 +2553,19 @@
         "\"": "&quot;",
         "'": "&#39;"
       }[ch]));
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function lerp(start, end, amount) {
+      return start + (end - start) * amount;
+    }
+
+    function smoothstep(value) {
+      const x = clamp(value, 0, 1);
+      return x * x * (3 - 2 * x);
     }
 
     function pctRemaining(used) {
@@ -2530,6 +2735,10 @@
       return firstAgent();
     }
 
+    function isPortraitScreen() {
+      return state.screenPortrait;
+    }
+
     function header(title, badge) {
       return `<div class="s-head"><span>10:09&nbsp;&nbsp;<b>${esc(title)}</b></span><span>${esc(badge)}</span></div>`;
     }
@@ -2562,6 +2771,29 @@
       const agent = firstAgent();
       const status = state.usageStale ? "Stale" : agentLabel(agent.state);
       const accent = state.usageStale ? "var(--coral)" : accentFor(agent.state);
+      if (isPortraitScreen()) {
+        return `
+          ${header("Home", "S3")}
+          <div class="portrait-body portrait-home">
+            <div class="portrait-brand-row">
+              <div class="home-logo">C</div>
+              <div>
+                <div class="portrait-kicker">Mac Agent</div>
+                <div class="portrait-title">Dashboard</div>
+              </div>
+            </div>
+            <div class="portrait-status" style="color:${accent}">${esc(status)}</div>
+            <div class="portrait-sub">${esc(state.connected ? agent.task : "No bridge")}</div>
+            ${agent.progress > 0 ? `<div class="progress" style="--accent:${accent};--value:${agent.progress}%"><i></i></div>` : ""}
+            <div class="portrait-panel screen-card">
+              <div class="small-label">Bridge</div>
+              <b>${state.connected ? (state.usageStale ? "STALE" : "OK") : "OFFLINE"} · ${state.usageAgeSec}s</b>
+              <span>CPU ${state.connected ? state.cpu : "--"}% / RAM ${state.connected ? state.ram : "--"}%</span>
+            </div>
+          </div>
+          ${hint()}
+        `;
+      }
       return `
         ${header("Home", "S3")}
         <div class="home-main">
@@ -2582,6 +2814,17 @@
     }
 
     function renderWelcome() {
+      if (isPortraitScreen()) {
+        return `
+          ${header("Welcome", "1/3")}
+          <div class="portrait-body">
+            <div class="portrait-panel screen-card"><div class="small-label">Agent</div><b>Status first</b><span>Busy / wait / done</span></div>
+            <div class="portrait-panel screen-card"><div class="small-label">Buttons</div><b>A next · B detail</b><span>B hold opens voice</span></div>
+            <div class="portrait-panel screen-card"><div class="small-label">Bridge</div><b>Mac live data</b><span>CPU / RAM / approval</span></div>
+          </div>
+          ${hint()}
+        `;
+      }
       return `
         ${header("Welcome", "1/3")}
         <div class="welcome-grid">
@@ -2596,6 +2839,20 @@
     function renderAgentHub() {
       const list = agents();
       const count = list.length || 1;
+      if (isPortraitScreen()) {
+        const pageCount = count < 3 ? 1 : Math.ceil(count / 2);
+        const start = count < 3 ? 0 : (state.agentPage % pageCount) * 2;
+        const visible = count < 3 ? list.slice(0, 3) : list.slice(start, start + 3);
+        const aHint = count >= 3 && state.agentPage % pageCount < pageCount - 1 ? "A scroll" : "A next";
+        return `
+          ${header("Agent Hub", count < 3 ? `${count}` : `${start + 1}-${Math.min(start + visible.length, count)}/${count}`)}
+          <div class="portrait-body portrait-agent-list">
+            ${visible.map((agent) => agentCard(agent, true)).join("")}
+            <div class="portrait-panel screen-card"><div class="small-label">Usage</div><b>5h ${pctRemaining(state.primaryUsed)}% · 7d ${pctRemaining(state.secondaryUsed)}%</b><span>RAM ${state.connected ? state.ram : "--"}% / CPU ${state.connected ? state.cpu : "--"}%</span></div>
+          </div>
+          ${hint(aHint, "B detail")}
+        `;
+      }
       if (count === 1) {
         return `
           ${header("Agent Hub", state.connected ? "Live" : "Wait")}
@@ -2628,6 +2885,39 @@
 
     function renderSchedule() {
       const view = state.scheduleView;
+      if (isPortraitScreen()) {
+        if (view === 2) {
+          return `
+            ${header("Schedule", "Focus")}
+            <div class="portrait-body portrait-schedule">
+              <div class="schedule-focus screen-card">
+                <div class="small-label">Focus</div>
+                <div class="schedule-time">${esc(schedule.focus.start)}</div>
+                <div class="schedule-title">${esc(schedule.focus.title)}</div>
+                <div class="schedule-place">${esc(schedule.focus.status)}</div>
+              </div>
+              <div class="portrait-panel screen-card"><div class="small-label">Until</div><b>${esc(schedule.focus.end)}</b><span>non-urgent muted</span></div>
+            </div>
+            ${hint()}
+          `;
+        }
+        return `
+          ${header("Schedule", view === 1 ? "Today" : "Next")}
+          <div class="portrait-body portrait-schedule">
+            <div class="schedule-next screen-card">
+              <div class="small-label">Next</div>
+              <div class="schedule-time">${esc(schedule.next.time)}</div>
+              <div class="schedule-title">${esc(schedule.next.title)}</div>
+              <div class="schedule-place">${esc(schedule.next.place)}</div>
+            </div>
+            <div class="schedule-list screen-card">
+              <div class="small-label">Today</div>
+              ${schedule.today.slice(0, 3).map((event) => `<div class="event-row"><span>${esc(event.time)}</span><b>${esc(event.title)}</b></div>`).join("")}
+            </div>
+          </div>
+          ${hint()}
+        `;
+      }
       if (view === 1) {
         return `
           ${header("Schedule", "Today")}
@@ -2670,6 +2960,37 @@
 
     function renderScheduleDetail() {
       const view = state.scheduleView;
+      if (isPortraitScreen()) {
+        const focus = view === 2;
+        const today = view === 1;
+        return `
+          ${header("Detail", focus ? "Focus" : today ? "Today" : "Next")}
+          <div class="portrait-body portrait-schedule">
+            ${focus ? `
+              <div class="schedule-focus screen-card">
+                <div class="small-label">Focus</div>
+                <div class="schedule-time">${esc(schedule.focus.start)}</div>
+                <div class="schedule-title">${esc(schedule.focus.title)}</div>
+                <div class="schedule-place">${esc(schedule.focus.status)}</div>
+              </div>
+              <div class="portrait-panel screen-card"><div class="small-label">End</div><b>${esc(schedule.focus.end)}</b><span>deep work block</span></div>
+            ` : today ? `
+              <div class="schedule-list screen-card">
+                <div class="small-label">Today</div>
+                ${schedule.today.map((event) => `<div class="event-row"><span>${esc(event.time)}</span><b>${esc(event.title)}</b></div>`).join("")}
+              </div>
+            ` : `
+              <div class="schedule-next screen-card">
+                <div class="small-label">Next</div>
+                <div class="schedule-time">${esc(schedule.next.time)}</div>
+                <div class="schedule-title">${esc(schedule.next.title)}</div>
+                <div class="schedule-place">${esc(schedule.next.place)}</div>
+              </div>
+            `}
+          </div>
+          ${hint("A view", "B x2 back")}
+        `;
+      }
       if (view === 1) {
         return `
           ${header("Detail", "Today")}
@@ -2706,6 +3027,21 @@
 
     function renderPower() {
       const staleLabel = state.usageStale ? "stale" : (state.bridgeState || "ok");
+      if (isPortraitScreen()) {
+        return `
+          ${header("Power", state.usageStale ? "Stale" : staleLabel)}
+          <div class="portrait-body portrait-metrics">
+            <div class="portrait-metric screen-card"><div class="portrait-metric-row"><b>CPU</b><strong>${state.connected ? `${state.cpu}%` : "--"}</strong></div><span>current Mac load</span></div>
+            <div class="portrait-metric screen-card"><div class="portrait-metric-row"><b>RAM</b><strong>${state.connected ? `${state.ram}%` : "--"}</strong></div><span>${state.ram >= 70 ? "Medium" : "Low"} pressure</span></div>
+            <div class="portrait-metric screen-card"><div class="portrait-metric-row"><b>BRIDGE</b><strong>${esc(staleLabel)}</strong></div><span>${esc(state.usageSource)} · ${state.usageAgeSec}s</span></div>
+            <div class="portrait-metric screen-card">
+              <div class="meter-line"><span class="small-label">LOAD</span><span>${state.cpu}%</span></div>
+              <div class="bars portrait-bars">${history.slice(-16).map((value, index) => `<i style="height:${Math.max(2, value * 0.36)}px;opacity:${index > 12 ? 1 : .72}"></i>`).join("")}</div>
+            </div>
+          </div>
+          ${hint("A next", "B detail")}
+        `;
+      }
       return `
         ${header("Power", state.usageStale ? "Stale" : staleLabel)}
         <div class="power-grid">
@@ -2758,6 +3094,24 @@
         mood === "Working" ? "Working with Codex" :
         "Standing by"
       );
+      if (isPortraitScreen()) {
+        return `
+          ${header(idle ? "Pet" : detail ? "Detail" : "Pet", idle ? "Idle" : detail ? "Pet" : mood)}
+          <div class="portrait-body portrait-pet" style="--pet-color:${petColor()}">
+            <div class="pet-bot is-sprite">
+              ${petSprite("", pet.id, renderState)}
+            </div>
+            <div class="pet-info screen-card">
+              <div class="small-label">${esc(pet.source)}</div>
+              <strong>${esc(mood)}</strong>
+              <b>${esc(pet.displayName)}</b>
+              <span>${esc(line)}</span>
+            </div>
+            ${agent.progress > 0 ? `<div class="progress" style="width:100%;--accent:${petColor()};--value:${agent.progress}%"><i></i></div>` : ""}
+          </div>
+          ${hint(idle ? "A wake" : detail ? "A next" : "A next", idle ? "B x2 off" : detail ? "B x2 back" : "B detail")}
+        `;
+      }
       return `
         ${header(idle ? "Pet" : detail ? "Detail" : "Pet", idle ? "Idle" : detail ? "Pet" : mood)}
         <div class="pet-layout" style="--pet-color:${petColor()}">
@@ -2791,6 +3145,24 @@
       if (state.page === 5) {
         return renderPet(true);
       }
+      if (isPortraitScreen()) {
+        return `
+          ${header("Detail", pages[state.page])}
+          <div class="portrait-body">
+            <div class="portrait-panel screen-card">
+              <div class="small-label">${esc(agent.name)}</div>
+              <div class="portrait-status" style="color:${accentFor(agent.state)}">${esc(agentLabel(agent.state))}</div>
+              <div class="portrait-sub">${esc(agent.task)}</div>
+            </div>
+            <div class="portrait-panel screen-card">
+              <div class="small-label">Usage</div>
+              <b>5h ${pctRemaining(state.primaryUsed)}% · 7d ${pctRemaining(state.secondaryUsed)}%</b>
+              <span>${state.usageStale ? "stale" : "ok"} · ${state.usageAgeSec}s</span>
+            </div>
+          </div>
+          ${hint("A next", "B x2 back")}
+        `;
+      }
       return `
         ${header("Detail", pages[state.page])}
         <div class="detail-box screen-card">
@@ -2804,6 +3176,18 @@
     }
 
     function renderPrompt() {
+      if (isPortraitScreen()) {
+        return `
+          ${header("Approval", "Need")}
+          <div class="portrait-body">
+            <div class="approval portrait-approval screen-card">
+              <strong>${esc(state.prompt.tool)}</strong>
+              <span>${esc(state.prompt.hint)}</span>
+              <div class="approval-actions"><b>A ALLOW</b><b>B DENY</b></div>
+            </div>
+          </div>
+        `;
+      }
       return `
         ${header("Approval", "Need")}
         <div class="approval screen-card">
@@ -2815,6 +3199,18 @@
     }
 
     function renderVoiceInput() {
+      if (isPortraitScreen()) {
+        return `
+          ${header("Voice", "Fn")}
+          <div class="portrait-body">
+            <div class="approval portrait-approval screen-card">
+              <strong>Codex Dictation</strong>
+              <span>B hold opens voice input on Mac</span>
+              <div class="approval-actions"><b>A SEND</b><b>B x2 BACK</b></div>
+            </div>
+          </div>
+        `;
+      }
       return `
         ${header("Voice", "Fn")}
         <div class="approval screen-card">
@@ -2827,6 +3223,7 @@
 
     function renderScreen() {
       screen.dataset.mood = petMood();
+      screen.dataset.orientation = state.screenPortrait ? "portrait" : "landscape";
       if (state.prompt) {
         screen.innerHTML = renderPrompt();
       } else if (state.voice) {
@@ -3089,19 +3486,162 @@
       lcd.style.setProperty("--lcd-offset-y", `${offsetY.toFixed(2)}px`);
     }
 
+    function rememberNaturalModelRect(force = false) {
+      if (!deviceModel || (!force && naturalModelDocRect)) return naturalModelDocRect;
+      const wasDocked = body.classList.contains("is-docked");
+      const savedClassName = body.className;
+      const savedStyle = deviceShowcase?.getAttribute("style");
+      if (wasDocked) {
+        body.classList.remove("is-docked", "dock-wide", "dock-compact", "screen-portrait");
+        deviceShowcase?.removeAttribute("style");
+      }
+      const rect = deviceModel.getBoundingClientRect();
+      naturalModelDocRect = {
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY,
+        width: rect.width,
+        height: rect.height
+      };
+      if (wasDocked) {
+        body.className = savedClassName;
+        if (savedStyle === null || savedStyle === undefined) {
+          deviceShowcase?.removeAttribute("style");
+        } else {
+          deviceShowcase?.setAttribute("style", savedStyle);
+        }
+      }
+      return naturalModelDocRect;
+    }
+
+    function dockProgress() {
+      const stageHeight = stage?.offsetHeight || window.innerHeight;
+      const start = (stage?.offsetTop || 0) + Math.max(90, stageHeight * .18);
+      const end = (stage?.offsetTop || 0) + Math.max(280, stageHeight * .62);
+      return clamp((window.scrollY - start) / Math.max(1, end - start), 0, 1);
+    }
+
+    function targetDockRect(wide, topbarHeight) {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      if (wide) {
+        const maxByHeight = Math.max(190, (viewportHeight - topbarHeight - 28) * (420 / 900));
+        const width = Math.min(clamp(viewportHeight * .31, 220, 314), maxByHeight);
+        const height = width * (900 / 420);
+        return {
+          left: 12,
+          top: Math.max(topbarHeight + 8, topbarHeight + (viewportHeight - topbarHeight - height) / 2),
+          width,
+          height
+        };
+      }
+      const width = Math.min(viewportWidth * .92, 520);
+      const height = width * (420 / 900);
+      return {
+        left: (viewportWidth - width) / 2,
+        top: topbarHeight + 8,
+        width,
+        height
+      };
+    }
+
+    function applyDockRect(rect) {
+      if (!deviceShowcase) return;
+      deviceShowcase.style.setProperty("--dock-left", `${rect.left.toFixed(2)}px`);
+      deviceShowcase.style.setProperty("--dock-top", `${rect.top.toFixed(2)}px`);
+      deviceShowcase.style.setProperty("--dock-width", `${rect.width.toFixed(2)}px`);
+      deviceShowcase.style.setProperty("--dock-height", `${rect.height.toFixed(2)}px`);
+      syncLcdViewport();
+    }
+
+    function clearDockRect() {
+      if (!deviceShowcase) return;
+      ["--dock-left", "--dock-top", "--dock-width", "--dock-height"].forEach((name) => {
+        deviceShowcase.style.removeProperty(name);
+      });
+      dockCurrentRect = null;
+      dockTargetRect = null;
+      if (dockAnimationFrame) {
+        window.cancelAnimationFrame(dockAnimationFrame);
+        dockAnimationFrame = 0;
+      }
+      syncLcdViewport();
+    }
+
+    function animateDockRect() {
+      if (!dockTargetRect) {
+        dockAnimationFrame = 0;
+        return;
+      }
+      if (!dockCurrentRect) dockCurrentRect = { ...dockTargetRect };
+      const follow = .22;
+      dockCurrentRect = {
+        left: lerp(dockCurrentRect.left, dockTargetRect.left, follow),
+        top: lerp(dockCurrentRect.top, dockTargetRect.top, follow),
+        width: lerp(dockCurrentRect.width, dockTargetRect.width, follow),
+        height: lerp(dockCurrentRect.height, dockTargetRect.height, follow)
+      };
+      applyDockRect(dockCurrentRect);
+      const delta = Math.abs(dockCurrentRect.left - dockTargetRect.left)
+        + Math.abs(dockCurrentRect.top - dockTargetRect.top)
+        + Math.abs(dockCurrentRect.width - dockTargetRect.width)
+        + Math.abs(dockCurrentRect.height - dockTargetRect.height);
+      if (delta > .6) {
+        dockAnimationFrame = window.requestAnimationFrame(animateDockRect);
+      } else {
+        dockCurrentRect = { ...dockTargetRect };
+        applyDockRect(dockCurrentRect);
+        dockAnimationFrame = 0;
+      }
+    }
+
+    function setDockTarget(rect, immediate = false) {
+      dockTargetRect = rect;
+      if (!dockCurrentRect || immediate) {
+        dockCurrentRect = { ...rect };
+        applyDockRect(dockCurrentRect);
+      }
+      if (!dockAnimationFrame) {
+        dockAnimationFrame = window.requestAnimationFrame(animateDockRect);
+      }
+    }
+
     function updateDockState() {
       const topbarHeight = Math.ceil(topbar?.getBoundingClientRect().height || 56);
       document.documentElement.style.setProperty("--actual-topbar-h", `${topbarHeight}px`);
-      const stageHeight = stage?.offsetHeight || window.innerHeight;
-      const threshold = (stage?.offsetTop || 0) + Math.min(460, Math.max(150, stageHeight * .38));
-      const shouldDock = window.scrollY > threshold;
+      const progressRaw = dockProgress();
+      const progress = smoothstep(progressRaw);
+      const shouldDock = progressRaw > .01;
       const wide = wideDockQuery.matches;
+      const portraitDock = shouldDock && wide && progressRaw > .54;
+      const target = targetDockRect(wide, topbarHeight);
+      const natural = rememberNaturalModelRect();
+      const naturalViewport = natural ? {
+        left: natural.left - window.scrollX,
+        top: natural.top - window.scrollY,
+        width: natural.width,
+        height: natural.height
+      } : target;
+      const rect = {
+        left: lerp(naturalViewport.left, target.left, progress),
+        top: lerp(naturalViewport.top, target.top, progress),
+        width: lerp(naturalViewport.width, target.width, progress),
+        height: lerp(naturalViewport.height, target.height, progress)
+      };
+      document.documentElement.style.setProperty("--dock-content-offset", `${(target.left + target.width + 22).toFixed(2)}px`);
+      document.documentElement.style.setProperty("--compact-safe-top", `${(target.top + target.height + 24).toFixed(2)}px`);
       body.classList.toggle("is-docked", shouldDock);
-      body.classList.toggle("dock-wide", shouldDock && wide);
+      body.classList.toggle("dock-wide", portraitDock);
       body.classList.toggle("dock-compact", shouldDock && !wide);
-      syncLcdViewport();
-      window.setTimeout(syncLcdViewport, 80);
-      window.setTimeout(syncLcdViewport, 720);
+      body.classList.toggle("screen-portrait", portraitDock);
+      if (state.screenPortrait !== portraitDock) {
+        state.screenPortrait = portraitDock;
+        renderScreen();
+      }
+      if (shouldDock) {
+        setDockTarget(rect, !dockCurrentRect || progressRaw < .03);
+      } else {
+        clearDockRect();
+      }
     }
 
     function requestDockUpdate() {
@@ -3191,7 +3731,10 @@
       new ResizeObserver(syncLcdViewport).observe(lcd);
     }
     window.addEventListener("scroll", requestDockUpdate, { passive: true });
-    window.addEventListener("resize", requestDockUpdate);
+    window.addEventListener("resize", () => {
+      naturalModelDocRect = null;
+      requestDockUpdate();
+    });
     if (wideDockQuery.addEventListener) {
       wideDockQuery.addEventListener("change", requestDockUpdate);
     } else if (wideDockQuery.addListener) {
@@ -3201,6 +3744,7 @@
       document.fonts.ready.then(requestDockUpdate).catch(() => {});
     }
 
+    rememberNaturalModelRect(true);
     updateDockState();
     renderScreen();
     syncLcdViewport();
