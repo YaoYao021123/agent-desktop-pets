@@ -1745,7 +1745,7 @@
     }
 
     body.dock-wide {
-      --lcd-design-w: 164px;
+      --lcd-design-w: 166px;
       --lcd-design-h: 300px;
     }
 
@@ -3464,7 +3464,7 @@
     const lcdInner = document.querySelector(".lcd-inner");
 
     function lcdDesignSize() {
-      const styles = getComputedStyle(document.documentElement);
+      const styles = getComputedStyle(lcdInner || screen || document.documentElement);
       return {
         width: Number.parseFloat(styles.getPropertyValue("--lcd-design-w")) || 300,
         height: Number.parseFloat(styles.getPropertyValue("--lcd-design-h")) || 164
