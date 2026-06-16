@@ -48,6 +48,9 @@
       --mono: "SF Mono", Monaco, Menlo, "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
       --sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --topbar-h: 56px;
+      --actual-topbar-h: 56px;
+      --dock-left-width: clamp(250px, 22vw, 340px);
+      --compact-dock-h: clamp(190px, 44vw, 270px);
       --lcd-design-w: 300px;
       --lcd-design-h: 164px;
     }
@@ -245,6 +248,14 @@
       justify-items: center;
       gap: 12px;
       align-items: center;
+      transition:
+        left .72s cubic-bezier(.16, 1, .3, 1),
+        right .72s cubic-bezier(.16, 1, .3, 1),
+        top .72s cubic-bezier(.16, 1, .3, 1),
+        width .72s cubic-bezier(.16, 1, .3, 1),
+        height .72s cubic-bezier(.16, 1, .3, 1),
+        padding .72s cubic-bezier(.16, 1, .3, 1),
+        background-color .28s ease;
     }
 
     .device-wrap {
@@ -259,6 +270,10 @@
       width: min(84vw, 760px);
       max-width: 100%;
       aspect-ratio: 900 / 420;
+      transition:
+        width .72s cubic-bezier(.16, 1, .3, 1),
+        aspect-ratio .72s cubic-bezier(.16, 1, .3, 1),
+        transform .72s cubic-bezier(.16, 1, .3, 1);
     }
 
     .device-model-core {
@@ -269,6 +284,10 @@
       height: 214.286%;
       transform: translate(-50%, -50%) rotate(-90deg);
       transform-origin: center;
+      transition:
+        width .72s cubic-bezier(.16, 1, .3, 1),
+        height .72s cubic-bezier(.16, 1, .3, 1),
+        transform .72s cubic-bezier(.16, 1, .3, 1);
     }
 
     .device-cad {
@@ -352,6 +371,12 @@
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, .18),
         inset 0 0 22px rgba(0, 0, 0, .88);
+      transition:
+        left .72s cubic-bezier(.16, 1, .3, 1),
+        top .72s cubic-bezier(.16, 1, .3, 1),
+        width .72s cubic-bezier(.16, 1, .3, 1),
+        height .72s cubic-bezier(.16, 1, .3, 1),
+        border-radius .72s cubic-bezier(.16, 1, .3, 1);
     }
 
     .lcd-inner {
@@ -1364,7 +1389,7 @@
     .status-section {
       min-height: auto;
       display: block;
-      padding: clamp(28px, 5vw, 64px) clamp(14px, 4vw, 56px);
+      padding: clamp(22px, 3.6vw, 46px) clamp(12px, 2.6vw, 40px);
       border-bottom: 1px solid var(--line);
       background: #000;
       scroll-margin-top: var(--topbar-h);
@@ -1412,7 +1437,7 @@
     .doc-scroll {
       min-width: 0;
       overflow: visible;
-      padding: 28px clamp(12px, 1.4vw, 18px) 40px;
+      padding: 18px clamp(10px, 1.2vw, 16px) 32px;
       background: #000;
       scroll-margin-top: var(--topbar-h);
     }
@@ -1421,7 +1446,7 @@
       width: min(980px, 100%);
       margin: 0 auto;
       display: grid;
-      gap: 16px;
+      gap: 12px;
     }
 
     .panel {
@@ -1429,7 +1454,7 @@
       overflow: hidden;
       border: 1px solid var(--line);
       background: linear-gradient(180deg, #030403, #010101);
-      padding: 20px;
+      padding: 16px;
     }
 
     .panel-head {
@@ -1690,6 +1715,229 @@
     .timeline-row b {
       color: var(--green);
       font-family: var(--mono);
+    }
+
+    body.is-docked .device-showcase {
+      position: fixed;
+      z-index: 18;
+      pointer-events: none;
+      will-change: transform, width, height, top, left;
+    }
+
+    body.is-docked .device-cad {
+      filter: drop-shadow(0 20px 34px rgba(0, 0, 0, .74));
+    }
+
+    body.dock-wide {
+      --lcd-design-w: 164px;
+      --lcd-design-h: 300px;
+    }
+
+    body.is-docked.dock-wide .device-showcase {
+      left: 10px;
+      top: calc(var(--actual-topbar-h) + 8px);
+      width: var(--dock-left-width);
+      height: calc(100vh - var(--actual-topbar-h) - 16px);
+      padding: 8px;
+      border: 1px solid var(--line-soft);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 18px 18px,
+        linear-gradient(0deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 18px 18px,
+        rgba(3, 4, 3, .92);
+    }
+
+    body.is-docked.dock-wide .device-model {
+      width: clamp(210px, 29vh, 304px);
+      aspect-ratio: 420 / 900;
+    }
+
+    body.is-docked.dock-wide .device-model-core {
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    body.is-docked.dock-wide .lcd {
+      left: 20.48%;
+      top: 12.44%;
+      width: 59.05%;
+      height: 49.78%;
+      border-radius: 6.2% / 3.6%;
+    }
+
+    body.is-docked.dock-wide .status-section,
+    body.is-docked.dock-wide .doc-scroll {
+      padding-left: calc(var(--dock-left-width) + 22px);
+      padding-right: clamp(12px, 2vw, 34px);
+      transition: padding-left .72s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    body.is-docked.dock-wide .status-inner,
+    body.is-docked.dock-wide .doc-inner {
+      width: min(1060px, 100%);
+      margin-left: 0;
+      margin-right: auto;
+    }
+
+    body.dock-wide .s3-screen {
+      padding: 7px;
+      font-size: 10px;
+    }
+
+    body.dock-wide .s-head {
+      height: 18px;
+    }
+
+    body.dock-wide .s-hint {
+      left: 7px;
+      right: 7px;
+      bottom: 6px;
+      gap: 4px;
+      font-size: 8px;
+    }
+
+    body.dock-wide .home-main,
+    body.dock-wide .schedule-grid,
+    body.dock-wide .pet-layout {
+      grid-template-columns: 1fr;
+    }
+
+    body.dock-wide .home-main {
+      gap: 7px;
+      padding-top: 6px;
+    }
+
+    body.dock-wide .home-logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+    }
+
+    body.dock-wide .home-title {
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    body.dock-wide .preview-card {
+      height: 92px;
+    }
+
+    body.dock-wide .welcome-grid {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding-top: 7px;
+    }
+
+    body.dock-wide .welcome-card {
+      height: 48px;
+      padding: 7px;
+    }
+
+    body.dock-wide .welcome-card b {
+      margin-bottom: 4px;
+    }
+
+    body.dock-wide .hub-one,
+    body.dock-wide .hub-many,
+    body.dock-wide .power-grid {
+      grid-template-columns: 1fr;
+    }
+
+    body.dock-wide .hub-one {
+      grid-template-rows: none;
+      gap: 6px;
+    }
+
+    body.dock-wide .hub-one .agent-card {
+      grid-row: auto;
+      height: 72px;
+    }
+
+    body.dock-wide .hub-many {
+      gap: 6px;
+    }
+
+    body.dock-wide .hub-many .agent-card {
+      height: 70px;
+    }
+
+    body.dock-wide .schedule-next,
+    body.dock-wide .schedule-list,
+    body.dock-wide .schedule-focus {
+      height: 72px;
+    }
+
+    body.dock-wide .schedule-detail-card,
+    body.dock-wide .detail-box,
+    body.dock-wide .approval {
+      height: 204px;
+    }
+
+    body.dock-wide .metric {
+      height: 38px;
+    }
+
+    body.dock-wide .load-card {
+      height: 58px;
+    }
+
+    body.dock-wide .bars {
+      height: 34px;
+    }
+
+    body.dock-wide .pet-layout {
+      justify-items: center;
+      gap: 7px;
+    }
+
+    body.dock-wide .pet-info {
+      width: 100%;
+      height: 96px;
+    }
+
+    body.dock-wide .pet-layout + .progress {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    body.dock-compact {
+      --lcd-design-w: 300px;
+      --lcd-design-h: 164px;
+    }
+
+    body.is-docked.dock-compact .device-showcase {
+      left: 0;
+      right: 0;
+      top: var(--actual-topbar-h);
+      width: 100vw;
+      height: var(--compact-dock-h);
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 18px 18px,
+        linear-gradient(0deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 18px 18px,
+        rgba(3, 4, 3, .96);
+    }
+
+    body.is-docked.dock-compact .device-model {
+      width: min(92vw, 520px);
+    }
+
+    body.is-docked.dock-compact .status-section {
+      padding-top: calc(var(--actual-topbar-h) + var(--compact-dock-h) + 18px);
+    }
+
+    body.is-docked.dock-compact .status-section,
+    body.is-docked.dock-compact .doc-scroll {
+      scroll-margin-top: calc(var(--actual-topbar-h) + var(--compact-dock-h) + 10px);
+    }
+
+    body.is-docked.dock-compact .doc-scroll {
+      padding-top: 18px;
+    }
+
+    body.is-docked.dock-compact .panel:first-child {
+      margin-top: 0;
     }
 
     @media (max-width: 1060px) {
@@ -2001,9 +2249,14 @@
     const pages = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
     const pageLabels = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
     const scheduleLabels = ["Next", "Today", "Focus"];
+    const body = document.body;
+    const topbar = document.querySelector(".topbar");
+    const stage = document.querySelector("#simulator");
     const screen = document.querySelector("#screen");
     const staticPetSprites = new Set();
     const armedPetSprites = new WeakSet();
+    const wideDockQuery = window.matchMedia("(min-width: 900px)");
+    let dockUpdateQueued = false;
     const state = {
       page: 0,
       detail: false,
@@ -2812,8 +3065,14 @@
 
     const lcd = document.querySelector(".lcd");
     const lcdInner = document.querySelector(".lcd-inner");
-    const LCD_DESIGN_WIDTH = 300;
-    const LCD_DESIGN_HEIGHT = 164;
+
+    function lcdDesignSize() {
+      const styles = getComputedStyle(document.documentElement);
+      return {
+        width: Number.parseFloat(styles.getPropertyValue("--lcd-design-w")) || 300,
+        height: Number.parseFloat(styles.getPropertyValue("--lcd-design-h")) || 164
+      };
+    }
 
     function syncLcdViewport() {
       if (!lcd || !lcdInner) return;
@@ -2821,12 +3080,37 @@
       const availableWidth = lcd.clientWidth || bounds.width;
       const availableHeight = lcd.clientHeight || bounds.height;
       if (!availableWidth || !availableHeight) return;
-      const scale = Math.min(availableWidth / LCD_DESIGN_WIDTH, availableHeight / LCD_DESIGN_HEIGHT);
-      const offsetX = (availableWidth - LCD_DESIGN_WIDTH * scale) / 2;
-      const offsetY = (availableHeight - LCD_DESIGN_HEIGHT * scale) / 2;
+      const design = lcdDesignSize();
+      const scale = Math.min(availableWidth / design.width, availableHeight / design.height);
+      const offsetX = (availableWidth - design.width * scale) / 2;
+      const offsetY = (availableHeight - design.height * scale) / 2;
       lcd.style.setProperty("--lcd-scale", scale.toFixed(5));
       lcd.style.setProperty("--lcd-offset-x", `${offsetX.toFixed(2)}px`);
       lcd.style.setProperty("--lcd-offset-y", `${offsetY.toFixed(2)}px`);
+    }
+
+    function updateDockState() {
+      const topbarHeight = Math.ceil(topbar?.getBoundingClientRect().height || 56);
+      document.documentElement.style.setProperty("--actual-topbar-h", `${topbarHeight}px`);
+      const stageHeight = stage?.offsetHeight || window.innerHeight;
+      const threshold = (stage?.offsetTop || 0) + Math.min(460, Math.max(150, stageHeight * .38));
+      const shouldDock = window.scrollY > threshold;
+      const wide = wideDockQuery.matches;
+      body.classList.toggle("is-docked", shouldDock);
+      body.classList.toggle("dock-wide", shouldDock && wide);
+      body.classList.toggle("dock-compact", shouldDock && !wide);
+      syncLcdViewport();
+      window.setTimeout(syncLcdViewport, 80);
+      window.setTimeout(syncLcdViewport, 720);
+    }
+
+    function requestDockUpdate() {
+      if (dockUpdateQueued) return;
+      dockUpdateQueued = true;
+      window.requestAnimationFrame(() => {
+        dockUpdateQueued = false;
+        updateDockState();
+      });
     }
 
     document.querySelector("#btnA").addEventListener("click", handleA);
@@ -2906,13 +3190,20 @@
     if ("ResizeObserver" in window && lcd) {
       new ResizeObserver(syncLcdViewport).observe(lcd);
     }
-    window.addEventListener("resize", syncLcdViewport);
+    window.addEventListener("scroll", requestDockUpdate, { passive: true });
+    window.addEventListener("resize", requestDockUpdate);
+    if (wideDockQuery.addEventListener) {
+      wideDockQuery.addEventListener("change", requestDockUpdate);
+    } else if (wideDockQuery.addListener) {
+      wideDockQuery.addListener(requestDockUpdate);
+    }
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(syncLcdViewport).catch(() => {});
+      document.fonts.ready.then(requestDockUpdate).catch(() => {});
     }
 
-    syncLcdViewport();
+    updateDockState();
     renderScreen();
+    syncLcdViewport();
   </script>
 </body>
 </html>
