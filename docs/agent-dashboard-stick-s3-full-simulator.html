@@ -2392,6 +2392,19 @@
       --lcd-design-h: 164px;
     }
 
+    body.is-docked.dock-compact::before {
+      content: "";
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: var(--actual-topbar-h);
+      z-index: 17;
+      height: calc(var(--compact-safe-top) - var(--actual-topbar-h));
+      border-bottom: 1px solid var(--line);
+      background: #000;
+      pointer-events: none;
+    }
+
     body.is-docked.dock-compact .device-showcase {
       align-items: center;
     }
@@ -2410,7 +2423,7 @@
     }
 
     body.is-docked.dock-compact .doc-scroll {
-      padding-top: 18px;
+      padding-top: calc(var(--compact-safe-top) + 18px);
     }
 
     body.is-docked.dock-compact .panel:first-child {
