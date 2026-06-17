@@ -52,6 +52,7 @@
       --dock-left-width: clamp(250px, 22vw, 340px);
       --compact-dock-h: clamp(190px, 44vw, 270px);
       --dock-content-offset: calc(var(--dock-left-width) + 22px);
+      --dock-content-width: 1060px;
       --compact-safe-top: calc(var(--actual-topbar-h) + var(--compact-dock-h) + 18px);
       --lcd-design-w: 300px;
       --lcd-design-h: 164px;
@@ -1787,7 +1788,7 @@
 
     body.is-docked.dock-wide .status-inner,
     body.is-docked.dock-wide .doc-inner {
-      width: min(1060px, 100%);
+      width: min(var(--dock-content-width), 100%);
       margin-left: 0;
       margin-right: auto;
     }
@@ -3533,11 +3534,19 @@
         const maxByHeight = Math.max(190, (viewportHeight - topbarHeight - 28) * (420 / 900));
         const width = Math.min(clamp(viewportHeight * .31, 220, 314), maxByHeight);
         const height = width * (900 / 420);
+        const gap = clamp(viewportWidth * .022, 24, 36);
+        const sideMargin = 24;
+        const availableContent = Math.max(520, viewportWidth - width - gap - sideMargin * 2);
+        const contentWidth = Math.min(1160, availableContent);
+        const groupWidth = width + gap + contentWidth;
+        const left = Math.max(sideMargin, (viewportWidth - groupWidth) / 2);
         return {
-          left: 12,
+          left,
           top: Math.max(topbarHeight + 8, topbarHeight + (viewportHeight - topbarHeight - height) / 2),
           width,
-          height
+          height,
+          gap,
+          contentWidth
         };
       }
       const width = Math.min(viewportWidth * .92, 520);
@@ -3546,7 +3555,9 @@
         left: (viewportWidth - width) / 2,
         top: topbarHeight + 8,
         width,
-        height
+        height,
+        gap: 0,
+        contentWidth: viewportWidth
       };
     }
 
@@ -3639,7 +3650,8 @@
         width: lerp(fromRect.width, target.width, progress),
         height: lerp(fromRect.height, target.height, progress)
       };
-      document.documentElement.style.setProperty("--dock-content-offset", `${(target.left + target.width + 22).toFixed(2)}px`);
+      document.documentElement.style.setProperty("--dock-content-offset", `${(target.left + target.width + target.gap).toFixed(2)}px`);
+      document.documentElement.style.setProperty("--dock-content-width", `${target.contentWidth.toFixed(2)}px`);
       document.documentElement.style.setProperty("--compact-safe-top", `${(target.top + target.height + 24).toFixed(2)}px`);
       body.classList.toggle("is-docked", shouldDock);
       body.classList.toggle("dock-wide", portraitDock);
