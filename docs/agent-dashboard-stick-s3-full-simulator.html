@@ -1455,6 +1455,7 @@
     .panel {
       min-width: 0;
       overflow: hidden;
+      scroll-margin-top: calc(var(--actual-topbar-h) + 12px);
       border: 1px solid var(--line);
       background: linear-gradient(180deg, #030403, #010101);
       padding: 16px;
@@ -1693,6 +1694,271 @@
       color: var(--soft);
       font-size: 14px;
       line-height: 1.55;
+    }
+
+    .hook-demo {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .hook-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(220px, .86fr) minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .hook-column,
+    .hook-fields,
+    .hook-mapping {
+      min-width: 0;
+      border: 1px solid var(--line-soft);
+      background: #050605;
+    }
+
+    .hook-column {
+      min-height: 252px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .hook-kicker {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .hook-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .hook-title-row h3 {
+      margin: 0;
+      color: var(--ink);
+      text-transform: none;
+    }
+
+    .hook-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      color: var(--green);
+      background: rgba(118, 207, 146, .08);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .hook-process {
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: #020302;
+    }
+
+    .hook-process-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--soft);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .hook-process-line b {
+      color: var(--green);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .hook-progress {
+      height: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #30362e;
+    }
+
+    .hook-progress i {
+      display: block;
+      width: var(--hook-progress, 44%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+      transition: width .32s ease;
+    }
+
+    .hook-terminal {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .hook-terminal span {
+      display: flex;
+      gap: 8px;
+      min-width: 0;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 7px;
+    }
+
+    .hook-terminal span:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .hook-terminal b {
+      flex: 0 0 auto;
+      color: var(--green);
+    }
+
+    .hook-terminal em {
+      min-width: 0;
+      overflow: hidden;
+      font-style: normal;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .hook-fields {
+      min-height: 252px;
+      padding: 14px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .hook-field-grid {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .hook-field-grid div {
+      display: grid;
+      grid-template-columns: 106px minmax(0, 1fr);
+      gap: 10px;
+      align-items: baseline;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 8px;
+    }
+
+    .hook-field-grid div:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .hook-field-grid dt {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .hook-field-grid dd {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .hook-arrow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .hook-arrow::before,
+    .hook-arrow::after {
+      content: "";
+      height: 1px;
+      background: var(--line);
+    }
+
+    .hook-pet-stage {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      padding: 12px;
+      background: #020302;
+    }
+
+    .hook-pet-stage .pet-sprite-window {
+      width: 78px;
+    }
+
+    .hook-pet-copy {
+      min-width: 0;
+    }
+
+    .hook-pet-copy strong {
+      display: block;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 17px;
+      line-height: 1.1;
+    }
+
+    .hook-pet-copy span {
+      display: block;
+      margin-top: 6px;
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .hook-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hook-map-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .hook-map-grid span {
+      min-height: 74px;
+      padding: 11px;
+      border: 1px solid var(--line-soft);
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .hook-map-grid b {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
     }
 
     .timeline {
@@ -2148,6 +2414,10 @@
         padding: 12px;
       }
 
+      .panel {
+        scroll-margin-top: calc(var(--compact-safe-top) + 12px);
+      }
+
       .nav {
         width: 100%;
         overflow-x: auto;
@@ -2164,6 +2434,8 @@
       .control-grid,
       .logic-grid,
       .scenario-grid,
+      .hook-stage,
+      .hook-map-grid,
       .pet-os-grid,
       .pet-contract-grid {
         grid-template-columns: 1fr;
@@ -2192,7 +2464,8 @@
       }
 
       .timeline-row,
-      .logic-card li {
+      .logic-card li,
+      .hook-field-grid div {
         grid-template-columns: 1fr;
       }
     }
@@ -2201,6 +2474,7 @@
       .device-status,
       .flow,
       .scenario-grid,
+      .hook-map-grid,
       .feature-strip,
       .pet-choice-grid {
         grid-template-columns: 1fr;
@@ -2228,7 +2502,7 @@
       <a href="#status">功能</a>
       <a href="#flow">界面</a>
       <a href="#buttons">操作</a>
-      <a href="#live">实时连接</a>
+      <a href="#live">联动</a>
       <a href="#pet-system">宠物</a>
       <a href="#scenarios">场景</a>
       <a href="sticks3-project-status-and-roadmap.html">总览</a>
@@ -2370,15 +2644,74 @@
         </article>
 
         <article class="panel" id="live">
-          <div class="panel-head"><span>04 Live Link</span></div>
-          <h2>Mac 状态实时同步到 StickS3</h2>
-          <div class="section-brief">Mac 本地 bridge 把 agent 状态、审批请求、CPU、RAM、日程和连接状态同步到设备。用户看到的是在线、过期、离线和异常，不需要理解内部连接细节。</div>
-          <div class="scenario-grid">
-            <div class="scenario-card"><b>Agent 状态</b><span>Busy、Done、Need you、Error 会直接反映到 Home、Agent Hub 和 Pet。</span></div>
-            <div class="scenario-card"><b>审批请求</b><span>权限请求会覆盖当前屏幕，硬件按键立即变成允许和拒绝。</span></div>
-            <div class="scenario-card"><b>Mac 负载</b><span>Power 页面只展示 CPU、RAM 和连接状态，避免小屏塞满指标。</span></div>
-            <div class="scenario-card"><b>语音入口</b><span>B 长按作为 Fn 键，打开 Mac 上的 Codex 语音输入。</span></div>
-            <div class="scenario-card"><b>Pet 资源</b><span>宠物资源来自 <code>~/.codex/pets</code> 的 Codex pet 包，待机层只展示状态，不打断审批。</span></div>
+          <div class="panel-head"><span>04 Agent Hook Link</span><small>Codex task -> pet action</small></div>
+          <h2>Agent Hook 让桌面任务变成小屏动作</h2>
+          <div class="section-brief">Codex App 中一个进程完成后，本地 hook 捕捉产品可读事件，再由 bridge 推给 StickS3。用户看到的是任务状态和 pet 反应，不需要理解底层 packet。</div>
+          <div class="hook-demo" aria-label="Agent Hook 联动演示">
+            <div class="hook-stage">
+              <div class="hook-column">
+                <div class="hook-kicker">Codex App</div>
+                <div class="hook-title-row">
+                  <h3 id="hookTitle">Codex Task Running</h3>
+                  <span class="hook-badge" id="hookStageBadge">Step 1 / 4</span>
+                </div>
+                <div class="hook-process" style="--hook-progress:44%">
+                  <div class="hook-process-line"><span>agent process</span><b id="hookTaskState">running</b></div>
+                  <div class="hook-progress"><i id="hookProgressBar"></i></div>
+                </div>
+                <div class="hook-terminal" aria-label="Codex task stream">
+                  <span><b>task</b><em id="hookTaskLine">implement pet bridge</em></span>
+                  <span><b>event</b><em id="hookEventLine">waiting for hook</em></span>
+                  <span><b>screen</b><em id="hookScreenLine">Home / Busy</em></span>
+                </div>
+              </div>
+
+              <div class="hook-fields">
+                <div class="hook-kicker">Captured info</div>
+                <dl class="hook-field-grid">
+                  <div><dt>event type</dt><dd id="hookEventType">PreToolUse</dd></div>
+                  <div><dt>task status</dt><dd id="hookStatus">running</dd></div>
+                  <div><dt>tool/action</dt><dd id="hookAction">Bash · build</dd></div>
+                  <div><dt>timestamp</dt><dd id="hookAge">live</dd></div>
+                  <div><dt>bridge</dt><dd id="hookBridge">listening</dd></div>
+                  <div><dt>pet action</dt><dd id="hookPetAction">running-right</dd></div>
+                </dl>
+                <div class="hook-arrow"><span>local bridge</span></div>
+                <div class="hook-controls" aria-label="Agent Hook 演示控制">
+                  <button class="control-button primary" type="button" id="hookPlay">Play Demo</button>
+                  <button class="control-button" type="button" id="hookStep">Step</button>
+                  <button class="control-button" type="button" id="hookReset">Reset</button>
+                </div>
+              </div>
+
+              <div class="hook-column">
+                <div class="hook-kicker">StickS3 Pet</div>
+                <div class="hook-title-row">
+                  <h3 id="hookPetTitle">Busy on Home</h3>
+                  <span class="hook-badge" id="hookBridgeBadge">online</span>
+                </div>
+                <div class="hook-pet-stage">
+                  <div id="hookPetSprite"></div>
+                  <div class="hook-pet-copy">
+                    <strong id="hookPetMood">Working</strong>
+                    <span id="hookPetCopy">StickS3 keeps the task visible while the pet shows a running state.</span>
+                  </div>
+                </div>
+                <div class="hook-terminal" aria-label="StickS3 action stream">
+                  <span><b>lcd</b><em id="hookLcdLine">Home · Busy</em></span>
+                  <span><b>pet</b><em id="hookPetLine">running-right</em></span>
+                  <span><b>hint</b><em id="hookHintLine">A next / B detail</em></span>
+                </div>
+              </div>
+            </div>
+            <div class="hook-mapping">
+              <div class="hook-map-grid">
+                <span><b>PreToolUse</b>任务开始或工具执行中，StickS3 保持 Busy，pet 使用 running-right。</span>
+                <span><b>PermissionRequest</b>审批请求覆盖当前屏幕，A 批准，B 拒绝，pet 使用 waiting。</span>
+                <span><b>Stop</b>Codex 进程完成后，bridge 推送 done，Pet 页面进入 waving。</span>
+                <span><b>StopFailure</b>异常结束会切到 Error / failed，优先提示用户处理。</span>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -2455,11 +2788,13 @@
     let dockCurrentRect = null;
     let dockTargetRect = null;
     let dockAnimationFrame = 0;
+    let hookDemoTimer = 0;
     const state = {
       page: 0,
       detail: false,
       voice: false,
       screenPortrait: false,
+      hookStep: 0,
       idlePetEnabled: true,
       idlePetActive: false,
       idlePetMs: 45000,
@@ -2488,6 +2823,121 @@
       { name: "Claude", state: "idle", task: "review notes", progress: 22 },
       { name: "Cursor", state: "editing", task: "sync UI copy", progress: 51 },
       { name: "Local", state: "completed", task: "build passed", progress: 100 }
+    ];
+
+    const hookDemoSteps = [
+      {
+        title: "Codex Task Running",
+        badge: "Step 1 / 4",
+        taskState: "running",
+        progress: 44,
+        taskLine: "implement pet bridge",
+        eventLine: "process still active",
+        screenLine: "Home / Busy",
+        eventType: "PreToolUse",
+        status: "running",
+        action: "Bash · build",
+        age: "live",
+        bridge: "listening",
+        petAction: "running-right",
+        petMood: "Working",
+        petTitle: "Busy on Home",
+        petCopy: "StickS3 keeps the task visible while the pet shows a running state.",
+        lcdLine: "Home · Busy",
+        petLine: "running-right",
+        hintLine: "A next / B detail",
+        scenario: "busy",
+        page: 0,
+        log: "hook running",
+        usageAgeSec: 2,
+        cpu: 34,
+        ram: 62,
+        petState: "running-right"
+      },
+      {
+        title: "Hook Captured",
+        badge: "Step 2 / 4",
+        taskState: "done",
+        progress: 100,
+        taskLine: "codex process completed",
+        eventLine: "Stop captured locally",
+        screenLine: "Home / Busy until bridge",
+        eventType: "Stop",
+        status: "done",
+        action: "Codex process",
+        age: "0.1s",
+        bridge: "queued",
+        petAction: "waiting",
+        petMood: "Queued",
+        petTitle: "Hook is ready",
+        petCopy: "The page shows the captured fields before they become a device update.",
+        lcdLine: "Home · Busy",
+        petLine: "waiting",
+        hintLine: "captured, not delivered",
+        scenario: "busy",
+        page: 0,
+        log: "hook captured",
+        usageAgeSec: 1,
+        cpu: 30,
+        ram: 58,
+        petState: "waiting"
+      },
+      {
+        title: "Bridge Sent",
+        badge: "Step 3 / 4",
+        taskState: "done",
+        progress: 100,
+        taskLine: "done event sent to StickS3",
+        eventLine: "bridge packet delivered",
+        screenLine: "Home / Done",
+        eventType: "Stop",
+        status: "done",
+        action: "Bridge publish",
+        age: "0.4s",
+        bridge: "online",
+        petAction: "waving queued",
+        petMood: "Done",
+        petTitle: "Done on Home",
+        petCopy: "The device now receives fresh state and can update the visible screen.",
+        lcdLine: "Home · Done",
+        petLine: "waving queued",
+        hintLine: "A next / B detail",
+        scenario: "done",
+        page: 0,
+        log: "hook bridge",
+        usageAgeSec: 0,
+        cpu: 18,
+        ram: 52,
+        petState: "waving"
+      },
+      {
+        title: "Pet Reacts",
+        badge: "Step 4 / 4",
+        taskState: "done",
+        progress: 100,
+        taskLine: "completion mapped to pet",
+        eventLine: "pet state applied",
+        screenLine: "Pet / Done",
+        eventType: "Stop",
+        status: "done",
+        action: "Pet state map",
+        age: "0.7s",
+        bridge: "delivered",
+        petAction: "waving",
+        petMood: "Done",
+        petTitle: "Pet waving",
+        petCopy: "StickS3 switches to the pet view so completion becomes a small physical reaction.",
+        lcdLine: "Pet · Done",
+        petLine: "waving",
+        hintLine: "A next / B detail",
+        scenario: "done",
+        page: 5,
+        log: "hook pet",
+        usageAgeSec: 0,
+        cpu: 18,
+        ram: 52,
+        petState: "waving"
+      }
     ];
 
     const schedule = {
@@ -2621,6 +3071,85 @@
       `;
     }
 
+    function activeHookStep() {
+      return hookDemoSteps[state.hookStep] || hookDemoSteps[0];
+    }
+
+    function restartPetAnimation(renderState = petRenderState()) {
+      staticPetSprites.delete(`${state.petId}:${renderState}`);
+    }
+
+    function stopHookDemoTimer() {
+      if (!hookDemoTimer) return;
+      window.clearInterval(hookDemoTimer);
+      hookDemoTimer = 0;
+      renderHookDemo();
+    }
+
+    function applyHookStepToSimulator(index, render = true) {
+      const nextIndex = ((index % hookDemoSteps.length) + hookDemoSteps.length) % hookDemoSteps.length;
+      const step = hookDemoSteps[nextIndex];
+      state.hookStep = nextIndex;
+      state.page = step.page;
+      state.detail = false;
+      state.voice = false;
+      state.prompt = null;
+      state.pendingApprovals = 0;
+      state.idlePetActive = false;
+      state.scenario = step.scenario;
+      state.connected = true;
+      state.usageStale = false;
+      state.bridgeState = "ok";
+      state.usageSource = "agent-hook";
+      state.usageAgeSec = step.usageAgeSec;
+      state.cpu = step.cpu;
+      state.ram = step.ram;
+      state.log = step.log;
+      restartPetAnimation(step.petState);
+      if (render) renderScreen();
+    }
+
+    function renderHookDemo() {
+      const root = document.querySelector(".hook-demo");
+      if (!root) return;
+      const step = activeHookStep();
+      const setText = (selector, value) => {
+        const node = document.querySelector(selector);
+        if (node) node.textContent = value;
+      };
+      setText("#hookTitle", step.title);
+      setText("#hookStageBadge", step.badge);
+      setText("#hookTaskState", step.taskState);
+      setText("#hookTaskLine", step.taskLine);
+      setText("#hookEventLine", step.eventLine);
+      setText("#hookScreenLine", step.screenLine);
+      setText("#hookEventType", step.eventType);
+      setText("#hookStatus", step.status);
+      setText("#hookAction", step.action);
+      setText("#hookAge", step.age);
+      setText("#hookBridge", step.bridge);
+      setText("#hookPetAction", step.petAction);
+      setText("#hookPetTitle", step.petTitle);
+      setText("#hookBridgeBadge", step.bridge);
+      setText("#hookPetMood", step.petMood);
+      setText("#hookPetCopy", step.petCopy);
+      setText("#hookLcdLine", step.lcdLine);
+      setText("#hookPetLine", step.petLine);
+      setText("#hookHintLine", step.hintLine);
+      const process = document.querySelector(".hook-process");
+      if (process) process.style.setProperty("--hook-progress", `${step.progress}%`);
+      const sprite = document.querySelector("#hookPetSprite");
+      if (sprite) sprite.innerHTML = petSprite("is-demo", state.petId, step.petState);
+      const play = document.querySelector("#hookPlay");
+      if (play) {
+        play.textContent = hookDemoTimer ? "Playing" : "Play Demo";
+        play.classList.toggle("primary", !hookDemoTimer);
+      }
+      root.querySelectorAll("[data-hook-step]").forEach((node) => {
+        node.classList.toggle("is-active", Number(node.dataset.hookStep) === state.hookStep);
+      });
+    }
+
     function markPetSpriteStatic(sprite) {
       const key = sprite?.dataset.petSpriteKey;
       if (!key) return;
@@ -2692,6 +3221,10 @@
         "pet idle": "Pet 待机",
         "pet off": "Pet 关闭",
         "pet on": "Pet 开启",
+        "hook running": "Hook 演示",
+        "hook captured": "捕捉完成",
+        "hook bridge": "Bridge 推送",
+        "hook pet": "Pet 响应",
         wake: "已唤醒",
         Home: "Home",
         Welcome: "Welcome",
@@ -3267,6 +3800,7 @@
       document.querySelector("#statusAction").textContent = actionLabel(state.log);
       document.querySelector("#statusPet").textContent = `${activePet().displayName} ${state.idlePetEnabled ? (state.idlePetActive ? "待机" : "开启") : "关闭"}`;
       updatePetIdleButton();
+      renderHookDemo();
       renderPetSystem();
       armPetStaticTimers();
     }
@@ -3294,6 +3828,7 @@
         petChoices.dataset.ready = "true";
         petChoices.querySelectorAll("[data-pet]").forEach((button) => {
           button.addEventListener("click", () => {
+            stopHookDemoTimer();
             state.petId = button.dataset.pet;
             state.page = 5;
             state.detail = false;
@@ -3336,6 +3871,7 @@
     }
 
     function handleA() {
+      stopHookDemoTimer();
       if (state.idlePetActive) {
         wakeIdlePet(false);
         return;
@@ -3368,6 +3904,7 @@
     }
 
     function handleB() {
+      stopHookDemoTimer();
       if (state.idlePetActive) {
         wakeIdlePet(false);
         return;
@@ -3390,6 +3927,7 @@
     }
 
     function handleBDouble() {
+      stopHookDemoTimer();
       if (state.idlePetActive) {
         wakeIdlePet(true);
         return;
@@ -3414,6 +3952,7 @@
     }
 
     function handleALong() {
+      stopHookDemoTimer();
       if (state.idlePetActive) {
         wakeIdlePet(false);
         return;
@@ -3424,6 +3963,7 @@
     }
 
     function handleBLong() {
+      stopHookDemoTimer();
       if (state.idlePetActive) {
         wakeIdlePet(false);
         return;
@@ -3438,11 +3978,13 @@
     }
 
     function setScenario(name) {
+      stopHookDemoTimer();
       markInteraction();
       state.scenario = name;
       state.connected = name !== "offline";
       state.usageStale = name === "stale";
       state.usageAgeSec = name === "stale" ? 981 : (name === "offline" ? 0 : 2);
+      state.usageSource = "rollout";
       state.bridgeState = name === "offline" ? "offline" : "ok";
       state.pendingApprovals = name === "approval" ? 1 : 0;
       state.idlePetActive = false;
@@ -3465,6 +4007,36 @@
       }
       state.log = name;
       renderScreen();
+    }
+
+    function playHookDemo() {
+      markInteraction();
+      stopHookDemoTimer();
+      applyHookStepToSimulator(0);
+      hookDemoTimer = window.setInterval(() => {
+        const next = state.hookStep + 1;
+        if (next >= hookDemoSteps.length) {
+          stopHookDemoTimer();
+          return;
+        }
+        applyHookStepToSimulator(next);
+        if (next === hookDemoSteps.length - 1) {
+          stopHookDemoTimer();
+        }
+      }, 1250);
+      renderHookDemo();
+    }
+
+    function stepHookDemo() {
+      markInteraction();
+      stopHookDemoTimer();
+      applyHookStepToSimulator(state.hookStep + 1);
+    }
+
+    function resetHookDemo() {
+      markInteraction();
+      stopHookDemoTimer();
+      applyHookStepToSimulator(0);
     }
 
     const lcd = document.querySelector(".lcd");
@@ -3682,12 +4254,16 @@
     document.querySelector("#btnBDouble").addEventListener("click", handleBDouble);
     document.querySelector("#btnALong").addEventListener("click", handleALong);
     document.querySelector("#btnBLong").addEventListener("click", handleBLong);
+    document.querySelector("#hookPlay").addEventListener("click", playHookDemo);
+    document.querySelector("#hookStep").addEventListener("click", stepHookDemo);
+    document.querySelector("#hookReset").addEventListener("click", resetHookDemo);
     document.addEventListener("animationend", (event) => {
       if (!(event.target instanceof HTMLImageElement)) return;
       const sprite = event.target.closest(".pet-sprite-window");
       markPetSpriteStatic(sprite);
     });
     document.querySelector("#toggleAgents").addEventListener("click", () => {
+      stopHookDemoTimer();
       markInteraction();
       state.agentCount = state.agentCount === 4 ? 1 : 4;
       state.agentPage = 0;
@@ -3696,6 +4272,7 @@
       renderScreen();
     });
     document.querySelector("#previewPetIdle").addEventListener("click", () => {
+      stopHookDemoTimer();
       state.idlePetEnabled = true;
       state.idlePetActive = true;
       state.voice = false;
@@ -3706,6 +4283,7 @@
       renderScreen();
     });
     document.querySelector("#togglePetIdle").addEventListener("click", () => {
+      stopHookDemoTimer();
       state.idlePetEnabled = !state.idlePetEnabled;
       state.idlePetActive = false;
       state.log = state.idlePetEnabled ? "pet on" : "pet off";
@@ -3717,6 +4295,7 @@
     });
     document.querySelectorAll("[data-page]").forEach((button) => {
       button.addEventListener("click", () => {
+        stopHookDemoTimer();
         markInteraction();
         state.page = Number(button.dataset.page);
         state.detail = false;
