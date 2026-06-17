@@ -810,6 +810,112 @@
       padding: 6px 7px;
     }
 
+    .quota-grid {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 8px;
+      padding-top: 7px;
+    }
+
+    .quota-hero,
+    .quota-list,
+    .quota-detail-card {
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .quota-hero,
+    .quota-list {
+      height: 82px;
+    }
+
+    .quota-agent {
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .quota-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .quota-pill {
+      min-width: 0;
+    }
+
+    .quota-pill b {
+      display: block;
+      color: var(--green);
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .quota-pill span {
+      display: block;
+      margin-top: 3px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .quota-meter {
+      height: 5px;
+      margin-top: 4px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #30362e;
+    }
+
+    .quota-meter i {
+      display: block;
+      width: var(--value, 50%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+    }
+
+    .quota-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 42px 42px;
+      gap: 7px;
+      align-items: baseline;
+      border-top: 1px solid var(--line-soft);
+      padding: 5px 0;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .quota-row:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .quota-row b,
+    .quota-row strong {
+      overflow: hidden;
+      color: var(--ink);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .quota-row strong {
+      color: var(--green);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .quota-detail-card {
+      height: 108px;
+      margin-top: 6px;
+    }
+
     .bars {
       display: grid;
       grid-template-columns: repeat(24, 1fr);
@@ -2220,6 +2326,29 @@
       gap: 6px;
     }
 
+    .portrait-quota {
+      display: grid;
+      gap: 6px;
+    }
+
+    .portrait-quota .quota-hero,
+    .portrait-quota .quota-list,
+    .portrait-quota .quota-detail-card {
+      height: auto;
+      min-height: 58px;
+      padding: 7px;
+    }
+
+    .portrait-quota .quota-agent {
+      font-size: 18px;
+    }
+
+    .portrait-quota .quota-row {
+      grid-template-columns: minmax(0, 1fr) 38px 38px;
+      gap: 6px;
+      padding: 4px 0;
+    }
+
     .portrait-metric {
       min-height: 44px;
       padding: 7px;
@@ -2326,7 +2455,8 @@
 
     body.dock-wide .hub-one,
     body.dock-wide .hub-many,
-    body.dock-wide .power-grid {
+    body.dock-wide .power-grid,
+    body.dock-wide .quota-grid {
       grid-template-columns: 1fr;
     }
 
@@ -2366,6 +2496,15 @@
 
     body.dock-wide .load-card {
       height: 58px;
+    }
+
+    body.dock-wide .quota-hero,
+    body.dock-wide .quota-list {
+      height: 96px;
+    }
+
+    body.dock-wide .quota-detail-card {
+      height: 204px;
     }
 
     body.dock-wide .bars {
@@ -2645,7 +2784,8 @@
             <button type="button" data-page="2"><b>Agent Hub</b><span>多 agent 队列</span></button>
             <button type="button" data-page="3"><b>Schedule</b><span>日程与专注</span></button>
             <button type="button" data-page="4"><b>Power</b><span>CPU / RAM / 连接</span></button>
-            <button type="button" data-page="5"><b>Pet</b><span>情绪化状态反馈</span></button>
+            <button type="button" data-page="5"><b>Quota</b><span>Codex / agent 额度</span></button>
+            <button type="button" data-page="6"><b>Pet</b><span>情绪化状态反馈</span></button>
           </div>
         </article>
 
@@ -2809,8 +2949,8 @@
   </main>
 
   <script>
-    const pages = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
-    const pageLabels = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Pet"];
+    const pages = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Quota", "Pet"];
+    const pageLabels = ["Home", "Welcome", "Agent Hub", "Schedule", "Power", "Quota", "Pet"];
     const scheduleLabels = ["Next", "Today", "Focus"];
     const body = document.body;
     const topbar = document.querySelector(".topbar");
@@ -2969,7 +3109,7 @@
         petLine: "waving",
         hintLine: "A next / B detail",
         scenario: "done",
-        page: 5,
+        page: 6,
         log: "hook pet",
         usageAgeSec: 0,
         cpu: 18,
@@ -3040,6 +3180,13 @@
 
     const history = [22, 25, 28, 31, 27, 33, 38, 44, 41, 36, 34, 39, 45, 52, 49, 43, 37, 35, 32, 34, 40, 46, 42, 34];
 
+    const quotaProfiles = [
+      { name: "Codex", fiveUsed: 28, sevenUsed: 41, label: "active agent" },
+      { name: "Claude", fiveUsed: 36, sevenUsed: 52, label: "review pool" },
+      { name: "Cursor", fiveUsed: 49, sevenUsed: 64, label: "editor pool" },
+      { name: "Local", fiveUsed: 8, sevenUsed: 18, label: "offline tools" }
+    ];
+
     function esc(value) {
       return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
         "&": "&amp;",
@@ -3065,6 +3212,29 @@
 
     function pctRemaining(used) {
       return Math.max(0, Math.min(100, 100 - used));
+    }
+
+    function quotaAgents() {
+      return quotaProfiles.map((profile, index) => {
+        if (index === 0) {
+          return {
+            ...profile,
+            fiveUsed: state.primaryUsed,
+            sevenUsed: state.secondaryUsed
+          };
+        }
+        return { ...profile };
+      });
+    }
+
+    function quotaRow(profile) {
+      return `
+        <div class="quota-row">
+          <b>${esc(profile.name)}</b>
+          <strong>${pctRemaining(profile.fiveUsed)}%</strong>
+          <strong>${pctRemaining(profile.sevenUsed)}%</strong>
+        </div>
+      `;
     }
 
     function activePet() {
@@ -3269,6 +3439,7 @@
         "Agent Hub": "Agent Hub",
         Schedule: "Schedule",
         Power: "Power",
+        Quota: "Quota",
         Pet: "Pet"
       }[log] || String(log || "就绪");
     }
@@ -3635,6 +3806,50 @@
       `;
     }
 
+    function renderQuota(detail = false) {
+      const quota = quotaAgents();
+      const primary = quota[0];
+      const rows = quota.slice(detail ? 0 : 1).map(quotaRow).join("");
+      if (isPortraitScreen()) {
+        return `
+          ${header(detail ? "Detail" : "Quota", "Agents")}
+          <div class="portrait-body portrait-quota">
+            <div class="quota-hero screen-card">
+              <div class="small-label">Codex quota</div>
+              <div class="quota-agent">${esc(primary.name)}</div>
+              <div class="quota-pair">
+                <div class="quota-pill"><b>${pctRemaining(primary.fiveUsed)}%</b><span>5h left</span><div class="quota-meter" style="--value:${pctRemaining(primary.fiveUsed)}%"><i></i></div></div>
+                <div class="quota-pill"><b>${pctRemaining(primary.sevenUsed)}%</b><span>7d left</span><div class="quota-meter" style="--value:${pctRemaining(primary.sevenUsed)}%"><i></i></div></div>
+              </div>
+            </div>
+            <div class="quota-list screen-card">
+              <div class="small-label">Agent pools</div>
+              ${quota.map(quotaRow).join("")}
+            </div>
+          </div>
+          ${hint("A next", detail ? "B x2 back" : "B detail")}
+        `;
+      }
+      return `
+        ${header(detail ? "Detail" : "Quota", "Agents")}
+        <div class="quota-grid">
+          <div class="quota-hero screen-card">
+            <div class="small-label">Codex quota</div>
+            <div class="quota-agent">${esc(primary.name)}</div>
+            <div class="quota-pair">
+              <div class="quota-pill"><b>${pctRemaining(primary.fiveUsed)}%</b><span>5h left</span><div class="quota-meter" style="--value:${pctRemaining(primary.fiveUsed)}%"><i></i></div></div>
+              <div class="quota-pill"><b>${pctRemaining(primary.sevenUsed)}%</b><span>7d left</span><div class="quota-meter" style="--value:${pctRemaining(primary.sevenUsed)}%"><i></i></div></div>
+            </div>
+          </div>
+          <div class="${detail ? "quota-detail-card" : "quota-list"} screen-card">
+            <div class="small-label">Agent pools · 5h / 7d</div>
+            ${rows}
+          </div>
+        </div>
+        ${hint("A next", detail ? "B x2 back" : "B detail")}
+      `;
+    }
+
     function petMood() {
       const agent = firstAgent();
       if (!state.connected) return "Offline";
@@ -3721,6 +3936,9 @@
         `;
       }
       if (state.page === 5) {
+        return renderQuota(true);
+      }
+      if (state.page === 6) {
         return renderPet(true);
       }
       if (isPortraitScreen()) {
@@ -3820,6 +4038,8 @@
         screen.innerHTML = renderSchedule();
       } else if (state.page === 4) {
         screen.innerHTML = renderPower();
+      } else if (state.page === 5) {
+        screen.innerHTML = renderQuota(false);
       } else {
         screen.innerHTML = renderPet(false);
       }
@@ -3868,7 +4088,7 @@
           button.addEventListener("click", () => {
             stopHookDemoTimer();
             state.petId = button.dataset.pet;
-            state.page = 5;
+            state.page = 6;
             state.detail = false;
             state.voice = false;
             state.prompt = null;
