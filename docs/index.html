@@ -1943,7 +1943,15 @@
       gap: 8px;
     }
 
-    .hook-map-grid span {
+    .hook-support-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .hook-map-grid span,
+    .hook-support-grid span {
       min-height: 74px;
       padding: 11px;
       border: 1px solid var(--line-soft);
@@ -1952,13 +1960,24 @@
       line-height: 1.45;
     }
 
-    .hook-map-grid b {
+    .hook-support-grid span {
+      min-height: 82px;
+      background: rgba(118, 207, 146, .035);
+    }
+
+    .hook-map-grid b,
+    .hook-support-grid b {
       display: block;
       margin-bottom: 7px;
       color: var(--green);
       font-family: var(--mono);
       font-size: 11px;
       text-transform: uppercase;
+    }
+
+    .hook-support-grid b {
+      font-size: 13px;
+      text-transform: none;
     }
 
     .timeline {
@@ -2436,6 +2455,7 @@
       .scenario-grid,
       .hook-stage,
       .hook-map-grid,
+      .hook-support-grid,
       .pet-os-grid,
       .pet-contract-grid {
         grid-template-columns: 1fr;
@@ -2475,6 +2495,7 @@
       .flow,
       .scenario-grid,
       .hook-map-grid,
+      .hook-support-grid,
       .feature-strip,
       .pet-choice-grid {
         grid-template-columns: 1fr;
@@ -2710,6 +2731,10 @@
                 <span><b>PermissionRequest</b>审批请求覆盖当前屏幕，A 批准，B 拒绝，pet 使用 waiting。</span>
                 <span><b>Stop</b>Codex 进程完成后，bridge 推送 done，Pet 页面进入 waving。</span>
                 <span><b>StopFailure</b>异常结束会切到 Error / failed，优先提示用户处理。</span>
+              </div>
+              <div class="hook-support-grid" aria-label="Live companion signals">
+                <span><b>Mac 负载</b>Power 页面只展示 CPU、RAM 和连接状态，避免小屏塞满指标。</span>
+                <span><b>语音入口</b>B 长按作为 Fn 键，打开 Mac 上的 Codex 语音输入。</span>
               </div>
             </div>
           </div>
